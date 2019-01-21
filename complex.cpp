@@ -1,4 +1,5 @@
 #include<iostream>
+#include<string.h>
 
 using namespace std;
 
@@ -21,7 +22,7 @@ class complex
 		cout<<real<<" + i"<<img;
 	}
 	
-	complex operator + (const complex c2)
+	complex operator + (const complex &c2)
 	{
 		complex dummy;
 		dummy.real=real+c2.real;
@@ -29,7 +30,7 @@ class complex
 		return dummy;
 	}
 	
-	complex operator - (const complex c2)
+	complex operator - (const complex &c2)
 	{
 		complex dummy;
 		dummy.real=real-c2.real;
@@ -37,20 +38,33 @@ class complex
 		return dummy;
 	}
 	
+	friend ostream& operator << (ostream &o, const complex &c)
+	{
+		o<<c.real;
+		if(c.img<0)	o<<"-i"<<-(c.img);
+		else	o<<"+i"<<c.img;
+		return o;
+	}
+	
+	friend void operator >> (istream &i, complex &c)
+	{
+		i>>c.real>>c.img;
+		return ;
+	}
 };
 
 
 int main()
 {
-	class complex t1,t2;
-	t1.input();
-	t2.input();
+	//class complex t1,t2;
+	//t1.input();
+	//t2.input();
 	
-	class complex t3;
-	t3=t1+t2;
+	complex t3;
+	//t3=t1+t2;
 	
-	t3.display();
-	t3=t1-t2;
-	t3.display();
+	cout<<t3<<endl;
+	cin>>t3;
+	cout<<t3<<endl;
 	return 0;
 }
