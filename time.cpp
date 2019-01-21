@@ -1,5 +1,7 @@
 #include<iostream>
 #include<string.h>
+#include<stdio.h>
+#include<stdlib.h>
 #include<time.h>
 using namespace std;
 
@@ -148,9 +150,45 @@ class mytime{
    		time_t now = time(0);
    
   	 	// convert now to string form
-   		char* dt = ctime(&now);
+   		string dt = ctime(&now);
    		dt=dt.substr(11,8);
-   		cout<<dt<<endl;
+   		//cout<<dt<<endl;
+   		class mytime t2;
+   		t2.hours=(dt[0]-'0')*10+(dt[1]-'0');
+   		t2.mins=(dt[3]-'0')*10+(dt[4]-'0');
+   		t2.secs=(dt[6]-'0')*10+(dt[7]-'0');
+   		
+   		//cout<<"System time:-";
+   		//t2.display24();
+   		
+   		long st=t2.secs+60*t2.mins+3600*t2.hours;
+   		long mt=secs+60*mins+3600*hours;
+   		long tdiff=mt-st;
+   		
+   		cout<<"My Time:- "<<hours<<":"<<mins<<":"<<secs<<endl;
+   		cout<<"System Time:- "<<t2.hours<<":"<<t2.mins<<":"<<t2.secs<<endl;
+   		if(tdiff>0)
+   		{
+   			cout<<"system time is behind by:- ";
+   			int h,m,s;
+   			h=tdiff/3600;
+   			tdiff=tdiff%3600;
+   			m=tdiff/60;
+   			s=tdiff%60;
+   			cout<<h<<":"<<m<<":"<<s<<endl;
+   		}
+   		else
+   		{
+   			tdiff=-tdiff;
+   			cout<<"system time is ahead by:- ";
+   			int h,m,s;
+   			h=tdiff/3600;
+   			tdiff=tdiff%3600;
+   			m=tdiff/60;
+   			s=tdiff%60;
+   			cout<<h<<":"<<m<<":"<<s<<endl;
+   		}
+   		
    		getchar();
    		getchar();
 	}
