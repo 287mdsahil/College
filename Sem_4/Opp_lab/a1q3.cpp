@@ -76,12 +76,11 @@ class itemList{
 	//takes input for the list
 	void prepareList(){
 		item t;
-		system('clear');
 		while(1){
 			t.getItem();
-			cout<<"\nEnter more items(y/n)? :";
 			list[cnt] = t;
 			cnt++;
+			cout<<"\nEnter more items(y/n)? :";
 			char choice;
 			cin>>choice;
 			if(choice != 'y' && choice != 'Y')
@@ -132,7 +131,25 @@ class order{
 
 	public:
 
-	
+	order(){
+		cnt=0;
+	}
+
+	void collectOrder(){
+		orderLine t;
+		while(1){
+			t.getOrderLine();
+			list[cnt] = t;
+			cnt++;
+			cout<<"\nEnter more items(y/n)? :";
+			char choice;
+			cin>>choice;
+			if(choice != 'y' && choice != 'Y')
+				break;
+			cout<<endl;	
+		}
+		return;
+	}
 }
 int main(){
 	return 0;
