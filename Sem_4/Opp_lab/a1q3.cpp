@@ -3,8 +3,7 @@
 using namespace std;
 
 
-class item
-{
+class item{
     string code;
     string name;
     int quantity;
