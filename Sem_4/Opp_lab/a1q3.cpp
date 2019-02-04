@@ -27,7 +27,7 @@ class item{
 	void showItem(){
 		cout<<"Item code:\t"<<code<<endl;
 		cout<<"Item name:\t"<<name<<endl;
-		cout<<"Item quantity:\t"<quantity<<endl;
+		cout<<"Item quantity:\t"<<quantity<<endl;
 		cout<<"Item rate:\t"<<rate<<endl;
 		return;
 	}
@@ -37,8 +37,8 @@ class item{
 		return;
 	}
 
-	int setQuantity(int q){
-		quantity = p;
+	void setQuantity(int q){
+		quantity = q;
 		return;
 	}
 
@@ -59,12 +59,13 @@ class item{
 		return quantity;
 	}
 
-}
+};
 
 
 class itemList{
 	item list[Max];
 	int cnt;
+	friend class order;
 
 	public:
 
@@ -93,7 +94,7 @@ class itemList{
 	//returns -1 if the not doesnot exist
 	int findCode(string c){
 		for(int i=0;i<cnt;i++){
-			if(c==list[i].code){
+			if(c==list[i].getCode()){
 				return i;
 			}
 		}
@@ -103,12 +104,12 @@ class itemList{
 	//search using name; returns the index of the item
 	int searchItem(string n){
 		for(int i=0;i<cnt;i++){
-			if(n==list[i].name)
+			if(n==list[i].getName())
 				return i;
 		}
 		return -1;
 	}
-}
+};
 
 class orderLine{
 	string code;
@@ -123,7 +124,7 @@ class orderLine{
 		cin>>quantity;
 		return;
 	}
-}
+};
 
 class order{
 	orderLine list[Max];
@@ -150,7 +151,71 @@ class order{
 		}
 		return;
 	}
-}
+};
+
+class salesInterface{
+
+	itemList l;
+	order o;
+
+	public:
+	
+	void loginMenu(){
+
+		while(1){
+			system("clear");
+			cout<<"------LOGIN---------"<<endl;
+			cout<<"1. Admin login"<<endl;
+			cout<<"2. User login"<<endl;
+			cout<<"3. Exit"<<endl;
+			cout<<"Enter choice: ";
+
+			int choice;
+			cin>>choice;
+			switch (choice)
+			{
+				case 1:
+					adminMenu();
+					break;
+				case 3:
+					return;
+				default:
+					cout<<"Invalid Input!"<<endl;
+					getchar();
+					getchar();
+					break;
+			}
+		}
+	}
+
+	void adminMenu(){
+		while(1){
+			system("clear");
+			cout<<"------Admin---------"<<endl;
+			cout<<"1. Enter item"<<endl;
+			cout<<"2. Update item"<<endl;
+			cout<<"3. Exit"<<endl;
+			cout<<"Enter choice: ";
+			int choice;
+			cin>>choice;
+			switch(choice){
+				case 1:
+					l.prepareList();
+					break;
+				case 3:
+					return;
+				default:
+					cout<<"Invalid Input!"<<endl;
+					getchar();
+					getchar();
+			}
+		}
+	}
+};
+
+
 int main(){
+	salesInterface sales;
+	sales.loginMenu();
 	return 0;
 }
