@@ -216,8 +216,9 @@ class orderLine{
 	}
 
 	void showOrderline(){
-		cout<<"Item code: "<<code<<endl;
-		cout<<"Item quantity: "<<quantity<<endl;
+		cout<<"Item code:\t"<<code;
+		cout<<"\t\t";
+		cout<<"Item quantity:\t"<<quantity;
 		return;
 	}
 };
@@ -252,6 +253,7 @@ class order{
 	void orderDetails(itemList l){
 		cout<<endl;
 		int total = 0;
+		cout<<"----------------------------------INVOICE--------------------------------"<<endl<<endl;
 		for(int i=0;i<cnt;i++){
 			list[i].showOrderline();
 			float r;
@@ -259,12 +261,12 @@ class order{
 			int ind = l.findCode(c);
 			r = l.list[ind].getRate();
 			float price = list[i].getQuantity()*(r);
-			cout<<"Price: "<<price<<endl;
+			cout<<"\tPrice: "<<price<<endl;
 			total+=price;
 			cout<<endl;
 		}
 
-		cout<<"Total: "<<total<<endl;
+		cout<<"\t\t\t\t\tTotal: "<<total<<endl;
 		getchar();
 		getchar();
 		return;
