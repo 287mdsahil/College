@@ -66,6 +66,8 @@ class itemList{
 	item list[Max];
 	int cnt;
 	friend class order;
+	friend class salesInterface;
+	friend class orderLine;
 
 	public:
 
@@ -180,11 +182,42 @@ class orderLine{
 
 	public:
 
-	void getOrderLine(){
+	int getOrderLine(itemList l){
 		cout<<"Enter the item code: ";
-		cin>>code;
+		string c;
+		cin>>c;
+		int i = l.findCode(c);
+		if(i==-1){
+			cout<<"Item doesnot exist!"<<endl;
+			getchar();
+			getchar();
+			return 0;
+		}
 		cout<<"Enter the quantity: ";
-		cin>>quantity;
+		int q;
+		cin>>q;
+		if(q>l.list[i].getQuantity()){
+			cout<<"Inadequate supply!"<<endl;
+			getchar();
+			getchar();
+			return 0;
+		}
+		code = c;
+		quantity = q;
+		return 1;
+	}
+
+	string getCode(){
+		return code;
+	}
+
+	int getQuantity(){
+		return quantity;
+	}
+
+	void showOrderline(){
+		cout<<"Item code: "<<code<<endl;
+		cout<<"Item quantity: "<<quantity<<endl;
 		return;
 	}
 };
@@ -199,12 +232,13 @@ class order{
 		cnt=0;
 	}
 
-	void collectOrder(){
+	void collectOrder(itemList l){
 		orderLine t;
 		while(1){
-			t.getOrderLine();
-			list[cnt] = t;
-			cnt++;
+			if(t.getOrderLine(l)==1){
+				list[cnt] = t;
+				cnt++;
+			}
 			cout<<"\nEnter more items(y/n)? :";
 			char choice;
 			cin>>choice;
@@ -212,6 +246,27 @@ class order{
 				break;
 			cout<<endl;	
 		}
+		return;
+	}
+
+	void orderDetails(itemList l){
+		cout<<endl;
+		int total = 0;
+		for(int i=0;i<cnt;i++){
+			list[i].showOrderline();
+			float r;
+			string c = list[i].getCode();
+			int ind = l.findCode(c);
+			r = l.list[ind].getRate();
+			float price = list[i].getQuantity()*(r);
+			cout<<"Price: "<<price<<endl;
+			total+=price;
+			cout<<endl;
+		}
+
+		cout<<"Total: "<<total<<endl;
+		getchar();
+		getchar();
 		return;
 	}
 };
@@ -239,6 +294,9 @@ class salesInterface{
 			{
 				case 1:
 					adminMenu();
+					break;
+				case 2:
+					userMenu();
 					break;
 				case 3:
 					return;
@@ -278,6 +336,55 @@ class salesInterface{
 					cout<<"Invalid Input!"<<endl;
 					getchar();
 					getchar();
+			}
+		}
+	}
+
+	void userMenu(){
+		while(1){
+			system("clear");
+			cout<<"------User---------"<<endl;
+			cout<<"1. Show all item"<<endl;
+			cout<<"2. Show item"<<endl;
+			cout<<"3. Place order"<<endl;
+			cout<<"4. Show order detalis"<<endl;
+			cout<<"5. Logout"<<endl;
+			cout<<"Enter choice: ";
+			int choice;
+			cin>>choice;
+			switch(choice){
+				case 1:
+					l.showItems();
+					break;
+				case 2:
+					{
+						cout<<"Enter the item code: ";
+						string c;
+						cin>>c;
+						int i=l.findCode(c);
+						if(i==-1){
+							cout<<"Item doesnot exits!"<<endl;
+						}
+						else{
+							l.list[i].showItem();
+						}
+						getchar();
+						getchar();
+						break;
+					}
+				case 3:
+					o.collectOrder(l);
+					break;
+				case 4:
+					o.orderDetails(l);
+					break;
+				case 5:
+					return;
+				default:
+					cout<<"Invalid Input!"<<endl;
+					getchar();
+					getchar();
+					break;
 			}
 		}
 	}
