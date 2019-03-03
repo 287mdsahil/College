@@ -412,6 +412,25 @@ class student_file{
             
         }
     }
+
+    void defrag(){
+        char file_new[31];
+        strcpy(file_new,"student_new.txt");
+        ifstream f_old(file, ios::in | ios::binary);
+        ofstream f_new(file_new, ios::out | ios::binary);
+        student s;
+        while(f_old.read((char*)&s,sizeof(s))){
+            if(s.getRoll()!=-1)
+                f_new.write((char*)&s,sizeof(s));
+        }
+
+        f_new.close();
+        f_old.close();
+        remove(file);
+        rename(file_new,file);
+        getchar();
+        return;
+    }
 };
 
 
@@ -494,10 +513,9 @@ class userInterface{
                     break;
                 }
 
-                case 7:{
-                    char* file2;
-                    strcpy(file2,"student2.txt")
-                }
+                case 7:
+                    sfile.defrag();
+                    break;
 
                 case 8:
                     return;
