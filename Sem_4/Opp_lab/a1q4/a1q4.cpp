@@ -74,6 +74,93 @@ class student{
         return;
     }
 
+    void updateData(){
+        cout<<"1. Update name"<<endl;
+        cout<<"2. Update Course"<<endl;
+        cout<<"3. Update admission date"<<endl;
+        cout<<"4. Update marks in "<<marks[0].first<<endl;
+        cout<<"5. Update marks in "<<marks[1].first<<endl;
+        cout<<"6. Update marks in "<<marks[2].first<<endl;
+        cout<<"7. Update marks in "<<marks[3].first<<endl;
+        cout<<"8. Update marks in "<<marks[4].first<<endl;
+        cout<<"Enter choice: ";
+        int choice;
+        cin>>choice;
+        cin.ignore(100,'\n');
+        switch(choice){
+            case 1:{
+                cout<<"Enter new name: ";
+                char n_name[31];
+                cin.getline(n_name,31);
+                strcpy(name,n_name);
+                break;
+            }
+
+            case 2:{
+                cout<<"Course options: "<<endl;
+                cout<<"1.Cse\n2.Etce\n3.Electrical\nEnter new choice: ";
+                int courseChoice;
+                cin>>courseChoice;
+                cin.ignore(100,'\n');
+                switch (courseChoice)
+                {
+                    case 1:
+                        strcpy(course,"Cse");
+                        break;
+                    case 2:
+                        strcpy(course,"Etce");
+                        break;
+            
+                    case 3:
+                        strcpy(course,"Electrical");
+                        break;
+
+                    default:
+                        cout<<"Invalid input!"<<endl;
+                        break;
+                }
+                break;
+            }
+
+            case 3:{
+                cout<<"Enter new admission date: ";
+                char n_admission_date[11];
+                cin.getline(n_admission_date,11);
+                strcpy(admission_date,n_admission_date);
+                break;
+            }   
+
+            case 4:
+                cout<<"Enter new marks in "<<marks[0].first<<": ";
+                cin>>marks[0].second;
+                break;
+            
+            case 5:
+                cout<<"Enter new marks in "<<marks[1].first<<": ";
+                cin>>marks[1].second;
+                break;
+
+            case 6:
+                cout<<"Enter new marks in "<<marks[2].first<<": ";
+                cin>>marks[2].second;
+                break;
+
+            case 7:
+                cout<<"Enter new marks in "<<marks[3].first<<": ";
+                cin>>marks[3].second;
+                break;
+
+            case 8:
+                cout<<"Enter new marks in "<<marks[4].first<<": ";
+                cin>>marks[4].second;
+                break;
+
+            default :
+                cout<<"Invalid choice!"<<endl;
+                break;
+        }
+    }
+
     void showData(){
         cout<<"Roll no.: "<<roll<<endl;
         cout<<"Name: "<<name<<endl;
@@ -82,6 +169,27 @@ class student{
         for(int i=0;i<5;i++)
             cout<<"Marks in "<<marks[i].first<<": "<<marks[i].second<<endl;
         cout<<"Grade: "<<getGrade()<<endl;
+        return;
+    }
+
+    void displayMarksheet(){
+        cout<<endl<<endl;;
+        cout<<"\tName\t\t\t: "<<getName()<<endl;
+        cout<<"\tRoll\t\t\t: "<<getRoll()<<endl;
+        cout<<"\tCourse\t\t\t: "<<getCourse()<<endl;
+        cout<<"\tAdmission date\t\t: "<<getAdmissionDate()<<endl;  
+        cout<<"\t_________________________________________"<<endl;
+        cout<<"\t|\t\tMARKSHEET\t\t|"<<endl;
+        cout<<"\t-----------------------------------------"<<endl;
+        cout<<"\t| "<<marks[0].first<<"\t\t\t: "<<marks[0].second<<"\t|"<<endl;
+        cout<<"\t| "<<marks[1].first<<"\t\t\t\t: "<<marks[1].second<<"\t|"<<endl;
+        cout<<"\t| "<<marks[2].first<<"\t\t\t: "<<marks[2].second<<"\t|"<<endl;
+        cout<<"\t| "<<marks[3].first<<"\t\t\t: "<<marks[3].second<<"\t|"<<endl;
+        cout<<"\t| "<<marks[4].first<<"\t\t\t\t: "<<marks[4].second<<"\t|"<<endl;
+        cout<<"\t-----------------------------------------"<<endl;
+        cout<<"\t| CGPA\t\t\t\t: "<<getGrade()<<"\t|"<<endl;
+        cout<<"\t~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"<<endl;
+        cout<<endl;
         return;
     }
 
@@ -95,6 +203,10 @@ class student{
 
     char* getCourse(){ 
         return course;
+    }
+
+    char* getAdmissionDate(){
+        return admission_date;
     }
 
     pair<char[31],int>* getMarks(){
@@ -119,7 +231,12 @@ class student_file{
     void sortDeptWise(student s[Max],int n){
         for(int i=0;i<n;i++){
             for(int j=0;j<n;j++){
-                if(strcmp(s[i].getName(),s[j].getName())>1){
+                if(strcmp(s[i].getCourse(),s[j].getCourse())>1){
+                    student dummy=s[i];
+                    s[i]=s[j];
+                    s[j]=dummy;
+                }
+                else if(s[i].getCourse()==s[j].getCourse() && s[i].getRoll()>s[i].getRoll()){
                     student dummy=s[i];
                     s[i]=s[j];
                     s[j]=dummy;
@@ -136,12 +253,27 @@ class student_file{
                     s[i]=s[j];
                     s[j]=dummy;
                 }
+                else if(s[i].getGrade()==s[j].getGrade() && s[i].getRoll()>s[i].getRoll()){
+                    student dummy=s[i];
+                    s[i]=s[j];
+                    s[j]=dummy;
+                }
             }
         }
     }
 
     public:
 
+    student retStudent(int k){
+        ifstream f;
+        student s;
+        f.open(file, ios::in | ios::binary);
+        f.seekg((k)*sizeof(student),ios::beg);
+        f.read((char*)&s,sizeof(s));
+        f.close();
+        return s;
+    }
+    
     int searchRoll(int r){
         ifstream f;
         student s;
@@ -180,7 +312,7 @@ class student_file{
         return;
     }
 
-    void removeStudent(int r){
+    student removeStudent(int r){
         fstream f("student.txt", ios::binary | ios::in | ios::out);
         student s;
         while(f.read((char*)&s,sizeof(s))){
@@ -188,16 +320,14 @@ class student_file{
                 f.seekp(-1*sizeof(s),ios::cur);
                 student dummy;
                 f.write((char*)&dummy,sizeof(dummy));
-                cout<<endl<<"Entry deleted:"<<endl;
-                s.showData();
-                getchar();
-                return;
+                return s;
             }
         }
         f.close();
         cout<<"Corresponding entry does not exist!"<<endl;
         getchar();
-        return;
+        student dummy;
+        return dummy;
     }
 
     void displayAll(){
@@ -251,6 +381,37 @@ class student_file{
         }
         return count;
     }
+    
+    void updateInfo(int r){
+        int k = searchRoll(r);
+        if(k==-1){
+            cout<<"Entry doesn't exist!"<<endl;
+            getchar();
+            return;
+        }
+        student s = retStudent(k);
+        cout<<endl;
+        cout<<"Current record:----------"<<endl;
+        s.showData();
+        cout<<endl;
+        s.updateData();
+        cout<<endl;
+        cout<<"Updated record:----------"<<endl;
+        s.showData();
+        cout<<endl;
+        cout<<"Confirm Update?(y/n): ";
+        char choice;
+        cin>>choice;
+        cin.ignore(100,'\n');
+        if(choice=='y'){
+            removeStudent(r);
+            addStudent(s);
+        }
+        else{
+            cout<<"Update aborted!"<<endl;
+            
+        }
+    }
 };
 
 
@@ -273,7 +434,8 @@ class userInterface{
             cout<<"4.Expell student"<<endl;
             cout<<"5.Update student Info"<<endl;
             cout<<"6.Display student marksheet"<<endl;
-            cout<<"7.Exit"<<endl;
+            cout<<"7.Defrag file"<<endl;
+            cout<<"8.Exit"<<endl;
 
             int choice;
             cout<<"Enter choice: ";
@@ -304,11 +466,40 @@ class userInterface{
                     int r;
                     cin>>r;
                     cin.ignore(100,'\n');
-                    sfile.removeStudent(r);
+                    student s = sfile.removeStudent(r);
+                    cout<<endl<<"Entry deleted:"<<endl;
+                    s.showData();
+                    getchar();
                     break;
                 }
 
-                case 7:
+                case 5:{
+                    cout<<"Enter the roll no of the student: ";
+                    int r;
+                    cin>>r;
+                    cin.ignore(100,'\n');
+                    sfile.updateInfo(r);
+                    break;
+                }
+
+                case 6:{
+                    cout<<"Enter the roll no of the student: ";
+                    int r;
+                    cin>>r;
+                    cin.ignore(100,'\n');
+                    int k = sfile.searchRoll(r);
+                    student s = sfile.retStudent(k);
+                    s.displayMarksheet();
+                    getchar();
+                    break;
+                }
+
+                case 7:{
+                    char* file2;
+                    strcpy(file2,"student2.txt")
+                }
+
+                case 8:
                     return;
 
                 default:
