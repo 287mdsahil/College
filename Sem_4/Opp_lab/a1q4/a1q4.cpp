@@ -2,6 +2,7 @@
 #include<fstream>
 #include<utility>
 #include<string.h>
+#include<time.h>
 using namespace std;
 #define Max 100
 
@@ -11,13 +12,45 @@ class student{
     int roll;
     char name[31];
     char course[21];
-    char admission_date[11];
+    char admission_date[31];
     pair<char[31],int> marks[5];
+
+    int genRoll(int courseId){
+        char course[31];
+        int r=0;
+        switch (courseId)
+        {
+            case 1:
+                strcpy(course,"Cse");
+                break;
+            case 2:
+                strcpy(course,"Etce");
+                break;
+            
+            case 3:
+                strcpy(course,"Electrical");
+                break;
+
+            default:
+                break;
+        }
+        int maxr=-1;
+        ifstream f;
+        student s;
+        f.open("student.txt", ios::in | ios::binary);
+        while(f.read((char*)&s, sizeof(s))){
+            if(s.getRoll()>maxr && strcmp(s.getCourse(),course)==0)
+                maxr=(s.getRoll())%100;
+        }
+        f.close();
+        if(maxr==-1) maxr=0;
+        roll = courseId*100+(maxr+1);
+    }
 
     public:
 
-    student(){
-        roll=-1;
+    student(int t=-1){
+        roll=t;
         strncpy(marks[0].first,"Physics",31);
         strncpy(marks[1].first,"Maths",31);
         strncpy(marks[2].first,"Chemestry",31);
@@ -37,9 +70,6 @@ class student{
     }
 
     void setData(){
-        cout<<"Enter roll no.: ";
-        cin>>roll;
-        cin.ignore(100,'\n');
         cout<<"Enter the name: ";
         cin.getline(name,31);
         cout<<"Course options: "<<endl;
@@ -51,26 +81,30 @@ class student{
         {
             case 1:
                 strcpy(course,"Cse");
+                genRoll(1);
                 break;
             case 2:
                 strcpy(course,"Etce");
+                genRoll(2);
                 break;
             
             case 3:
                 strcpy(course,"Electrical");
+                genRoll(3);
                 break;
 
             default:
                 break;
         }
-        cout<<"Enter the admission date: ";
-        cin>>admission_date;
-        cin.ignore(100,'\n');
         for(int i=0;i<5;i++){
             cout<<"Enter marks in "<<marks[i].first<<": "; 
             cin>>marks[i].second;
         }
         cin.ignore(100,'\n');
+        
+   		time_t now = time(0);
+   		char dt[100];
+        strcpy(admission_date,ctime(&now));
         return;
     }
 
@@ -106,13 +140,16 @@ class student{
                 {
                     case 1:
                         strcpy(course,"Cse");
+                        genRoll(1);
                         break;
                     case 2:
                         strcpy(course,"Etce");
+                        genRoll(2);
                         break;
             
                     case 3:
                         strcpy(course,"Electrical");
+                        genRoll(3);
                         break;
 
                     default:
@@ -165,7 +202,7 @@ class student{
         cout<<"Roll no.: "<<roll<<endl;
         cout<<"Name: "<<name<<endl;
         cout<<"Course: "<<course<<endl;
-        cout<<"Admission date: "<<admission_date<<endl;
+        cout<<"Admission date: "<<admission_date;
         for(int i=0;i<5;i++)
             cout<<"Marks in "<<marks[i].first<<": "<<marks[i].second<<endl;
         cout<<"Grade: "<<getGrade()<<endl;
