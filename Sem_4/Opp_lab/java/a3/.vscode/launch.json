@@ -1,0 +1,11 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "CodeLens (Launch) - parentheses",
+            "request": "launch",
+            "mainClass": "parentheses",
+            "projectName": "a3_5eb5c563"
+        }
+    ]
+}
