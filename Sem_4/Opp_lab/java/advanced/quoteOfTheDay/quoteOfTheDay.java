@@ -8,7 +8,6 @@ import java.io.*;
 import java.sql.Time;
 import java.time.LocalDateTime;
 import java.util.*;
-
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -244,7 +243,17 @@ class QuoteFrame extends JFrame {
     }
 
     void nextQuote() {
-        quoteText.setText(Display.display());
+        //quoteText.setText(Display.display());
+        MyRunnable ro = new MyRunnable();
+        Thread t = new Thread(ro);
+        t.start();
+    }
+
+    class MyRunnable implements Runnable {
+        @Override
+        public void run() {
+            quoteText.setText(Display.display());
+        }
     }
 }
 
