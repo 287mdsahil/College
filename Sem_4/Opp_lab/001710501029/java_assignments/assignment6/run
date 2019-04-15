@@ -1,0 +1,3 @@
+javac ass6/doctor.java 
+javac ass6/patient.java
+java ass6.Hospital
