@@ -32,7 +32,7 @@ class Graph
                      << "0" << endl;
             }
             QBrush br(Qt::SolidPattern);
-            br.setColor(Qt::black);
+            br.setColor(Qt::lightGray);
             rect->setBrush(br);
             rect->update();
         }
@@ -47,7 +47,7 @@ class Graph
                      << "0" << endl;
             }
             QBrush br(Qt::SolidPattern);
-            br.setColor(Qt::black);
+            br.setColor(Qt::lightGray);
             rect->setBrush(br);
             rect->update();
         }
