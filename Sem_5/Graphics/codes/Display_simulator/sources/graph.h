@@ -7,15 +7,16 @@
 #include <iostream>
 using namespace std;
 
-class Graph
+class Graph : public QGraphicsView
 {
+    Q_OBJECT
     QGraphicsScene *graphscene;
     int pixelsize;
-    int no_of_pixel;
-    QGraphicsView *graphview;
+    int no_of_pixels;
 
-    void GenerateGraph(QGraphicsScene *graphscene, int pixelsize, int no_of_pixels)
+    void GenerateGraph()
     {
+        graphscene = new QGraphicsScene();
         for (int i = -no_of_pixels / 2; i <= no_of_pixels / 2; i++)
         {
             for (int j = -no_of_pixels / 2; j <= no_of_pixels / 2; j++)
@@ -51,26 +52,26 @@ class Graph
             rect->setBrush(br);
             rect->update();
         }
+        this->setScene(graphscene);
+        
     }
 
 public:
     Graph(int p = 5, int n = 100)
     {
-        graphscene = new QGraphicsScene();
         pixelsize = p;
-        no_of_pixel = n;
-        GenerateGraph(graphscene, pixelsize, no_of_pixel);
-        graphview = new QGraphicsView(graphscene);
+        no_of_pixels = n;
+        GenerateGraph();
     }
 
     QGraphicsView *getGraph()
     {
-        return graphview;
+        return this;
     }
 
     void GraphPointPaint(int x, int y)
     {
-        if (abs(x) > no_of_pixel / 2 && abs(y) > no_of_pixel / 2)
+        if (abs(x) > no_of_pixels / 2 && abs(y) > no_of_pixels / 2)
         {
             cout << "pixel coordinates: (" << x << "," << y << ") incorrect" << endl;
             return;
@@ -95,6 +96,21 @@ public:
 
     void GraphReset()
     {
-        GenerateGraph(graphscene, pixelsize, no_of_pixel);
+        GenerateGraph();
+    }
+
+    void GraphReset(int p, int n)
+    {
+        pixelsize = p;
+        no_of_pixels = n;
+        GenerateGraph();
+    }
+
+    public slots:
+    void GraphResetSlot(int p,int n)
+    {
+        pixelsize = p;
+        no_of_pixels = n;
+        GenerateGraph();
     }
 };
