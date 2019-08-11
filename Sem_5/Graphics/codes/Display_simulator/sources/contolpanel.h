@@ -30,7 +30,7 @@ public:
         pixelsizeSpinBox->setValue(5);
         pixelsizeLabel->setBuddy(pixelsizeSpinBox);
 
-        noOfPixelsLabel = new QLabel("Enter the pixel size");
+        noOfPixelsLabel = new QLabel("Enter the no of pixels");
         noOfPixelsSpinBox = new QSpinBox();
         noOfPixelsSpinBox->setRange(10, 200);
         noOfPixelsSpinBox->setValue(100);
