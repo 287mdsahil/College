@@ -71,7 +71,6 @@ public:
         clickCoordinate = new QLabel("0, 0");
 
         drawingAlgoComboBox = new QComboBox();
-        drawingAlgoComboBox->setCurrentText("");
         drawingAlgoComboBox->addItem("DDA line drawing");
         drawingAlgoComboBox->addItem("Bresenham\'s line drawing");
 
