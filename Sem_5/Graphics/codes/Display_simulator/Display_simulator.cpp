@@ -20,6 +20,7 @@ int main(int argc, char *argv[])
     parentlayout->addWidget(controlpanel);
 
     QObject::connect(controlpanel,SIGNAL(GraphResetSignal(int,int)),graph,SLOT(GraphResetSlot(int,int)));
+    QObject::connect(controlpanel,SIGNAL(GraphPlotSignal(int,int)),graph,SLOT(GraphPlotSlot(int,int)));
     QObject::connect(graph,SIGNAL(pointSelect(pair<int,int>)),controlpanel,SLOT(getPointSelect(pair<int,int>)));
     QObject::connect(graph,SIGNAL(pointHover(pair<int,int>)),controlpanel,SLOT(getPointHover(pair<int,int>)));
 

@@ -139,6 +139,9 @@ signals:
     void pointHover(pair<int, int>);
 
 public slots:
+    void GraphPlotSlot(int x, int y){
+        this->GraphPointPaint(x,y);
+    };
     void GraphResetSlot(int p, int n)
     {
         pixelsize = p;
