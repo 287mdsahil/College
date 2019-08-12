@@ -6,6 +6,10 @@
 #include <QVBoxLayout>
 #include <QGroupBox>
 #include <QComboBox>
+#include <QString>
+#include <string>
+#include <utility>
+#include <iostream>
 
 using namespace std;
 
@@ -21,6 +25,7 @@ class ControlPanel : public QWidget
     QLabel *noOfPixelsLabel;
     QSpinBox *noOfPixelsSpinBox;
     QPushButton *setGraphButton;
+    QLabel *clickCoordinate;
 
     //members of drawing------------------------------------
     QComboBox *drawingAlgoComboBox;
@@ -60,17 +65,18 @@ public:
 
         setGraphGroup->setLayout(setGraphLayout);
 
-
-
         //Contents of drawing----------------------------------------------------------
         QGroupBox *drawingGroup = new QGroupBox("Drawing");
         QLayout *drawingLayout = new QVBoxLayout();
+        clickCoordinate = new QLabel("0, 0");
 
         drawingAlgoComboBox = new QComboBox();
+        drawingAlgoComboBox->setCurrentText("");
         drawingAlgoComboBox->addItem("DDA line drawing");
-        drawingAlgoComboBox->addItem("Bresenham's line drawing");
+        drawingAlgoComboBox->addItem("Bresenham\'s line drawing");
 
         drawingLayout->addWidget(drawingAlgoComboBox);
+        drawingLayout->addWidget(clickCoordinate);
         drawingGroup->setLayout(drawingLayout);
 
         //Parent layout-----------------------------------------------------------------
@@ -80,11 +86,12 @@ public:
         this->setLayout(layout);
     }
 
-    QWidget *getControlPanel()
+    string getCurrentALgo()
     {
-        return this;
+        QString q_algoname = drawingAlgoComboBox->currentText();
+        string algoname = q_algoname.toStdString();
+        return algoname;
     }
-
 signals:
     void GraphResetSignal(int, int);
 
@@ -97,5 +104,12 @@ public slots:
             no_of_pixels = noOfPixelsSpinBox->value();
             emit GraphResetSignal(pixelsize, no_of_pixels);
         }
+    }
+
+    void getPointSelect(pair<int,int> point)
+    {
+        string showPoint = to_string(point.first) + " " + to_string(point.second);
+        QString QShowPoint = QString::fromStdString(showPoint);
+        clickCoordinate->setText(QShowPoint);
     }
 };

@@ -3,24 +3,52 @@
 #include <QGraphicsScene>
 #include <QGraphicsView>
 #include <QGraphicsRectItem>
+#include <QGraphicsTextItem>
+#include <QGraphicsSceneMouseEvent>
 #include <QHBoxLayout>
 #include <iostream>
+#include <utility>
 using namespace std;
 
 class Graph : public QGraphicsView
 {
     Q_OBJECT
-    QGraphicsScene *graphscene;
+
     int pixelsize;
     int no_of_pixels;
+    int mouseclickStatus;
+    pair<float, float> points[2];
+
+    class MyGraphicsScene : public QGraphicsScene
+    {
+        QGraphicsTextItem *cursor;
+        Graph *parent;
+
+    public:
+        MyGraphicsScene(Graph *p)
+        {
+            parent = p;
+        }
+
+        void mousePressEvent(QGraphicsSceneMouseEvent *event)
+        {
+                int x = event->scenePos().x();
+                int y = event->scenePos().y();
+                emit parent->pointSelect(pair<int, int>(x, y));
+        }
+    };
+
+    MyGraphicsScene *graphscene;
 
     void GenerateGraph()
     {
-        graphscene = new QGraphicsScene();
+        graphscene = new MyGraphicsScene(this);
         for (int i = -no_of_pixels / 2; i <= no_of_pixels / 2; i++)
         {
             for (int j = -no_of_pixels / 2; j <= no_of_pixels / 2; j++)
+            {
                 graphscene->addRect(i * pixelsize, j * pixelsize, pixelsize, pixelsize);
+            }
         }
 
         for (int i = -no_of_pixels / 2; i <= no_of_pixels / 2; i++)
@@ -53,7 +81,7 @@ class Graph : public QGraphicsView
             rect->update();
         }
         this->setScene(graphscene);
-        
+        mouseclickStatus = 0;
     }
 
 public:
@@ -62,11 +90,6 @@ public:
         pixelsize = p;
         no_of_pixels = n;
         GenerateGraph();
-    }
-
-    QGraphicsView *getGraph()
-    {
-        return this;
     }
 
     void GraphPointPaint(int x, int y)
@@ -106,8 +129,12 @@ public:
         GenerateGraph();
     }
 
-    public slots:
-    void GraphResetSlot(int p,int n)
+public:
+signals:
+    void pointSelect(pair<int, int>);
+
+public slots:
+    void GraphResetSlot(int p, int n)
     {
         pixelsize = p;
         no_of_pixels = n;
