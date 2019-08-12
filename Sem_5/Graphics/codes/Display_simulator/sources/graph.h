@@ -21,7 +21,6 @@ class Graph : public QGraphicsView
 
     class MyGraphicsScene : public QGraphicsScene
     {
-        QGraphicsTextItem *cursor;
         Graph *parent;
 
     public:
@@ -32,9 +31,13 @@ class Graph : public QGraphicsView
 
         void mousePressEvent(QGraphicsSceneMouseEvent *event)
         {
-                int x = event->scenePos().x();
-                int y = event->scenePos().y();
-                emit parent->pointSelect(pair<int, int>(x, y));
+            emit parent->pointSelect(pair<int, int>(event->scenePos().x() / parent->pixelsize, event->scenePos().y() / parent->pixelsize));
+            parent->GraphPointPaint(event->scenePos().x() / parent->pixelsize, event->scenePos().y() / parent->pixelsize);
+        }
+
+        void mouseMoveEvent(QGraphicsSceneMouseEvent *event)
+        {
+            emit parent->pointHover(pair<int, int>(event->scenePos().x() / parent->pixelsize, event->scenePos().y() / parent->pixelsize));
         }
     };
 
@@ -87,6 +90,7 @@ class Graph : public QGraphicsView
 public:
     Graph(int p = 5, int n = 100)
     {
+        this->setMouseTracking(1);
         pixelsize = p;
         no_of_pixels = n;
         GenerateGraph();
@@ -96,7 +100,7 @@ public:
     {
         if (abs(x) > no_of_pixels / 2 && abs(y) > no_of_pixels / 2)
         {
-            cout << "pixel coordinates: (" << x << "," << y << ") incorrect" << endl;
+            cout << "pixel coordinates: (" << x << "," << y << ") incorrect " << no_of_pixels * pixelsize / 2 << endl;
             return;
         }
         else
@@ -104,7 +108,7 @@ public:
             QGraphicsItem *item = graphscene->itemAt(x * pixelsize, y * pixelsize, QTransform());
             if (item == NULL)
             {
-                cout << "pixel coordinates: (" << x << "," << y << ") incorrect" << endl;
+                cout << " item at pixel coordinates: (" << x << "," << y << ") not found" << endl;
                 return;
             }
 
@@ -132,6 +136,7 @@ public:
 public:
 signals:
     void pointSelect(pair<int, int>);
+    void pointHover(pair<int, int>);
 
 public slots:
     void GraphResetSlot(int p, int n)

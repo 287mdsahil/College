@@ -25,10 +25,11 @@ class ControlPanel : public QWidget
     QLabel *noOfPixelsLabel;
     QSpinBox *noOfPixelsSpinBox;
     QPushButton *setGraphButton;
-    QLabel *clickCoordinate;
 
     //members of drawing------------------------------------
     QComboBox *drawingAlgoComboBox;
+    QLabel *clickCoordinate;
+    QLabel *mouseCoordinate;
 
 public:
     ControlPanel()
@@ -68,7 +69,8 @@ public:
         //Contents of drawing----------------------------------------------------------
         QGroupBox *drawingGroup = new QGroupBox("Drawing");
         QLayout *drawingLayout = new QVBoxLayout();
-        clickCoordinate = new QLabel("0, 0");
+        clickCoordinate = new QLabel("Clicked Coordinate :\n 0, 0");
+        mouseCoordinate = new QLabel("Mouse Coordinate :\n 0, 0");
 
         drawingAlgoComboBox = new QComboBox();
         drawingAlgoComboBox->addItem("DDA line drawing");
@@ -76,6 +78,7 @@ public:
 
         drawingLayout->addWidget(drawingAlgoComboBox);
         drawingLayout->addWidget(clickCoordinate);
+        drawingLayout->addWidget(mouseCoordinate);
         drawingGroup->setLayout(drawingLayout);
 
         //Parent layout-----------------------------------------------------------------
@@ -97,17 +100,21 @@ signals:
 public slots:
     void handleButton()
     {
-        if (pixelsize != pixelsizeSpinBox->value() || no_of_pixels != noOfPixelsSpinBox->value())
-        {
-            pixelsize = pixelsizeSpinBox->value();
-            no_of_pixels = noOfPixelsSpinBox->value();
-            emit GraphResetSignal(pixelsize, no_of_pixels);
-        }
+        pixelsize = pixelsizeSpinBox->value();
+        no_of_pixels = noOfPixelsSpinBox->value();
+        emit GraphResetSignal(pixelsize, no_of_pixels);
     }
 
-    void getPointSelect(pair<int,int> point)
+    void getPointHover(pair<int, int> point)
     {
-        string showPoint = to_string(point.first) + " " + to_string(point.second);
+        string showPoint = "Mouse Coordinate: \n" + to_string(point.first) + " " + to_string(point.second);
+        QString QShowPoint = QString::fromStdString(showPoint);
+        mouseCoordinate->setText(QShowPoint);
+    }
+
+    void getPointSelect(pair<int, int> point)
+    {
+        string showPoint = "Clicked Coordinate: \n" + to_string(point.first) + " " + to_string(point.second);
         QString QShowPoint = QString::fromStdString(showPoint);
         clickCoordinate->setText(QShowPoint);
     }
