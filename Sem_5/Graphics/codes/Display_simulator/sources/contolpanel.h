@@ -145,23 +145,61 @@ public:
           i = i + 1;
         }
     }
-    void drawBresenham(){
-        float x, y, x0, y0, x1, y1, dx, dy, step;
-        x0 = (lineDrawStartX->text()).toInt();
-        y0 = -1*(lineDrawStartY->text()).toInt();
-        x1 = (lineDrawEndX->text()).toInt();
-        y1 = -1*(lineDrawEndY->text()).toInt();
-        dx = x1 - x0;
-        dy = y1 - y0;
-        step = 2*dy - dx;
-        y = y0;
-        for(x = x0; x<=x1;x++){
+    void bresenhamPlotLineLow(int x0,int y0,int x1, int y1){
+        int dx = x1-x0;
+        int dy = y1-y0;
+        int yi = 1;
+        if (dy<0){
+            yi = -1;
+            dy *= -1;
+        }
+        int D = 2*dy - dx;
+        int y = y0;
+        for(int x = x0; x<=x1;x++){
             emit GraphPlotSignal(x, y);
-            if (step>0){
-                y++;
-                step -= 2*dx;
+            if(D>0){
+                y += yi;
+                D -= 2*dx;
             }
-            step += 2*dy;
+            D += 2*dy;
+        }
+    }
+    void bresenhamPlotLineHigh(int x0,int y0,int x1, int y1){
+        int dx = x1-x0;
+        int dy = y1-y0;
+        int xi = 1;
+        if (dx<0){
+            xi = -1;
+            dx *= -1;
+        }
+        int D = 2*dx - dy;
+        int x = x0;
+        for(int y = y0; y<=y1;y++){
+            emit GraphPlotSignal(x, y);
+            if(D>0){
+                x += xi;
+                D -= 2*dy;
+            }
+            D += 2*dx;
+        }
+    }
+    void drawBresenham(){
+        float x0, y0, x1, y1;
+        x0 = (lineDrawStartX->text()).toInt();
+        y0 = -1 * (lineDrawStartY->text()).toInt();
+        x1 = (lineDrawEndX->text()).toInt();
+        y1 = -1 * (lineDrawEndY->text()).toInt();
+        if (abs(y1-y0) < abs(x1-x0)) {
+            if (x0 > x1)
+                bresenhamPlotLineLow(x1,y1,x0,y0);
+            else
+                bresenhamPlotLineLow(x0,y0,x1,y1);
+        }
+        else {
+            if (y0 > y1)
+                bresenhamPlotLineHigh(x1,y1,x0,y0);
+            else
+                bresenhamPlotLineHigh(x0,y0,x1,y1);
         }
     }
 signals:
@@ -176,16 +214,13 @@ public slots:
         emit GraphResetSignal(pixelsize, no_of_pixels);
     }
     void drawLineHandler(){
-        int idx = drawingAlgoComboBox->currentIndex();
-        cout<<idx;
-        switch(idx){
+        switch(drawingAlgoComboBox->currentIndex()){
             case 0:
                 this->drawDDA();
                 break;
             case 1:
                 this->drawBresenham();
                 break;
-
         }
     }
 
