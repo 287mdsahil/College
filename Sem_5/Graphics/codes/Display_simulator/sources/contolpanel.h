@@ -4,8 +4,10 @@
 #include <QIntValidator>
 #include <QSpinBox>
 #include <QVBoxLayout>
+#include <QGridLayout>
 #include <QGroupBox>
 #include <QComboBox>
+#include <QSignalMapper>
 #include <QString>
 #include <string>
 #include <utility>
@@ -27,15 +29,22 @@ class ControlPanel : public QWidget
     QPushButton *setGraphButton;
 
     //members of drawing------------------------------------
-    QComboBox *drawingAlgoComboBox;
+    //QComboBox *drawingAlgoComboBox;
     QLabel *clickCoordinate;
     QLabel *mouseCoordinate;
+    vector<QLabel *>pointLabels;
+    vector<QPushButton *> pointButtons;
+    vector<pair<int,int>> points;
 
 public:
     ControlPanel()
     {
         pixelsize = 5;
         no_of_pixels = 100;
+        this->setMinimumWidth(300);
+        points.push_back(pair<int,int>(0,0));
+        points.push_back(pair<int,int>(0,0));
+        
 
         //Contents of graph setting----------------------------------------------------
         QGroupBox *setGraphGroup = new QGroupBox("Graph Setting");
@@ -43,13 +52,13 @@ public:
 
         pixelsizeLabel = new QLabel("Enter the pixel size");
         pixelsizeSpinBox = new QSpinBox();
-        pixelsizeSpinBox->setRange(1, 10);
+        pixelsizeSpinBox->setRange(1, 30);
         pixelsizeSpinBox->setValue(5);
         pixelsizeLabel->setBuddy(pixelsizeSpinBox);
 
         noOfPixelsLabel = new QLabel("Enter the no of pixels");
         noOfPixelsSpinBox = new QSpinBox();
-        noOfPixelsSpinBox->setRange(10, 200);
+        noOfPixelsSpinBox->setRange(10, 1000);
         noOfPixelsSpinBox->setValue(100);
         noOfPixelsLabel->setBuddy(noOfPixelsSpinBox);
 
@@ -72,11 +81,33 @@ public:
         clickCoordinate = new QLabel("Clicked Coordinate :\n 0, 0");
         mouseCoordinate = new QLabel("Mouse Coordinate :\n 0, 0");
 
-        drawingAlgoComboBox = new QComboBox();
-        drawingAlgoComboBox->addItem("DDA line drawing");
-        drawingAlgoComboBox->addItem("Bresenham\'s line drawing");
+        //drawingAlgoComboBox = new QComboBox();
+        //drawingAlgoComboBox->addItem("DDA line drawing");
+        //drawingAlgoComboBox->addItem("Bresenham\'s line drawing");
 
-        drawingLayout->addWidget(drawingAlgoComboBox);
+        QGroupBox *pointGroup = new QGroupBox("Points");
+        QGridLayout *pointLayout = new QGridLayout();
+        pointButtons.push_back(new QPushButton("Select point 1"));
+        pointButtons.push_back(new QPushButton("Select point 2"));
+        pointLabels.push_back(new QLabel(QString::fromStdString(string(to_string(points[0].first) + ", " + to_string(points[0].second)))));
+        pointLabels.push_back(new QLabel(QString::fromStdString(string(to_string(points[1].first) + ", " + to_string(points[1].second)))));
+        pointLayout->addWidget(pointButtons[0],0,0);
+        pointLayout->addWidget(pointButtons[1],1,0);
+        pointLayout->addWidget(pointLabels[0],0,1);
+        pointLayout->addWidget(pointLabels[1],1,1);
+        pointGroup->setLayout(pointLayout);
+
+        QSignalMapper *mapper = new QSignalMapper();
+        connect(mapper,SIGNAL(mapped(int)),this,SLOT(makePointRequest(int)));
+        mapper->setMapping(pointButtons[0],0);
+        connect(pointButtons[0],SIGNAL(clicked()),mapper,SLOT(map()));
+
+        mapper->setMapping(pointButtons[1],1);
+        connect(pointButtons[1],SIGNAL(clicked()),mapper,SLOT(map()));
+
+
+        //drawingLayout->addWidget(drawingAlgoComboBox);
+        drawingLayout->addWidget(pointGroup);
         drawingLayout->addWidget(clickCoordinate);
         drawingLayout->addWidget(mouseCoordinate);
         drawingGroup->setLayout(drawingLayout);
@@ -88,14 +119,9 @@ public:
         this->setLayout(layout);
     }
 
-    string getCurrentALgo()
-    {
-        QString q_algoname = drawingAlgoComboBox->currentText();
-        string algoname = q_algoname.toStdString();
-        return algoname;
-    }
 signals:
     void GraphResetSignal(int, int);
+    void pointRequest(int);
 
 public slots:
     void handleButton()
@@ -112,10 +138,21 @@ public slots:
         mouseCoordinate->setText(QShowPoint);
     }
 
-    void getPointSelect(pair<int, int> point)
+    void getPointClicked(pair<int, int> point)
     {
         string showPoint = "Clicked Coordinate: \n" + to_string(point.first) + " " + to_string(point.second);
         QString QShowPoint = QString::fromStdString(showPoint);
         clickCoordinate->setText(QShowPoint);
+    }
+
+    void receivePoint(pair<int, int> point,int ind)
+    {
+        points[ind]=point;
+        pointLabels[ind]->setText(QString::fromStdString(string(to_string(points[ind].first) + ", " + to_string(points[ind].second))));
+    }
+
+    void makePointRequest(int ind)
+    {
+        emit pointRequest(ind);
     }
 };

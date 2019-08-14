@@ -16,8 +16,8 @@ class Graph : public QGraphicsView
 
     int pixelsize;
     int no_of_pixels;
-    int mouseclickStatus;
-    pair<float, float> points[2];
+    int pointRequestStatus;
+    int pointRequestInd;
 
     class MyGraphicsScene : public QGraphicsScene
     {
@@ -32,6 +32,11 @@ class Graph : public QGraphicsView
         void mousePressEvent(QGraphicsSceneMouseEvent *event)
         {
             emit parent->pointSelect(pair<int, int>(event->scenePos().x() / parent->pixelsize, event->scenePos().y() / parent->pixelsize));
+            if(parent->pointRequestStatus==1)
+            {
+                parent->pointRequestStatus=0;
+                emit parent->sendPoint(pair<int, int>(event->scenePos().x() / parent->pixelsize, event->scenePos().y() / parent->pixelsize),parent->pointRequestInd);
+            }
             parent->GraphPointPaint(event->scenePos().x() / parent->pixelsize, event->scenePos().y() / parent->pixelsize);
         }
 
@@ -84,7 +89,6 @@ class Graph : public QGraphicsView
             rect->update();
         }
         this->setScene(graphscene);
-        mouseclickStatus = 0;
     }
 
 public:
@@ -93,6 +97,7 @@ public:
         this->setMouseTracking(1);
         pixelsize = p;
         no_of_pixels = n;
+        pointRequestStatus = 0;
         GenerateGraph();
     }
 
@@ -137,6 +142,7 @@ public:
 signals:
     void pointSelect(pair<int, int>);
     void pointHover(pair<int, int>);
+    void sendPoint(pair<int,int>,int);
 
 public slots:
     void GraphResetSlot(int p, int n)
@@ -144,5 +150,11 @@ public slots:
         pixelsize = p;
         no_of_pixels = n;
         GenerateGraph();
+    }
+
+    void pointRequest(int ind)
+    {
+        pointRequestStatus = 1;
+        pointRequestInd = ind;
     }
 };

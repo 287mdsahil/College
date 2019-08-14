@@ -3,6 +3,7 @@
         "qgraphicstransform": "cpp"
     },
     "cSpell.ignoreWords": [
+        "bresenham\\'s",
         "cast",
         "oled",
         "qgraphicsitem"

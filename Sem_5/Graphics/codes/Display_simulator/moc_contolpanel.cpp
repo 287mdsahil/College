@@ -19,8 +19,8 @@
 
 QT_BEGIN_MOC_NAMESPACE
 struct qt_meta_stringdata_ControlPanel_t {
-    QByteArrayData data[8];
-    char stringdata0[93];
+    QByteArrayData data[12];
+    char stringdata0[141];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -32,16 +32,21 @@ static const qt_meta_stringdata_ControlPanel_t qt_meta_stringdata_ControlPanel =
 QT_MOC_LITERAL(0, 0, 12), // "ControlPanel"
 QT_MOC_LITERAL(1, 13, 16), // "GraphResetSignal"
 QT_MOC_LITERAL(2, 30, 0), // ""
-QT_MOC_LITERAL(3, 31, 12), // "handleButton"
-QT_MOC_LITERAL(4, 44, 13), // "getPointHover"
-QT_MOC_LITERAL(5, 58, 13), // "pair<int,int>"
-QT_MOC_LITERAL(6, 72, 5), // "point"
-QT_MOC_LITERAL(7, 78, 14) // "getPointSelect"
+QT_MOC_LITERAL(3, 31, 12), // "pointRequest"
+QT_MOC_LITERAL(4, 44, 12), // "handleButton"
+QT_MOC_LITERAL(5, 57, 13), // "getPointHover"
+QT_MOC_LITERAL(6, 71, 13), // "pair<int,int>"
+QT_MOC_LITERAL(7, 85, 5), // "point"
+QT_MOC_LITERAL(8, 91, 15), // "getPointClicked"
+QT_MOC_LITERAL(9, 107, 12), // "receivePoint"
+QT_MOC_LITERAL(10, 120, 3), // "ind"
+QT_MOC_LITERAL(11, 124, 16) // "makePointRequest"
 
     },
     "ControlPanel\0GraphResetSignal\0\0"
-    "handleButton\0getPointHover\0pair<int,int>\0"
-    "point\0getPointSelect"
+    "pointRequest\0handleButton\0getPointHover\0"
+    "pair<int,int>\0point\0getPointClicked\0"
+    "receivePoint\0ind\0makePointRequest"
 };
 #undef QT_MOC_LITERAL
 
@@ -51,28 +56,34 @@ static const uint qt_meta_data_ControlPanel[] = {
        7,       // revision
        0,       // classname
        0,    0, // classinfo
-       4,   14, // methods
+       7,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
        0,       // flags
-       1,       // signalCount
+       2,       // signalCount
 
  // signals: name, argc, parameters, tag, flags
-       1,    2,   34,    2, 0x06 /* Public */,
+       1,    2,   49,    2, 0x06 /* Public */,
+       3,    1,   54,    2, 0x06 /* Public */,
 
  // slots: name, argc, parameters, tag, flags
-       3,    0,   39,    2, 0x0a /* Public */,
-       4,    1,   40,    2, 0x0a /* Public */,
-       7,    1,   43,    2, 0x0a /* Public */,
+       4,    0,   57,    2, 0x0a /* Public */,
+       5,    1,   58,    2, 0x0a /* Public */,
+       8,    1,   61,    2, 0x0a /* Public */,
+       9,    2,   64,    2, 0x0a /* Public */,
+      11,    1,   69,    2, 0x0a /* Public */,
 
  // signals: parameters
     QMetaType::Void, QMetaType::Int, QMetaType::Int,    2,    2,
+    QMetaType::Void, QMetaType::Int,    2,
 
  // slots: parameters
     QMetaType::Void,
-    QMetaType::Void, 0x80000000 | 5,    6,
-    QMetaType::Void, 0x80000000 | 5,    6,
+    QMetaType::Void, 0x80000000 | 6,    7,
+    QMetaType::Void, 0x80000000 | 6,    7,
+    QMetaType::Void, 0x80000000 | 6, QMetaType::Int,    7,   10,
+    QMetaType::Void, QMetaType::Int,   10,
 
        0        // eod
 };
@@ -84,9 +95,12 @@ void ControlPanel::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id
         Q_UNUSED(_t)
         switch (_id) {
         case 0: _t->GraphResetSignal((*reinterpret_cast< int(*)>(_a[1])),(*reinterpret_cast< int(*)>(_a[2]))); break;
-        case 1: _t->handleButton(); break;
-        case 2: _t->getPointHover((*reinterpret_cast< pair<int,int>(*)>(_a[1]))); break;
-        case 3: _t->getPointSelect((*reinterpret_cast< pair<int,int>(*)>(_a[1]))); break;
+        case 1: _t->pointRequest((*reinterpret_cast< int(*)>(_a[1]))); break;
+        case 2: _t->handleButton(); break;
+        case 3: _t->getPointHover((*reinterpret_cast< pair<int,int>(*)>(_a[1]))); break;
+        case 4: _t->getPointClicked((*reinterpret_cast< pair<int,int>(*)>(_a[1]))); break;
+        case 5: _t->receivePoint((*reinterpret_cast< pair<int,int>(*)>(_a[1])),(*reinterpret_cast< int(*)>(_a[2]))); break;
+        case 6: _t->makePointRequest((*reinterpret_cast< int(*)>(_a[1]))); break;
         default: ;
         }
     } else if (_c == QMetaObject::IndexOfMethod) {
@@ -96,6 +110,13 @@ void ControlPanel::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id
             typedef void (ControlPanel::*_t)(int , int );
             if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&ControlPanel::GraphResetSignal)) {
                 *result = 0;
+                return;
+            }
+        }
+        {
+            typedef void (ControlPanel::*_t)(int );
+            if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&ControlPanel::pointRequest)) {
+                *result = 1;
                 return;
             }
         }
@@ -127,13 +148,13 @@ int ControlPanel::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 4)
+        if (_id < 7)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 4;
+        _id -= 7;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 4)
+        if (_id < 7)
             *reinterpret_cast<int*>(_a[0]) = -1;
-        _id -= 4;
+        _id -= 7;
     }
     return _id;
 }
@@ -143,5 +164,12 @@ void ControlPanel::GraphResetSignal(int _t1, int _t2)
 {
     void *_a[] = { Q_NULLPTR, const_cast<void*>(reinterpret_cast<const void*>(&_t1)), const_cast<void*>(reinterpret_cast<const void*>(&_t2)) };
     QMetaObject::activate(this, &staticMetaObject, 0, _a);
+}
+
+// SIGNAL 1
+void ControlPanel::pointRequest(int _t1)
+{
+    void *_a[] = { Q_NULLPTR, const_cast<void*>(reinterpret_cast<const void*>(&_t1)) };
+    QMetaObject::activate(this, &staticMetaObject, 1, _a);
 }
 QT_END_MOC_NAMESPACE
