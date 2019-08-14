@@ -133,14 +133,14 @@ public slots:
 
     void getPointHover(pair<int, int> point)
     {
-        string showPoint = "Mouse Coordinate: \n" + to_string(point.first) + " " + to_string(point.second);
+        string showPoint = "Mouse Coordinate: \n" + to_string(point.first) + " " + to_string(-point.second);
         QString QShowPoint = QString::fromStdString(showPoint);
         mouseCoordinate->setText(QShowPoint);
     }
 
     void getPointClicked(pair<int, int> point)
     {
-        string showPoint = "Clicked Coordinate: \n" + to_string(point.first) + " " + to_string(point.second);
+        string showPoint = "Clicked Coordinate: \n" + to_string(point.first) + " " + to_string(-point.second);
         QString QShowPoint = QString::fromStdString(showPoint);
         clickCoordinate->setText(QShowPoint);
     }
@@ -148,7 +148,7 @@ public slots:
     void receivePoint(pair<int, int> point,int ind)
     {
         points[ind]=point;
-        pointLabels[ind]->setText(QString::fromStdString(string(to_string(points[ind].first) + ", " + to_string(points[ind].second))));
+        pointLabels[ind]->setText(QString::fromStdString(string(to_string(points[ind].first) + ", " + to_string(-points[ind].second))));
     }
 
     void makePointRequest(int ind)

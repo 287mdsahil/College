@@ -32,10 +32,10 @@ class Graph : public QGraphicsView
         void mousePressEvent(QGraphicsSceneMouseEvent *event)
         {
             emit parent->pointSelect(pair<int, int>(event->scenePos().x() / parent->pixelsize, event->scenePos().y() / parent->pixelsize));
-            if(parent->pointRequestStatus==1)
+            if (parent->pointRequestStatus == 1)
             {
-                parent->pointRequestStatus=0;
-                emit parent->sendPoint(pair<int, int>(event->scenePos().x() / parent->pixelsize, event->scenePos().y() / parent->pixelsize),parent->pointRequestInd);
+                parent->pointRequestStatus = 0;
+                emit parent->sendPoint(pair<int, int>(event->scenePos().x() / parent->pixelsize, event->scenePos().y() / parent->pixelsize), parent->pointRequestInd);
             }
             parent->GraphPointPaint(event->scenePos().x() / parent->pixelsize, event->scenePos().y() / parent->pixelsize);
         }
@@ -142,7 +142,7 @@ public:
 signals:
     void pointSelect(pair<int, int>);
     void pointHover(pair<int, int>);
-    void sendPoint(pair<int,int>,int);
+    void sendPoint(pair<int, int>, int);
 
 public slots:
     void GraphResetSlot(int p, int n)
