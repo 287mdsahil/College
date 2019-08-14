@@ -48,9 +48,11 @@ OBJECTS_DIR   = ./
 
 ####### Files
 
-SOURCES       = Display_simulator.cpp moc_contolpanel.cpp \
+SOURCES       = Display_simulator.cpp moc_algo.cpp \
+		moc_contolpanel.cpp \
 		moc_graph.cpp
 OBJECTS       = Display_simulator.o \
+		moc_algo.o \
 		moc_contolpanel.o \
 		moc_graph.o
 DIST          = /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
@@ -114,7 +116,8 @@ DIST          = /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/exceptions.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/yacc.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/lex.prf \
-		Display_simulator.pro sources/contolpanel.h \
+		Display_simulator.pro sources/algo.h \
+		sources/contolpanel.h \
 		sources/graph.h Display_simulator.cpp
 QMAKE_TARGET  = Display_simulator
 DESTDIR       = 
@@ -272,7 +275,7 @@ dist: distdir FORCE
 distdir: FORCE
 	@test -d $(DISTDIR) || mkdir -p $(DISTDIR)
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
-	$(COPY_FILE) --parents sources/contolpanel.h sources/graph.h $(DISTDIR)/
+	$(COPY_FILE) --parents sources/algo.h sources/contolpanel.h sources/graph.h $(DISTDIR)/
 	$(COPY_FILE) --parents Display_simulator.cpp $(DISTDIR)/
 
 
@@ -299,10 +302,15 @@ benchmark: first
 
 compiler_rcc_make_all:
 compiler_rcc_clean:
-compiler_moc_header_make_all: moc_contolpanel.cpp moc_graph.cpp
+compiler_moc_header_make_all: moc_algo.cpp moc_contolpanel.cpp moc_graph.cpp
 compiler_moc_header_clean:
-	-$(DEL_FILE) moc_contolpanel.cpp moc_graph.cpp
-moc_contolpanel.cpp: sources/contolpanel.h \
+	-$(DEL_FILE) moc_algo.cpp moc_contolpanel.cpp moc_graph.cpp
+moc_algo.cpp: sources/algo.h \
+		/usr/lib/x86_64-linux-gnu/qt5/bin/moc
+	/usr/lib/x86_64-linux-gnu/qt5/bin/moc $(DEFINES) -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64 -I/home/sahil/college/Sem_5/Graphics/codes/Display_simulator -I/home/sahil/college/Sem_5/Graphics/codes/Display_simulator -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I/usr/include/c++/6 -I/usr/include/x86_64-linux-gnu/c++/6 -I/usr/include/c++/6/backward -I/usr/lib/gcc/x86_64-linux-gnu/6/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/6/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include sources/algo.h -o moc_algo.cpp
+
+moc_contolpanel.cpp: sources/algo.h \
+		sources/contolpanel.h \
 		/usr/lib/x86_64-linux-gnu/qt5/bin/moc
 	/usr/lib/x86_64-linux-gnu/qt5/bin/moc $(DEFINES) -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64 -I/home/sahil/college/Sem_5/Graphics/codes/Display_simulator -I/home/sahil/college/Sem_5/Graphics/codes/Display_simulator -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I/usr/include/c++/6 -I/usr/include/x86_64-linux-gnu/c++/6 -I/usr/include/c++/6/backward -I/usr/lib/gcc/x86_64-linux-gnu/6/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/6/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include sources/contolpanel.h -o moc_contolpanel.cpp
 
@@ -325,8 +333,12 @@ compiler_clean: compiler_moc_header_clean
 ####### Compile
 
 Display_simulator.o: Display_simulator.cpp sources/graph.h \
-		sources/contolpanel.h
+		sources/contolpanel.h \
+		sources/algo.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o Display_simulator.o Display_simulator.cpp
+
+moc_algo.o: moc_algo.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_algo.o moc_algo.cpp
 
 moc_contolpanel.o: moc_contolpanel.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_contolpanel.o moc_contolpanel.cpp

@@ -19,8 +19,8 @@
 
 QT_BEGIN_MOC_NAMESPACE
 struct qt_meta_stringdata_ControlPanel_t {
-    QByteArrayData data[12];
-    char stringdata0[141];
+    QByteArrayData data[9];
+    char stringdata0[107];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -37,16 +37,12 @@ QT_MOC_LITERAL(4, 44, 12), // "handleButton"
 QT_MOC_LITERAL(5, 57, 13), // "getPointHover"
 QT_MOC_LITERAL(6, 71, 13), // "pair<int,int>"
 QT_MOC_LITERAL(7, 85, 5), // "point"
-QT_MOC_LITERAL(8, 91, 15), // "getPointClicked"
-QT_MOC_LITERAL(9, 107, 12), // "receivePoint"
-QT_MOC_LITERAL(10, 120, 3), // "ind"
-QT_MOC_LITERAL(11, 124, 16) // "makePointRequest"
+QT_MOC_LITERAL(8, 91, 15) // "getPointClicked"
 
     },
     "ControlPanel\0GraphResetSignal\0\0"
     "pointRequest\0handleButton\0getPointHover\0"
-    "pair<int,int>\0point\0getPointClicked\0"
-    "receivePoint\0ind\0makePointRequest"
+    "pair<int,int>\0point\0getPointClicked"
 };
 #undef QT_MOC_LITERAL
 
@@ -56,7 +52,7 @@ static const uint qt_meta_data_ControlPanel[] = {
        7,       // revision
        0,       // classname
        0,    0, // classinfo
-       7,   14, // methods
+       5,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -64,15 +60,13 @@ static const uint qt_meta_data_ControlPanel[] = {
        2,       // signalCount
 
  // signals: name, argc, parameters, tag, flags
-       1,    2,   49,    2, 0x06 /* Public */,
-       3,    1,   54,    2, 0x06 /* Public */,
+       1,    2,   39,    2, 0x06 /* Public */,
+       3,    1,   44,    2, 0x06 /* Public */,
 
  // slots: name, argc, parameters, tag, flags
-       4,    0,   57,    2, 0x0a /* Public */,
-       5,    1,   58,    2, 0x0a /* Public */,
-       8,    1,   61,    2, 0x0a /* Public */,
-       9,    2,   64,    2, 0x0a /* Public */,
-      11,    1,   69,    2, 0x0a /* Public */,
+       4,    0,   47,    2, 0x0a /* Public */,
+       5,    1,   48,    2, 0x0a /* Public */,
+       8,    1,   51,    2, 0x0a /* Public */,
 
  // signals: parameters
     QMetaType::Void, QMetaType::Int, QMetaType::Int,    2,    2,
@@ -82,8 +76,6 @@ static const uint qt_meta_data_ControlPanel[] = {
     QMetaType::Void,
     QMetaType::Void, 0x80000000 | 6,    7,
     QMetaType::Void, 0x80000000 | 6,    7,
-    QMetaType::Void, 0x80000000 | 6, QMetaType::Int,    7,   10,
-    QMetaType::Void, QMetaType::Int,   10,
 
        0        // eod
 };
@@ -99,8 +91,6 @@ void ControlPanel::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id
         case 2: _t->handleButton(); break;
         case 3: _t->getPointHover((*reinterpret_cast< pair<int,int>(*)>(_a[1]))); break;
         case 4: _t->getPointClicked((*reinterpret_cast< pair<int,int>(*)>(_a[1]))); break;
-        case 5: _t->receivePoint((*reinterpret_cast< pair<int,int>(*)>(_a[1])),(*reinterpret_cast< int(*)>(_a[2]))); break;
-        case 6: _t->makePointRequest((*reinterpret_cast< int(*)>(_a[1]))); break;
         default: ;
         }
     } else if (_c == QMetaObject::IndexOfMethod) {
@@ -148,13 +138,13 @@ int ControlPanel::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 7)
+        if (_id < 5)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 7;
+        _id -= 5;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 7)
+        if (_id < 5)
             *reinterpret_cast<int*>(_a[0]) = -1;
-        _id -= 7;
+        _id -= 5;
     }
     return _id;
 }

@@ -12,6 +12,7 @@
 #include <string>
 #include <utility>
 #include <iostream>
+#include "algo.h"
 
 using namespace std;
 
@@ -29,12 +30,13 @@ class ControlPanel : public QWidget
     QPushButton *setGraphButton;
 
     //members of drawing------------------------------------
-    //QComboBox *drawingAlgoComboBox;
+    QComboBox *drawingAlgoComboBox;
     QLabel *clickCoordinate;
     QLabel *mouseCoordinate;
-    vector<QLabel *>pointLabels;
-    vector<QPushButton *> pointButtons;
-    vector<pair<int,int>> points;
+    AlgoWidget *algo;
+    // vector<QLabel *>pointLabels;
+    // vector<QPushButton *> pointButtons;
+    // vector<pair<int,int>> points;
 
 public:
     ControlPanel()
@@ -42,9 +44,8 @@ public:
         pixelsize = 5;
         no_of_pixels = 100;
         this->setMinimumWidth(300);
-        points.push_back(pair<int,int>(0,0));
-        points.push_back(pair<int,int>(0,0));
-        
+        // points.push_back(pair<int,int>(0,0));
+        // points.push_back(pair<int,int>(0,0));
 
         //Contents of graph setting----------------------------------------------------
         QGroupBox *setGraphGroup = new QGroupBox("Graph Setting");
@@ -81,33 +82,25 @@ public:
         clickCoordinate = new QLabel("Clicked Coordinate :\n 0, 0");
         mouseCoordinate = new QLabel("Mouse Coordinate :\n 0, 0");
 
-        //drawingAlgoComboBox = new QComboBox();
-        //drawingAlgoComboBox->addItem("DDA line drawing");
-        //drawingAlgoComboBox->addItem("Bresenham\'s line drawing");
+        drawingAlgoComboBox = new QComboBox();
+        drawingAlgoComboBox->addItem("DDA line drawing");
+        drawingAlgoComboBox->addItem("Bresenham\'s line drawing");
 
-        QGroupBox *pointGroup = new QGroupBox("Points");
-        QGridLayout *pointLayout = new QGridLayout();
-        pointButtons.push_back(new QPushButton("Select point 1"));
-        pointButtons.push_back(new QPushButton("Select point 2"));
-        pointLabels.push_back(new QLabel(QString::fromStdString(string(to_string(points[0].first) + ", " + to_string(points[0].second)))));
-        pointLabels.push_back(new QLabel(QString::fromStdString(string(to_string(points[1].first) + ", " + to_string(points[1].second)))));
-        pointLayout->addWidget(pointButtons[0],0,0);
-        pointLayout->addWidget(pointButtons[1],1,0);
-        pointLayout->addWidget(pointLabels[0],0,1);
-        pointLayout->addWidget(pointLabels[1],1,1);
-        pointGroup->setLayout(pointLayout);
+        // QGroupBox *pointGroup = new QGroupBox("Points");
+        // QGridLayout *pointLayout = new QGridLayout();
+        // pointButtons.push_back(new QPushButton("Select point 1"));
+        // pointButtons.push_back(new QPushButton("Select point 2"));
+        // pointLabels.push_back(new QLabel(QString::fromStdString(string(to_string(points[0].first) + ", " + to_string(points[0].second)))));
+        // pointLabels.push_back(new QLabel(QString::fromStdString(string(to_string(points[1].first) + ", " + to_string(points[1].second)))));
+        // pointLayout->addWidget(pointButtons[0],0,0);
+        // pointLayout->addWidget(pointButtons[1],1,0);
+        // pointLayout->addWidget(pointLabels[0],0,1);
+        // pointLayout->addWidget(pointLabels[1],1,1);
+        // pointGroup->setLayout(pointLayout);
+        algo = new AlgoWidget(this);
 
-        QSignalMapper *mapper = new QSignalMapper();
-        connect(mapper,SIGNAL(mapped(int)),this,SLOT(makePointRequest(int)));
-        mapper->setMapping(pointButtons[0],0);
-        connect(pointButtons[0],SIGNAL(clicked()),mapper,SLOT(map()));
-
-        mapper->setMapping(pointButtons[1],1);
-        connect(pointButtons[1],SIGNAL(clicked()),mapper,SLOT(map()));
-
-
-        //drawingLayout->addWidget(drawingAlgoComboBox);
-        drawingLayout->addWidget(pointGroup);
+        drawingLayout->addWidget(drawingAlgoComboBox);
+        drawingLayout->addWidget(algo);
         drawingLayout->addWidget(clickCoordinate);
         drawingLayout->addWidget(mouseCoordinate);
         drawingGroup->setLayout(drawingLayout);
@@ -117,6 +110,11 @@ public:
         layout->addWidget(setGraphGroup);
         layout->addWidget(drawingGroup);
         this->setLayout(layout);
+    }
+
+    AlgoWidget *getAlgo()
+    {
+        return algo;
     }
 
 signals:
@@ -143,16 +141,5 @@ public slots:
         string showPoint = "Clicked Coordinate: \n" + to_string(point.first) + " " + to_string(-point.second);
         QString QShowPoint = QString::fromStdString(showPoint);
         clickCoordinate->setText(QShowPoint);
-    }
-
-    void receivePoint(pair<int, int> point,int ind)
-    {
-        points[ind]=point;
-        pointLabels[ind]->setText(QString::fromStdString(string(to_string(points[ind].first) + ", " + to_string(-points[ind].second))));
-    }
-
-    void makePointRequest(int ind)
-    {
-        emit pointRequest(ind);
     }
 };
