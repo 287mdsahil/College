@@ -60,7 +60,7 @@ public:
         noOfPixelsLabel = new QLabel("Enter the no of pixels");
         noOfPixelsSpinBox = new QSpinBox();
         noOfPixelsSpinBox->setRange(10, 1000);
-        noOfPixelsSpinBox->setValue(100);
+        noOfPixelsSpinBox->setValue(120);
         noOfPixelsLabel->setBuddy(noOfPixelsSpinBox);
 
         setGraphButton = new QPushButton("Set Graph");
@@ -97,7 +97,7 @@ public:
         // pointLayout->addWidget(pointLabels[0],0,1);
         // pointLayout->addWidget(pointLabels[1],1,1);
         // pointGroup->setLayout(pointLayout);
-        algo = new AlgoWidget(this);
+        algo = new AlgoWidget(this,0);
 
         drawingLayout->addWidget(drawingAlgoComboBox);
         drawingLayout->addWidget(algo);
@@ -117,6 +117,11 @@ public:
         return algo;
     }
 
+    int getAlgoName()
+    {
+        return drawingAlgoComboBox->currentIndex();
+    }
+
 signals:
     void GraphResetSignal(int, int);
     void pointRequest(int);
@@ -131,14 +136,14 @@ public slots:
 
     void getPointHover(pair<int, int> point)
     {
-        string showPoint = "Mouse Coordinate: \n" + to_string(point.first) + " " + to_string(-point.second);
+        string showPoint = "Mouse Coordinate: \n" + to_string(point.first) + " " + to_string(point.second);
         QString QShowPoint = QString::fromStdString(showPoint);
         mouseCoordinate->setText(QShowPoint);
     }
 
     void getPointClicked(pair<int, int> point)
     {
-        string showPoint = "Clicked Coordinate: \n" + to_string(point.first) + " " + to_string(-point.second);
+        string showPoint = "Clicked Coordinate: \n" + to_string(point.first) + " " + to_string(point.second);
         QString QShowPoint = QString::fromStdString(showPoint);
         clickCoordinate->setText(QShowPoint);
     }

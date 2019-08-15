@@ -19,8 +19,8 @@
 
 QT_BEGIN_MOC_NAMESPACE
 struct qt_meta_stringdata_AlgoWidget_t {
-    QByteArrayData data[8];
-    char stringdata0[79];
+    QByteArrayData data[10];
+    char stringdata0[110];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -32,15 +32,18 @@ static const qt_meta_stringdata_AlgoWidget_t qt_meta_stringdata_AlgoWidget = {
 QT_MOC_LITERAL(0, 0, 10), // "AlgoWidget"
 QT_MOC_LITERAL(1, 11, 12), // "pointRequest"
 QT_MOC_LITERAL(2, 24, 0), // ""
-QT_MOC_LITERAL(3, 25, 16), // "makePointRequest"
-QT_MOC_LITERAL(4, 42, 3), // "ind"
-QT_MOC_LITERAL(5, 46, 12), // "receivePoint"
-QT_MOC_LITERAL(6, 59, 13), // "pair<int,int>"
-QT_MOC_LITERAL(7, 73, 5) // "point"
+QT_MOC_LITERAL(3, 25, 16), // "paintPointSignal"
+QT_MOC_LITERAL(4, 42, 13), // "pair<int,int>"
+QT_MOC_LITERAL(5, 56, 16), // "makePointRequest"
+QT_MOC_LITERAL(6, 73, 3), // "ind"
+QT_MOC_LITERAL(7, 77, 12), // "receivePoint"
+QT_MOC_LITERAL(8, 90, 5), // "point"
+QT_MOC_LITERAL(9, 96, 13) // "callAlgorithm"
 
     },
-    "AlgoWidget\0pointRequest\0\0makePointRequest\0"
-    "ind\0receivePoint\0pair<int,int>\0point"
+    "AlgoWidget\0pointRequest\0\0paintPointSignal\0"
+    "pair<int,int>\0makePointRequest\0ind\0"
+    "receivePoint\0point\0callAlgorithm"
 };
 #undef QT_MOC_LITERAL
 
@@ -50,26 +53,30 @@ static const uint qt_meta_data_AlgoWidget[] = {
        7,       // revision
        0,       // classname
        0,    0, // classinfo
-       3,   14, // methods
+       5,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
        0,       // flags
-       1,       // signalCount
+       2,       // signalCount
 
  // signals: name, argc, parameters, tag, flags
-       1,    1,   29,    2, 0x06 /* Public */,
+       1,    1,   39,    2, 0x06 /* Public */,
+       3,    1,   42,    2, 0x06 /* Public */,
 
  // slots: name, argc, parameters, tag, flags
-       3,    1,   32,    2, 0x0a /* Public */,
-       5,    2,   35,    2, 0x0a /* Public */,
+       5,    1,   45,    2, 0x0a /* Public */,
+       7,    2,   48,    2, 0x0a /* Public */,
+       9,    0,   53,    2, 0x0a /* Public */,
 
  // signals: parameters
     QMetaType::Void, QMetaType::Int,    2,
+    QMetaType::Void, 0x80000000 | 4,    2,
 
  // slots: parameters
-    QMetaType::Void, QMetaType::Int,    4,
-    QMetaType::Void, 0x80000000 | 6, QMetaType::Int,    7,    4,
+    QMetaType::Void, QMetaType::Int,    6,
+    QMetaType::Void, 0x80000000 | 4, QMetaType::Int,    8,    6,
+    QMetaType::Void,
 
        0        // eod
 };
@@ -81,8 +88,10 @@ void AlgoWidget::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
         Q_UNUSED(_t)
         switch (_id) {
         case 0: _t->pointRequest((*reinterpret_cast< int(*)>(_a[1]))); break;
-        case 1: _t->makePointRequest((*reinterpret_cast< int(*)>(_a[1]))); break;
-        case 2: _t->receivePoint((*reinterpret_cast< pair<int,int>(*)>(_a[1])),(*reinterpret_cast< int(*)>(_a[2]))); break;
+        case 1: _t->paintPointSignal((*reinterpret_cast< pair<int,int>(*)>(_a[1]))); break;
+        case 2: _t->makePointRequest((*reinterpret_cast< int(*)>(_a[1]))); break;
+        case 3: _t->receivePoint((*reinterpret_cast< pair<int,int>(*)>(_a[1])),(*reinterpret_cast< int(*)>(_a[2]))); break;
+        case 4: _t->callAlgorithm(); break;
         default: ;
         }
     } else if (_c == QMetaObject::IndexOfMethod) {
@@ -92,6 +101,13 @@ void AlgoWidget::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
             typedef void (AlgoWidget::*_t)(int );
             if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&AlgoWidget::pointRequest)) {
                 *result = 0;
+                return;
+            }
+        }
+        {
+            typedef void (AlgoWidget::*_t)(pair<int,int> );
+            if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&AlgoWidget::paintPointSignal)) {
+                *result = 1;
                 return;
             }
         }
@@ -123,13 +139,13 @@ int AlgoWidget::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 3)
+        if (_id < 5)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 3;
+        _id -= 5;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 3)
+        if (_id < 5)
             *reinterpret_cast<int*>(_a[0]) = -1;
-        _id -= 3;
+        _id -= 5;
     }
     return _id;
 }
@@ -139,5 +155,12 @@ void AlgoWidget::pointRequest(int _t1)
 {
     void *_a[] = { Q_NULLPTR, const_cast<void*>(reinterpret_cast<const void*>(&_t1)) };
     QMetaObject::activate(this, &staticMetaObject, 0, _a);
+}
+
+// SIGNAL 1
+void AlgoWidget::paintPointSignal(pair<int,int> _t1)
+{
+    void *_a[] = { Q_NULLPTR, const_cast<void*>(reinterpret_cast<const void*>(&_t1)) };
+    QMetaObject::activate(this, &staticMetaObject, 1, _a);
 }
 QT_END_MOC_NAMESPACE

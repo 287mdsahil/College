@@ -19,8 +19,8 @@
 
 QT_BEGIN_MOC_NAMESPACE
 struct qt_meta_stringdata_Graph_t {
-    QByteArrayData data[11];
-    char stringdata0[90];
+    QByteArrayData data[13];
+    char stringdata0[116];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -39,12 +39,15 @@ QT_MOC_LITERAL(6, 54, 14), // "GraphResetSlot"
 QT_MOC_LITERAL(7, 69, 1), // "p"
 QT_MOC_LITERAL(8, 71, 1), // "n"
 QT_MOC_LITERAL(9, 73, 12), // "pointRequest"
-QT_MOC_LITERAL(10, 86, 3) // "ind"
+QT_MOC_LITERAL(10, 86, 3), // "ind"
+QT_MOC_LITERAL(11, 90, 19), // "GraphPaintPointSlot"
+QT_MOC_LITERAL(12, 110, 5) // "point"
 
     },
     "Graph\0pointSelect\0\0pair<int,int>\0"
     "pointHover\0sendPoint\0GraphResetSlot\0"
-    "p\0n\0pointRequest\0ind"
+    "p\0n\0pointRequest\0ind\0GraphPaintPointSlot\0"
+    "point"
 };
 #undef QT_MOC_LITERAL
 
@@ -54,7 +57,7 @@ static const uint qt_meta_data_Graph[] = {
        7,       // revision
        0,       // classname
        0,    0, // classinfo
-       5,   14, // methods
+       6,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -62,13 +65,14 @@ static const uint qt_meta_data_Graph[] = {
        3,       // signalCount
 
  // signals: name, argc, parameters, tag, flags
-       1,    1,   39,    2, 0x06 /* Public */,
-       4,    1,   42,    2, 0x06 /* Public */,
-       5,    2,   45,    2, 0x06 /* Public */,
+       1,    1,   44,    2, 0x06 /* Public */,
+       4,    1,   47,    2, 0x06 /* Public */,
+       5,    2,   50,    2, 0x06 /* Public */,
 
  // slots: name, argc, parameters, tag, flags
-       6,    2,   50,    2, 0x0a /* Public */,
-       9,    1,   55,    2, 0x0a /* Public */,
+       6,    2,   55,    2, 0x0a /* Public */,
+       9,    1,   60,    2, 0x0a /* Public */,
+      11,    1,   63,    2, 0x0a /* Public */,
 
  // signals: parameters
     QMetaType::Void, 0x80000000 | 3,    2,
@@ -78,6 +82,7 @@ static const uint qt_meta_data_Graph[] = {
  // slots: parameters
     QMetaType::Void, QMetaType::Int, QMetaType::Int,    7,    8,
     QMetaType::Void, QMetaType::Int,   10,
+    QMetaType::Void, 0x80000000 | 3,   12,
 
        0        // eod
 };
@@ -93,6 +98,7 @@ void Graph::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void 
         case 2: _t->sendPoint((*reinterpret_cast< pair<int,int>(*)>(_a[1])),(*reinterpret_cast< int(*)>(_a[2]))); break;
         case 3: _t->GraphResetSlot((*reinterpret_cast< int(*)>(_a[1])),(*reinterpret_cast< int(*)>(_a[2]))); break;
         case 4: _t->pointRequest((*reinterpret_cast< int(*)>(_a[1]))); break;
+        case 5: _t->GraphPaintPointSlot((*reinterpret_cast< pair<int,int>(*)>(_a[1]))); break;
         default: ;
         }
     } else if (_c == QMetaObject::IndexOfMethod) {
@@ -147,13 +153,13 @@ int Graph::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 5)
+        if (_id < 6)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 5;
+        _id -= 6;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 5)
+        if (_id < 6)
             *reinterpret_cast<int*>(_a[0]) = -1;
-        _id -= 5;
+        _id -= 6;
     }
     return _id;
 }

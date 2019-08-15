@@ -31,18 +31,18 @@ class Graph : public QGraphicsView
 
         void mousePressEvent(QGraphicsSceneMouseEvent *event)
         {
-            emit parent->pointSelect(pair<int, int>(event->scenePos().x() / parent->pixelsize, event->scenePos().y() / parent->pixelsize));
+            emit parent->pointSelect(parent->coordinateTransform(pair<int, int>(event->scenePos().x() / parent->pixelsize, event->scenePos().y() / parent->pixelsize)));
             if (parent->pointRequestStatus == 1)
             {
                 parent->pointRequestStatus = 0;
-                emit parent->sendPoint(pair<int, int>(event->scenePos().x() / parent->pixelsize, event->scenePos().y() / parent->pixelsize), parent->pointRequestInd);
+                emit parent->sendPoint(parent->coordinateTransform(pair<int, int>(event->scenePos().x() / parent->pixelsize, event->scenePos().y() / parent->pixelsize)), parent->pointRequestInd);
             }
             parent->GraphPointPaint(event->scenePos().x() / parent->pixelsize, event->scenePos().y() / parent->pixelsize);
         }
 
         void mouseMoveEvent(QGraphicsSceneMouseEvent *event)
         {
-            emit parent->pointHover(pair<int, int>(event->scenePos().x() / parent->pixelsize, event->scenePos().y() / parent->pixelsize));
+            emit parent->pointHover(parent->coordinateTransform(pair<int, int>(event->scenePos().x() / parent->pixelsize, event->scenePos().y() / parent->pixelsize)));
         }
     };
 
@@ -92,13 +92,18 @@ class Graph : public QGraphicsView
     }
 
 public:
-    Graph(int p = 5, int n = 100)
+    Graph(int p = 5, int n = 120)
     {
         this->setMouseTracking(1);
         pixelsize = p;
         no_of_pixels = n;
         pointRequestStatus = 0;
         GenerateGraph();
+    }
+
+    pair<int, int> coordinateTransform(pair<int, int> point)
+    {
+        return pair<int, int>(point.first, -point.second);
     }
 
     void GraphPointPaint(int x, int y)
@@ -156,5 +161,11 @@ public slots:
     {
         pointRequestStatus = 1;
         pointRequestInd = ind;
+    }
+
+    void GraphPaintPointSlot(pair<int,int> point)
+    {
+        point = coordinateTransform(point);
+        GraphPointPaint(point.first, point.second);
     }
 };

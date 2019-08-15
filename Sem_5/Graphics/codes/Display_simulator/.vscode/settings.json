@@ -1,6 +1,7 @@
 {
     "files.associations": {
-        "qgraphicstransform": "cpp"
+        "qgraphicstransform": "cpp",
+        "chrono": "cpp"
     },
     "cSpell.ignoreWords": [
         "bresenham\\'s",
