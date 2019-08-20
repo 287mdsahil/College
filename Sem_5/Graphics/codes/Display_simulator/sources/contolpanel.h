@@ -83,6 +83,7 @@ public:
         mouseCoordinate = new QLabel("Mouse Coordinate :\n 0, 0");
 
         drawingAlgoComboBox = new QComboBox();
+        drawingAlgoComboBox->addItem("Parametric line drawing");
         drawingAlgoComboBox->addItem("DDA line drawing");
         drawingAlgoComboBox->addItem("Bresenham\'s line drawing");
 

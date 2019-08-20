@@ -24,9 +24,57 @@ public:
     QPushButton *drawLineButton;
     int algoIndex;
 
+    void parametricLineDrawing(pair<int, int> p1, pair<int, int> p2)
+    {
+        cout<<"parametirc line drawing called"<<endl;
+        int x1 = p1.first, x2 = p2.first;
+        int y1 = p1.second, y2 = p2.second;
+        double m, b;
+        m = double(y2 - y1) / (x2 - x1);
+        b = y1 - m * x1;
+
+        if (std::abs(m) <= 1)
+        {
+            if (x1 > x2)
+            {
+                //swapPoints
+                int temp = x1;
+                x1 = x2;
+                x2 = temp;
+                temp = y1;
+                y1 = y2;
+                y2 = temp;
+            }
+            for (int currX = x1; currX <= x2; ++currX)
+            {
+                int currY = int(std::round(m * currX + b));
+                emit paintPointSignal(pair<int, int>(currX, currY));
+            }
+        }
+        else
+        {
+            if (y1 > y2)
+            {
+                //swapPoints
+                int temp = x1;
+                x1 = x2;
+                x2 = temp;
+                temp = y1;
+                y1 = y2;
+                y2 = temp;
+            }
+            for (int currY = y1; currY <= y2; ++currY)
+            {
+                int currX = int(std::round((currY - b) / m));
+                emit paintPointSignal(pair<int, int>(currX, currY));
+            }
+        }
+    }
+
     //DDA Line Drawing algorithm
     void DDA(pair<int, int> p1, pair<int, int> p2)
     {
+        cout<<"DDA line drawing called"<<endl;
         pair<int, int> point1, point2;
 
         if (p1.first == p2.first)
@@ -70,6 +118,31 @@ public:
                     x += m * incr;
                     y = y + incr;
                 }
+            }
+        }
+    }
+
+    // Bresenhams line drawing algorithm
+    void bresenham(pair<int, int> p1, pair<int, int> p2)
+    {
+        cout<<"Bresenham line drawing called"<<endl;
+        int x1 = p1.first, x2 = p2.first;
+        int y1 = p1.second, y2 = p2.second;
+        int m_new = 2 * (y2 - y1);
+        int slope_error_new = m_new - (x2 - x1);
+        for (int x = x1, y = y1; x <= x2; x++)
+        {
+            emit paintPointSignal(pair<int, int>(x, y));
+
+            // Add slope to increment angle formed
+            slope_error_new += m_new;
+
+            // Slope error reached limit, time to
+            // increment y and update slope error.
+            if (slope_error_new >= 0)
+            {
+                y++;
+                slope_error_new -= 2 * (x2 - x1);
             }
         }
     }
@@ -135,7 +208,15 @@ public slots:
         double tstart = (chrono::system_clock::now().time_since_epoch()).count();
         if (algoIndex == 0)
         {
+            parametricLineDrawing(points[0], points[1]);
+        }
+        if (algoIndex == 1)
+        {
             DDA(points[0], points[1]);
+        }
+        if (algoIndex == 2)
+        {
+            bresenham(points[0], points[1]);
         }
         double tend = (chrono::system_clock::now().time_since_epoch()).count();
         //end of algo
