@@ -30,7 +30,6 @@ class ControlPanel : public QWidget
     QPushButton *setGraphButton;
 
     //members of drawing------------------------------------
-    QComboBox *drawingAlgoComboBox;
     QLabel *clickCoordinate;
     QLabel *mouseCoordinate;
     AlgoWidget *algo;
@@ -82,11 +81,6 @@ public:
         clickCoordinate = new QLabel("Clicked Coordinate :\n 0, 0");
         mouseCoordinate = new QLabel("Mouse Coordinate :\n 0, 0");
 
-        drawingAlgoComboBox = new QComboBox();
-        drawingAlgoComboBox->addItem("Parametric line drawing");
-        drawingAlgoComboBox->addItem("DDA line drawing");
-        drawingAlgoComboBox->addItem("Bresenham\'s line drawing");
-
         // QGroupBox *pointGroup = new QGroupBox("Points");
         // QGridLayout *pointLayout = new QGridLayout();
         // pointButtons.push_back(new QPushButton("Select point 1"));
@@ -100,7 +94,6 @@ public:
         // pointGroup->setLayout(pointLayout);
         algo = new AlgoWidget(this,0);
 
-        drawingLayout->addWidget(drawingAlgoComboBox);
         drawingLayout->addWidget(algo);
         drawingLayout->addWidget(clickCoordinate);
         drawingLayout->addWidget(mouseCoordinate);
@@ -116,11 +109,6 @@ public:
     AlgoWidget *getAlgo()
     {
         return algo;
-    }
-
-    int getAlgoName()
-    {
-        return drawingAlgoComboBox->currentIndex();
     }
 
 signals:

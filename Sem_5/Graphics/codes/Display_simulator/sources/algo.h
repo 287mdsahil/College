@@ -4,6 +4,7 @@
 #include <QGroupBox>
 #include <QSignalMapper>
 #include <QVBoxLayout>
+#include <QComboBox>
 #include <utility>
 #include <vector>
 #include <iostream>
@@ -16,6 +17,7 @@ class AlgoWidget : public QWidget
     Q_OBJECT
 public:
     QWidget *parent;
+    QComboBox *drawingAlgoComboBox;
     vector<QLabel *> pointLabels;
     vector<QPushButton *> pointButtons;
     vector<pair<int, int>> points;
@@ -26,7 +28,7 @@ public:
 
     void parametricLineDrawing(pair<int, int> p1, pair<int, int> p2)
     {
-        cout<<"parametirc line drawing called"<<endl;
+        cout << "parametirc line drawing called" << endl;
         int x1 = p1.first, x2 = p2.first;
         int y1 = p1.second, y2 = p2.second;
         double m, b;
@@ -74,7 +76,7 @@ public:
     //DDA Line Drawing algorithm
     void DDA(pair<int, int> p1, pair<int, int> p2)
     {
-        cout<<"DDA line drawing called"<<endl;
+        cout << "DDA line drawing called" << endl;
         pair<int, int> point1, point2;
 
         if (p1.first == p2.first)
@@ -125,7 +127,7 @@ public:
     // Bresenhams line drawing algorithm
     void bresenham(pair<int, int> p1, pair<int, int> p2)
     {
-        cout<<"Bresenham line drawing called"<<endl;
+        cout << "Bresenham line drawing called" << endl;
         int x1 = p1.first, x2 = p2.first;
         int y1 = p1.second, y2 = p2.second;
         int m_new = 2 * (y2 - y1);
@@ -153,6 +155,12 @@ public:
         algoIndex = algoInd;
         points.push_back(pair<int, int>(0, 0));
         points.push_back(pair<int, int>(0, 0));
+
+        drawingAlgoComboBox = new QComboBox();
+        drawingAlgoComboBox->addItem("Parametric line drawing");
+        drawingAlgoComboBox->addItem("DDA line drawing");
+        drawingAlgoComboBox->addItem("Bresenham\'s line drawing");
+
         algoParentLayout = new QVBoxLayout();
         QGroupBox *pointGroup = new QGroupBox("Points");
         QGridLayout *pointLayout = new QGridLayout();
@@ -180,6 +188,7 @@ public:
 
         timeLabel = new QLabel("Time required: -");
 
+        algoParentLayout->addWidget(drawingAlgoComboBox);
         algoParentLayout->addWidget(pointGroup);
         algoParentLayout->addWidget(drawLineButton);
         algoParentLayout->addWidget(timeLabel);
@@ -205,6 +214,7 @@ public slots:
     void callAlgorithm()
     {
         //start of algo
+        algoIndex = drawingAlgoComboBox->currentIndex();
         double tstart = (chrono::system_clock::now().time_since_epoch()).count();
         if (algoIndex == 0)
         {
