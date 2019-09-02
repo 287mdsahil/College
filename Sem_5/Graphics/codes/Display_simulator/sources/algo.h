@@ -28,7 +28,7 @@ public:
 
     void parametricLineDrawing(pair<int, int> p1, pair<int, int> p2)
     {
-        cout << "parametirc line drawing called" << endl;
+        cout << "parametric line drawing called" << endl;
         int x1 = p1.first, x2 = p2.first;
         int y1 = p1.second, y2 = p2.second;
         double m, b;
