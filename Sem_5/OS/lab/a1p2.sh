@@ -1,3 +1,5 @@
+#!/bin/bash
+
 no=$( find ./ -type f | wc -l )
 echo "Total no files under curret directory :- " $no
 
