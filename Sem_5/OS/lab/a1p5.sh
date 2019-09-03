@@ -11,4 +11,9 @@ if [ $numOccur -eq 0 ]; then
 fi
 
 echo "number of occurances: $numOccur"
-grep -o -n $str $file | cut -d : -f 1 | uniq -c
+echo -e "\nLine\tfreq"
+grep -o -n $str $file | cut -d : -f 1 | uniq -c |
+while read -r line ; do
+    token=($line)
+    printf "%-8d%d\n" ${token[1]} ${token[0]}
+done
