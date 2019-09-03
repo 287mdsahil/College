@@ -11,6 +11,7 @@
 #include <iostream>
 #include <chrono>
 #include <math.h>
+#define PI 3.14159265358979323846
 using namespace std;
 
 class AlgoWidget : public QWidget
@@ -27,6 +28,10 @@ public:
     QLabel *timeLabel;
     QPushButton *drawLineButton;
     int algoIndex;
+
+    QLabel *radiusLabel;
+    QSpinBox *radiusSpinBox;
+    QPushButton *drawCircleButton;
 
     void parametricLineDrawing(pair<int, int> p1, pair<int, int> p2)
     {
@@ -220,8 +225,8 @@ public:
         QGridLayout *pointLayout = new QGridLayout();
         pointButtons.push_back(new QPushButton("Select Center"));
         pointLabels.push_back(new QLabel(QString::fromStdString(string(to_string(points[0].first) + ", " + to_string(points[0].second)))));
-        QLabel *radiusLabel = new QLabel("Select Radius");
-        QSpinBox *radiusSpinBox = new QSpinBox();
+        radiusLabel = new QLabel("Select Radius");
+        radiusSpinBox = new QSpinBox();
         pointLayout->addWidget(pointButtons[0], 0, 0);
         pointLayout->addWidget(pointLabels[0], 0, 1);
         pointLayout->addWidget(radiusLabel, 1, 0);
@@ -235,9 +240,8 @@ public:
         mapper->setMapping(pointButtons[0], 0);
         connect(pointButtons[0], SIGNAL(clicked()), mapper, SLOT(map()));
 
-        QPushButton *drawCircleButton = new QPushButton("Draw circle");
+        drawCircleButton = new QPushButton("Draw circle");
         connect(drawCircleButton, SIGNAL(clicked()), this, SLOT(callCircleDrawingAlgorithm()));
-
 
         timeLabel = new QLabel("Time required: -");
 
@@ -302,8 +306,34 @@ public slots:
         timeLabel->setText(QString::fromStdString("Time required : " + to_string((tend - tstart) / 1000000) + " ms"));
     }
 
+    void PolarCircle(pair<int, int> p, int r)
+    {
+        double step = 1 / double(r);
+        double angle = 0;
+        int xc = p.first;
+        int yc = p.second;
+        while (angle <= PI/4)
+        {
+            int x = r * cos(angle);
+            int y = r * sin(angle);
+            plotAllOctant(xc, yc, x, y);
+            angle += step;
+        }
+    }
+    void plotAllOctant(int xc, int yc, int x, int y)
+    {
+        emit paintPointSignal(pair<int, int>(xc + x, yc + y));
+        emit paintPointSignal(pair<int, int>(xc + x, yc - y));
+        emit paintPointSignal(pair<int, int>(xc - x, yc - y));
+        emit paintPointSignal(pair<int, int>(xc - x, yc + y));
+        emit paintPointSignal(pair<int, int>(xc + y, yc + x));
+        emit paintPointSignal(pair<int, int>(xc + y, yc - x));
+        emit paintPointSignal(pair<int, int>(xc - y, yc + x));
+        emit paintPointSignal(pair<int, int>(xc - y, yc - x));
+    }
+
     void callCircleDrawingAlgorithm()
     {
-        cout<<"circle"<<endl;
+        PolarCircle(points[0], radiusSpinBox->value());
     }
 };
