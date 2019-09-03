@@ -199,6 +199,7 @@ public:
 signals:
     void pointRequest(int);
     void paintPointSignal(pair<int, int>);
+    void unPaintPointSignal(pair<int, int>);
 
 public slots:
     void makePointRequest(int ind)
@@ -209,6 +210,7 @@ public slots:
 
     void receiveClickedPoint(pair<int, int> p)
     {
+        emit unPaintPointSignal(clickedPoint);
         clickedPoint = p;
     }
 

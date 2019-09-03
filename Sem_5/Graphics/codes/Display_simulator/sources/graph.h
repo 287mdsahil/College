@@ -128,6 +128,31 @@ public:
         }
     }
 
+    void GraphPointUnPaint(int x, int y)
+    {
+        if (abs(x) > no_of_pixels / 2 && abs(y) > no_of_pixels / 2)
+        {
+            cout << "pixel coordinates: (" << x << "," << y << ") incorrect " << no_of_pixels * pixelsize / 2 << endl;
+            return;
+        }
+        else
+        {
+            QGraphicsItem *item = graphscene->itemAt(x * pixelsize, y * pixelsize, QTransform());
+            if (item == NULL)
+            {
+                cout << " item at pixel coordinates: (" << x << "," << y << ") not found" << endl;
+                return;
+            }
+
+            QGraphicsRectItem *rect = qgraphicsitem_cast<QGraphicsRectItem *>(item);
+
+            QBrush *br = new QBrush(Qt::SolidPattern);
+            br->setColor(Qt::white);
+            rect->setBrush(*br);
+            rect->update();
+        }
+    }
+
     void GraphReset()
     {
         GenerateGraph();
@@ -157,5 +182,10 @@ public slots:
     {
         point = coordinateTransform(point);
         GraphPointPaint(point.first, point.second);
+    }
+    void GraphUnPaintPointSlot(pair<int, int> point)
+    {
+        point = coordinateTransform(point);
+        GraphPointUnPaint(point.first, point.second);
     }
 };

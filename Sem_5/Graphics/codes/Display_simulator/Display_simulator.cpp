@@ -24,6 +24,7 @@ int main(int argc, char *argv[])
     QObject::connect(graph, SIGNAL(pointSelect(pair<int, int>)), controlpanel->getAlgo(), SLOT(receiveClickedPoint(pair<int, int>)));
     QObject::connect(graph, SIGNAL(pointHover(pair<int, int>)), controlpanel, SLOT(getPointHover(pair<int, int>)));
     QObject::connect(controlpanel->getAlgo(), SIGNAL(paintPointSignal(pair<int, int>)), graph, SLOT(GraphPaintPointSlot(pair<int, int>)));
+    QObject::connect(controlpanel->getAlgo(), SIGNAL(unPaintPointSignal(pair<int, int>)), graph, SLOT(GraphUnPaintPointSlot(pair<int, int>)));
 
     window->setLayout(parentlayout);
     window->show();
