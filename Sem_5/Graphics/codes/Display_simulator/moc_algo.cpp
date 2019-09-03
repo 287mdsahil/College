@@ -20,7 +20,7 @@
 QT_BEGIN_MOC_NAMESPACE
 struct qt_meta_stringdata_AlgoWidget_t {
     QByteArrayData data[10];
-    char stringdata0[110];
+    char stringdata0[113];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -36,14 +36,14 @@ QT_MOC_LITERAL(3, 25, 16), // "paintPointSignal"
 QT_MOC_LITERAL(4, 42, 13), // "pair<int,int>"
 QT_MOC_LITERAL(5, 56, 16), // "makePointRequest"
 QT_MOC_LITERAL(6, 73, 3), // "ind"
-QT_MOC_LITERAL(7, 77, 12), // "receivePoint"
-QT_MOC_LITERAL(8, 90, 5), // "point"
-QT_MOC_LITERAL(9, 96, 13) // "callAlgorithm"
+QT_MOC_LITERAL(7, 77, 19), // "receiveClickedPoint"
+QT_MOC_LITERAL(8, 97, 1), // "p"
+QT_MOC_LITERAL(9, 99, 13) // "callAlgorithm"
 
     },
     "AlgoWidget\0pointRequest\0\0paintPointSignal\0"
     "pair<int,int>\0makePointRequest\0ind\0"
-    "receivePoint\0point\0callAlgorithm"
+    "receiveClickedPoint\0p\0callAlgorithm"
 };
 #undef QT_MOC_LITERAL
 
@@ -66,8 +66,8 @@ static const uint qt_meta_data_AlgoWidget[] = {
 
  // slots: name, argc, parameters, tag, flags
        5,    1,   45,    2, 0x0a /* Public */,
-       7,    2,   48,    2, 0x0a /* Public */,
-       9,    0,   53,    2, 0x0a /* Public */,
+       7,    1,   48,    2, 0x0a /* Public */,
+       9,    0,   51,    2, 0x0a /* Public */,
 
  // signals: parameters
     QMetaType::Void, QMetaType::Int,    2,
@@ -75,7 +75,7 @@ static const uint qt_meta_data_AlgoWidget[] = {
 
  // slots: parameters
     QMetaType::Void, QMetaType::Int,    6,
-    QMetaType::Void, 0x80000000 | 4, QMetaType::Int,    8,    6,
+    QMetaType::Void, 0x80000000 | 4,    8,
     QMetaType::Void,
 
        0        // eod
@@ -90,7 +90,7 @@ void AlgoWidget::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
         case 0: _t->pointRequest((*reinterpret_cast< int(*)>(_a[1]))); break;
         case 1: _t->paintPointSignal((*reinterpret_cast< pair<int,int>(*)>(_a[1]))); break;
         case 2: _t->makePointRequest((*reinterpret_cast< int(*)>(_a[1]))); break;
-        case 3: _t->receivePoint((*reinterpret_cast< pair<int,int>(*)>(_a[1])),(*reinterpret_cast< int(*)>(_a[2]))); break;
+        case 3: _t->receiveClickedPoint((*reinterpret_cast< pair<int,int>(*)>(_a[1]))); break;
         case 4: _t->callAlgorithm(); break;
         default: ;
         }

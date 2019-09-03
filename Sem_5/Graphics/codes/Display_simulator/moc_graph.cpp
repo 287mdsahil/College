@@ -19,8 +19,8 @@
 
 QT_BEGIN_MOC_NAMESPACE
 struct qt_meta_stringdata_Graph_t {
-    QByteArrayData data[13];
-    char stringdata0[116];
+    QByteArrayData data[10];
+    char stringdata0[89];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -34,20 +34,16 @@ QT_MOC_LITERAL(1, 6, 11), // "pointSelect"
 QT_MOC_LITERAL(2, 18, 0), // ""
 QT_MOC_LITERAL(3, 19, 13), // "pair<int,int>"
 QT_MOC_LITERAL(4, 33, 10), // "pointHover"
-QT_MOC_LITERAL(5, 44, 9), // "sendPoint"
-QT_MOC_LITERAL(6, 54, 14), // "GraphResetSlot"
-QT_MOC_LITERAL(7, 69, 1), // "p"
-QT_MOC_LITERAL(8, 71, 1), // "n"
-QT_MOC_LITERAL(9, 73, 12), // "pointRequest"
-QT_MOC_LITERAL(10, 86, 3), // "ind"
-QT_MOC_LITERAL(11, 90, 19), // "GraphPaintPointSlot"
-QT_MOC_LITERAL(12, 110, 5) // "point"
+QT_MOC_LITERAL(5, 44, 14), // "GraphResetSlot"
+QT_MOC_LITERAL(6, 59, 1), // "p"
+QT_MOC_LITERAL(7, 61, 1), // "n"
+QT_MOC_LITERAL(8, 63, 19), // "GraphPaintPointSlot"
+QT_MOC_LITERAL(9, 83, 5) // "point"
 
     },
     "Graph\0pointSelect\0\0pair<int,int>\0"
-    "pointHover\0sendPoint\0GraphResetSlot\0"
-    "p\0n\0pointRequest\0ind\0GraphPaintPointSlot\0"
-    "point"
+    "pointHover\0GraphResetSlot\0p\0n\0"
+    "GraphPaintPointSlot\0point"
 };
 #undef QT_MOC_LITERAL
 
@@ -57,32 +53,28 @@ static const uint qt_meta_data_Graph[] = {
        7,       // revision
        0,       // classname
        0,    0, // classinfo
-       6,   14, // methods
+       4,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
        0,       // flags
-       3,       // signalCount
+       2,       // signalCount
 
  // signals: name, argc, parameters, tag, flags
-       1,    1,   44,    2, 0x06 /* Public */,
-       4,    1,   47,    2, 0x06 /* Public */,
-       5,    2,   50,    2, 0x06 /* Public */,
+       1,    1,   34,    2, 0x06 /* Public */,
+       4,    1,   37,    2, 0x06 /* Public */,
 
  // slots: name, argc, parameters, tag, flags
-       6,    2,   55,    2, 0x0a /* Public */,
-       9,    1,   60,    2, 0x0a /* Public */,
-      11,    1,   63,    2, 0x0a /* Public */,
+       5,    2,   40,    2, 0x0a /* Public */,
+       8,    1,   45,    2, 0x0a /* Public */,
 
  // signals: parameters
     QMetaType::Void, 0x80000000 | 3,    2,
     QMetaType::Void, 0x80000000 | 3,    2,
-    QMetaType::Void, 0x80000000 | 3, QMetaType::Int,    2,    2,
 
  // slots: parameters
-    QMetaType::Void, QMetaType::Int, QMetaType::Int,    7,    8,
-    QMetaType::Void, QMetaType::Int,   10,
-    QMetaType::Void, 0x80000000 | 3,   12,
+    QMetaType::Void, QMetaType::Int, QMetaType::Int,    6,    7,
+    QMetaType::Void, 0x80000000 | 3,    9,
 
        0        // eod
 };
@@ -95,10 +87,8 @@ void Graph::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void 
         switch (_id) {
         case 0: _t->pointSelect((*reinterpret_cast< pair<int,int>(*)>(_a[1]))); break;
         case 1: _t->pointHover((*reinterpret_cast< pair<int,int>(*)>(_a[1]))); break;
-        case 2: _t->sendPoint((*reinterpret_cast< pair<int,int>(*)>(_a[1])),(*reinterpret_cast< int(*)>(_a[2]))); break;
-        case 3: _t->GraphResetSlot((*reinterpret_cast< int(*)>(_a[1])),(*reinterpret_cast< int(*)>(_a[2]))); break;
-        case 4: _t->pointRequest((*reinterpret_cast< int(*)>(_a[1]))); break;
-        case 5: _t->GraphPaintPointSlot((*reinterpret_cast< pair<int,int>(*)>(_a[1]))); break;
+        case 2: _t->GraphResetSlot((*reinterpret_cast< int(*)>(_a[1])),(*reinterpret_cast< int(*)>(_a[2]))); break;
+        case 3: _t->GraphPaintPointSlot((*reinterpret_cast< pair<int,int>(*)>(_a[1]))); break;
         default: ;
         }
     } else if (_c == QMetaObject::IndexOfMethod) {
@@ -115,13 +105,6 @@ void Graph::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void 
             typedef void (Graph::*_t)(pair<int,int> );
             if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&Graph::pointHover)) {
                 *result = 1;
-                return;
-            }
-        }
-        {
-            typedef void (Graph::*_t)(pair<int,int> , int );
-            if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&Graph::sendPoint)) {
-                *result = 2;
                 return;
             }
         }
@@ -153,13 +136,13 @@ int Graph::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 6)
+        if (_id < 4)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 6;
+        _id -= 4;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 6)
+        if (_id < 4)
             *reinterpret_cast<int*>(_a[0]) = -1;
-        _id -= 6;
+        _id -= 4;
     }
     return _id;
 }
@@ -176,12 +159,5 @@ void Graph::pointHover(pair<int,int> _t1)
 {
     void *_a[] = { Q_NULLPTR, const_cast<void*>(reinterpret_cast<const void*>(&_t1)) };
     QMetaObject::activate(this, &staticMetaObject, 1, _a);
-}
-
-// SIGNAL 2
-void Graph::sendPoint(pair<int,int> _t1, int _t2)
-{
-    void *_a[] = { Q_NULLPTR, const_cast<void*>(reinterpret_cast<const void*>(&_t1)), const_cast<void*>(reinterpret_cast<const void*>(&_t2)) };
-    QMetaObject::activate(this, &staticMetaObject, 2, _a);
 }
 QT_END_MOC_NAMESPACE

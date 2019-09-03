@@ -21,6 +21,7 @@ public:
     vector<QLabel *> pointLabels;
     vector<QPushButton *> pointButtons;
     vector<pair<int, int>> points;
+    pair<int, int> clickedPoint;
     QVBoxLayout *algoParentLayout;
     QLabel *timeLabel;
     QPushButton *drawLineButton;
@@ -202,13 +203,13 @@ signals:
 public slots:
     void makePointRequest(int ind)
     {
-        emit pointRequest(ind);
+        points[ind] = clickedPoint;
+        pointLabels[ind]->setText(QString::fromStdString(string(to_string(points[ind].first) + ", " + to_string(points[ind].second))));
     }
 
-    void receivePoint(pair<int, int> point, int ind)
+    void receiveClickedPoint(pair<int, int> p)
     {
-        points[ind] = point;
-        pointLabels[ind]->setText(QString::fromStdString(string(to_string(points[ind].first) + ", " + to_string(points[ind].second))));
+        clickedPoint = p;
     }
 
     void callAlgorithm()
