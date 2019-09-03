@@ -8,6 +8,7 @@
 #include <QHBoxLayout>
 #include <iostream>
 #include <utility>
+#include <math.h>
 using namespace std;
 
 class Graph : public QGraphicsView
@@ -31,18 +32,22 @@ class Graph : public QGraphicsView
 
         void mousePressEvent(QGraphicsSceneMouseEvent *event)
         {
-            emit parent->pointSelect(parent->coordinateTransform(pair<int, int>(event->scenePos().x() / parent->pixelsize, event->scenePos().y() / parent->pixelsize)));
+            int x = floor(event->scenePos().x() / parent->pixelsize);
+            int y = floor(event->scenePos().y() / parent->pixelsize);
+            emit parent->pointSelect(parent->coordinateTransform(pair<int, int>(x, y)));
             if (parent->pointRequestStatus == 1)
             {
                 parent->pointRequestStatus = 0;
-                emit parent->sendPoint(parent->coordinateTransform(pair<int, int>(event->scenePos().x() / parent->pixelsize, event->scenePos().y() / parent->pixelsize)), parent->pointRequestInd);
+                emit parent->sendPoint(parent->coordinateTransform(pair<int, int>(x, y)), parent->pointRequestInd);
             }
-            parent->GraphPointPaint(event->scenePos().x() / parent->pixelsize, event->scenePos().y() / parent->pixelsize);
+            parent->GraphPointPaint(x, y);
         }
 
         void mouseMoveEvent(QGraphicsSceneMouseEvent *event)
         {
-            emit parent->pointHover(parent->coordinateTransform(pair<int, int>(event->scenePos().x() / parent->pixelsize, event->scenePos().y() / parent->pixelsize)));
+            int x = floor(event->scenePos().x() / parent->pixelsize);
+            int y = floor(event->scenePos().y() / parent->pixelsize);
+            emit parent->pointHover(parent->coordinateTransform(pair<int, int>(x, y)));
         }
     };
 
@@ -163,7 +168,7 @@ public slots:
         pointRequestInd = ind;
     }
 
-    void GraphPaintPointSlot(pair<int,int> point)
+    void GraphPaintPointSlot(pair<int, int> point)
     {
         point = coordinateTransform(point);
         GraphPointPaint(point.first, point.second);
