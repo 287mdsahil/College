@@ -92,7 +92,7 @@ public:
         // pointLayout->addWidget(pointLabels[0],0,1);
         // pointLayout->addWidget(pointLabels[1],1,1);
         // pointGroup->setLayout(pointLayout);
-        algo = new AlgoWidget(this,0);
+        algo = new AlgoWidget(this,1);
 
         drawingLayout->addWidget(algo);
         drawingLayout->addWidget(clickCoordinate);

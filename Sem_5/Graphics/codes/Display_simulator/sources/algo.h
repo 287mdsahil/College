@@ -3,6 +3,7 @@
 #include <QPushButton>
 #include <QGroupBox>
 #include <QSignalMapper>
+#include <QSpinBox>
 #include <QVBoxLayout>
 #include <QComboBox>
 #include <utility>
@@ -129,8 +130,21 @@ public:
     void bresenham(pair<int, int> p1, pair<int, int> p2)
     {
         cout << "Bresenham line drawing called" << endl;
-        int x1 = p1.first, x2 = p2.first;
-        int y1 = p1.second, y2 = p2.second;
+        int x1, y1, x2, y2;
+        if (p1.first < p2.first)
+        {
+            x1 = p1.first;
+            x2 = p2.first;
+            y1 = p1.second;
+            y2 = p2.second;
+        }
+        else
+        {
+            x1 = p2.first;
+            x2 = p1.first;
+            y1 = p2.second;
+            y2 = p1.second;
+        }
         int m_new = 2 * (y2 - y1);
         int slope_error_new = m_new - (x2 - x1);
         for (int x = x1, y = y1; x <= x2; x++)
@@ -139,7 +153,7 @@ public:
 
             // Add slope to increment angle formed
             slope_error_new += m_new;
-
+            cout << slope_error_new << endl;
             // Slope error reached limit, time to
             // increment y and update slope error.
             if (slope_error_new >= 0)
@@ -150,10 +164,8 @@ public:
         }
     }
 
-    AlgoWidget(QWidget *parentPtr, int algoInd)
+    void makelineDrawing()
     {
-        parent = parentPtr;
-        algoIndex = algoInd;
         points.push_back(pair<int, int>(0, 0));
         points.push_back(pair<int, int>(0, 0));
 
@@ -185,7 +197,7 @@ public:
         connect(pointButtons[1], SIGNAL(clicked()), mapper, SLOT(map()));
 
         drawLineButton = new QPushButton("Draw Line");
-        connect(drawLineButton, SIGNAL(clicked()), this, SLOT(callAlgorithm()));
+        connect(drawLineButton, SIGNAL(clicked()), this, SLOT(callLineDrawingAlgorithm()));
 
         timeLabel = new QLabel("Time required: -");
 
@@ -194,6 +206,60 @@ public:
         algoParentLayout->addWidget(drawLineButton);
         algoParentLayout->addWidget(timeLabel);
         setLayout(algoParentLayout);
+    }
+
+    void makeCircleDrawing()
+    {
+        points.push_back(pair<int, int>(0, 0));
+
+        drawingAlgoComboBox = new QComboBox();
+        drawingAlgoComboBox->addItem("Circle drawing");
+
+        algoParentLayout = new QVBoxLayout();
+        QGroupBox *pointGroup = new QGroupBox("Circle parameters");
+        QGridLayout *pointLayout = new QGridLayout();
+        pointButtons.push_back(new QPushButton("Select Center"));
+        pointLabels.push_back(new QLabel(QString::fromStdString(string(to_string(points[0].first) + ", " + to_string(points[0].second)))));
+        QLabel *radiusLabel = new QLabel("Select Radius");
+        QSpinBox *radiusSpinBox = new QSpinBox();
+        pointLayout->addWidget(pointButtons[0], 0, 0);
+        pointLayout->addWidget(pointLabels[0], 0, 1);
+        pointLayout->addWidget(radiusLabel, 1, 0);
+        pointLayout->addWidget(radiusSpinBox, 1, 1);
+
+        pointGroup->setLayout(pointLayout);
+
+        QSignalMapper *mapper = new QSignalMapper();
+        connect(mapper, SIGNAL(mapped(int)), this, SLOT(makePointRequest(int)));
+
+        mapper->setMapping(pointButtons[0], 0);
+        connect(pointButtons[0], SIGNAL(clicked()), mapper, SLOT(map()));
+
+        QPushButton *drawCircleButton = new QPushButton("Draw circle");
+        connect(drawCircleButton, SIGNAL(clicked()), this, SLOT(callCircleDrawingAlgorithm()));
+
+
+        timeLabel = new QLabel("Time required: -");
+
+        algoParentLayout->addWidget(drawingAlgoComboBox);
+        algoParentLayout->addWidget(pointGroup);
+        algoParentLayout->addWidget(drawCircleButton);
+        algoParentLayout->addWidget(timeLabel);
+        setLayout(algoParentLayout);
+    }
+
+    AlgoWidget(QWidget *parentPtr, int type)
+    {
+        parent = parentPtr;
+        algoIndex = 0;
+        if (type == 0)
+        {
+            makelineDrawing();
+        }
+        if (type == 1)
+        {
+            makeCircleDrawing();
+        }
     }
 
 signals:
@@ -214,7 +280,7 @@ public slots:
         clickedPoint = p;
     }
 
-    void callAlgorithm()
+    void callLineDrawingAlgorithm()
     {
         //start of algo
         algoIndex = drawingAlgoComboBox->currentIndex();
@@ -234,5 +300,10 @@ public slots:
         double tend = (chrono::system_clock::now().time_since_epoch()).count();
         //end of algo
         timeLabel->setText(QString::fromStdString("Time required : " + to_string((tend - tstart) / 1000000) + " ms"));
+    }
+
+    void callCircleDrawingAlgorithm()
+    {
+        cout<<"circle"<<endl;
     }
 };
