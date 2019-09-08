@@ -8,6 +8,7 @@ prompt2     db "Number 2: $"
 resultMsg   db "Result: $"
 num1        db 00h, "$"
 num2        db 00h, "$"
+result      dw ?, "$"
 
 .code
 call main
@@ -33,24 +34,15 @@ main proc
     mov num2,al
 
     ;addition
-    mov dl,num1
-    add dl,num2
-    mov dh, 0
-    jnc nocarry
-    inc dh
-    nocarry:
-    
-    mov bx,dx
+    call hexAddition16Bit
 
-    ;showing result message
-    mov dx, offset resultMsg
+    ;showing result prompt
+    lea dx, resultMsg
     mov ah,9
     int 21h
-
-    mov dx, bx
-    mov ah, 9
-    int 21h
-
+    
+    ;showing result
+    call showResult
 
     ret
 main endp
@@ -67,10 +59,13 @@ getNum proc
 
     getNumber:
     call getChar
-    cmp al, 72
+    cmp al, 13
+    je inputDone
+    cmp al, 10
     je inputDone
 
     sub al, 48;
+    cmp al, 9
     jle isNumber
     sub al, 7
 
@@ -92,6 +87,60 @@ getChar proc
     int 21h
     ret
 getChar endp
+
+;function to display result
+showResult proc
+    push cx
+    push dx
+
+    mov cx, result
+
+    add cl,48
+    cmp cl, 58
+    jl isNumber1
+    add cl, 7
+    isNumber1:
+
+    add ch,48
+    cmp ch, 58
+    jl isNumber2
+    add ch, 7
+    isNumber2:
+
+    mov dl,ch
+    mov ah, 2
+    int 21h
+
+    mov dl,cl
+    mov ah, 2
+    int 21h
+
+    pop cx
+    pop dx
+    ret
+showResult endp
+
+;function to perform 8 bit hexadecimal addition
+hexAddition16Bit proc
+    push cx
+    push dx
+
+    mov cl,num1
+    add cl,num2
+    mov ch,00
+
+    cmp cl,16
+    jl noCarry
+    sub cl,16
+    mov ch,1
+    noCarry:
+
+    mov result, cx
+
+    pop dx
+    pop cx
+    ret
+hexAddition16Bit endp
 
 end
 
