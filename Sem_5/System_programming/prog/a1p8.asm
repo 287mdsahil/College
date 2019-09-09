@@ -5,12 +5,10 @@
 arr DB 1, 2, 3, 4, 5
 arrsize DW 5
 smallest DB ?
-smallest2 DB ?
 greatest DB ?
-greatest2 DB ?
 num DB ?
-smallest2Prompt DB 13,10,"2nd smallest number: $"
-greatest2Prompt DB 13,10,"2nd greatest number: $"
+smallestPrompt DB 13,10,"Smallest number: $"
+greatestPrompt DB 13,10,"Greatest number: $"
 
 
 .code
@@ -60,55 +58,22 @@ main proc
     jl loop2
     mov greatest,dl
 
-    ;finding 2nd smallest element
-    mov bx,00       ;bx is counter
-    mov dl,greatest   ;initializing dl with a[0]
-    mov dh,smallest    ;storing the value of the smallest 
-    ;looping through the array to find the largest element
-    loop3:
-    inc bx          ;increment counter
-    cmp dh, arr[bx]
-    je lesser2
-    cmp dl,arr[bx]
-    jl lesser2
-    mov dl,arr[bx]
-    lesser2:
-    cmp bx,arrsize
-    jl loop3
-    mov smallest2,dl
-
-    ;finding 2nd largest element
-    mov bx,00       ;bx is counter
-    mov dl,smallest   ;initializing dl with a[0]
-    mov dh,greatest    ;storing the value of the smallest 
-    ;looping through the array to find the largest element
-    loop4:
-    inc bx          ;increment counter
-    cmp dh, arr[bx]
-    je greater2
-    cmp dl,arr[bx]
-    jg greater2
-    mov dl,arr[bx]
-    greater2:
-    cmp bx,arrsize
-    jl loop4
-    mov greatest2,dl
 
     ;displaying the results
 
-    lea dx,smallest2Prompt
+    lea dx,smallestPrompt
     mov ah,9
     int 21h
 
-    mov dl,smallest2
+    mov dl,smallest
     mov num,dl
     call outputNum
 
-    lea dx,greatest2Prompt
+    lea dx,greatestPrompt
     mov ah,9
     int 21h
 
-    mov dl,greatest2
+    mov dl,greatest
     mov num,dl
     call outputNum
 
