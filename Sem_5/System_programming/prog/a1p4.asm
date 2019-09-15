@@ -9,8 +9,11 @@ smallest2 DB ?
 greatest DB ?
 greatest2 DB ?
 num DB ?
+inputPrompt DB "Enter 5 numbers",10,"$"
 smallest2Prompt DB 13,10,"2nd smallest number: $"
 greatest2Prompt DB 13,10,"2nd greatest number: $"
+smallestPrompt DB 13,10,"smallest number: $"
+greatestPrompt DB 13,10,"greatest number: $"
 
 
 .code
@@ -24,6 +27,9 @@ int 21h
 main proc
 
     ;taking input
+    lea dx,inputPrompt
+    mov ah,9
+    int 21h
     mov bx, 00
     inputLoop:
     call getNum
@@ -60,21 +66,44 @@ main proc
     jl loop2
     mov greatest,dl
 
+
+
+
+    ;output for debug
+    lea dx,smallestPrompt
+    mov ah,9
+    int 21h
+
+    mov dl,smallest
+    mov num,dl
+    call outputNum
+
+    lea dx,greatestPrompt
+    mov ah,9
+    int 21h
+
+    mov dl,greatest
+    mov num,dl
+    call outputNum
+
+
+
+
     ;finding 2nd smallest element
     mov bx,00       ;bx is counter
     mov dl,greatest   ;initializing dl with a[0]
     mov dh,smallest    ;storing the value of the smallest 
     ;looping through the array to find the largest element
     loop3:
-    inc bx          ;increment counter
     cmp dh, arr[bx]
     je lesser2
     cmp dl,arr[bx]
     jl lesser2
     mov dl,arr[bx]
     lesser2:
+    inc bx          ;increment counter
     cmp bx,arrsize
-    jl loop3
+    jle loop3
     mov smallest2,dl
 
     ;finding 2nd largest element
@@ -90,8 +119,9 @@ main proc
     jg greater2
     mov dl,arr[bx]
     greater2:
+    inc bx          ;increment counter
     cmp bx,arrsize
-    jl loop4
+    jle loop4
     mov greatest2,dl
 
     ;displaying the results
