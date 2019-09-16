@@ -1,80 +1,92 @@
+;masm program to add and substract two 16 bit numbers
 .model small
 .stack 100h
 
 .data
-linefeed    db 13, 10, "$"
-prompt1     db "Number 1: $"
-prompt2     db "Number 2: $"
-resultMsg   db "Result: $"
-num1        db 00h, "$"
-num2        db 00h, "$"
-result      dw ?, "$"
+inputPrompt DB 13,"Enter a 16 bit number: $"
+num1 DW ?
+num2 DW ?
+num DW ?
+sum DW ?
+sumCarry DW 00h
+sumPrompt DB 10,"The sum is: $"
 
 .code
+mov ax,@data
+mov ds,ax
 call main
-mov ax, 4c00h
+mov ah,4ch
 int 21h
 
 main proc
-    mov ax, @data
-    mov ds, ax
 
-    ;displaying first prompt
-    lea dx, prompt1
-    mov ah, 9
-    int 21h
-    call getNum
-    mov num1, al
-
-    ;displaying second prompt
-    lea dx, prompt2
+    ;taking input for first number
+    lea dx, inputPrompt
     mov ah,9
     int 21h
     call getNum
-    mov num2,al
+    mov num1,ax
 
-    ;addition
-    call hexAddition16Bit
-
-    ;showing result prompt
-    lea dx, resultMsg
+    ;taking input for second number
+    lea dx, inputPrompt
     mov ah,9
     int 21h
-    
-    ;showing result
-    call showResult
+    call getNum
+    mov num2,ax
+
+    ;performing addition
+    mov ax,num1
+    add ax,num2
+    jnc noCarry
+    inc sumCarry
+    noCarry:
+    mov sum,ax
+
+    ;output for sum
+    lea dx,sumPrompt
+    mov ah,9
+    int 21h
+    mov ax,sumCarry
+    mov num,ax
+    call outputNum
+    mov ax,sum
+    mov num,ax
+    call outputNum
 
     ret
 main endp
 
-
-;function to take number input
+;function to take 16 bit number input
 getNum proc
     push cx
     push dx
 
-    mov dl, 00
-    mov cl, 04
-    shl dl, cl
-
+    mov dx, 0000
+    mov ax, 0000
+    mov cl, 4
+    
     getNumber:
+
     call getChar
     cmp al, 13
     je inputDone
     cmp al, 10
     je inputDone
 
-    sub al, 48;
+    shl dx,cl
+    sub al, 48
     cmp al, 9
     jle isNumber
     sub al, 7
 
     isNumber:
-    add dl, al
+    or dl, al
+
     jmp getNumber
 
     inputDone:
-    mov al, dl
+    mov ax, dx
+
     pop dx
     pop cx
     ret
@@ -88,60 +100,63 @@ getChar proc
     ret
 getChar endp
 
-;function to display result
-showResult proc
+
+; program to output a 16 bit number stored in num
+outputNum proc
     push cx
     push dx
 
-    mov cx, result
 
-    add cl,48
-    cmp cl, 58
-    jl isNumber1
-    add cl, 7
-    isNumber1:
+    mov cl, 4
+    mov dx, num
+    mov dl,dh
+    shr dl,cl
+    and dl, 0fh
+    cmp dl,0ah
+    jl isNumber4
+    add dl,7
+    isNumber4:
+    add dl,48
+    mov ah, 2
+    int 21h
 
-    add ch,48
-    cmp ch, 58
+    mov dx, num
+    mov dl,dh
+    and dl, 0fh
+    cmp dl, 0ah
+    jl isNumber3
+    add dl, 07h
+    isNumber3:
+    add dl,48
+    mov ah, 2
+    int 21h
+
+
+    mov cl, 4
+    mov dx, num
+    shr dl,cl
+    and dl, 0fh
+    cmp dl,0ah
     jl isNumber2
-    add ch, 7
+    add dl,7
     isNumber2:
-
-    mov dl,ch
+    add dl,48
     mov ah, 2
     int 21h
 
-    mov dl,cl
+    mov dx, num
+    and dl, 0fh
+    cmp dl, 0ah
+    jl isNumber1
+    add dl, 07h
+    isNumber1:
+    add dl,48
     mov ah, 2
     int 21h
-
-    pop cx
-    pop dx
-    ret
-showResult endp
-
-;function to perform 8 bit hexadecimal addition
-hexAddition16Bit proc
-    push cx
-    push dx
-
-    mov cl,num1
-    add cl,num2
-    mov ch,00
-
-    cmp cl,16
-    jl noCarry
-    sub cl,16
-    mov ch,1
-    noCarry:
-
-    mov result, cx
 
     pop dx
     pop cx
     ret
-hexAddition16Bit endp
+outputNum endp
 
 end
-
-
