@@ -53,6 +53,10 @@ main proc
     inc bl
     inc bl
 
+    ;decrement bh
+    dec bh
+    dec bh
+
     ;compare al with 51
     cmp bl,50
     jle loop1

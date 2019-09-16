@@ -4,9 +4,11 @@
 .data
 arr DB 1, 2, 3, 4, 5
 arrsize DW 5
+maxIndex Dw 4
 smallest DB ?
 greatest DB ?
 num DB ?
+inputPrompt DB 13,10,"Enter 5 numbers:",10,"$"
 smallestPrompt DB 13,10,"Smallest number: $"
 greatestPrompt DB 13,10,"Greatest number: $"
 
@@ -22,6 +24,9 @@ int 21h
 main proc
 
     ;taking input
+    lea dx, inputPrompt
+    mov ah,9
+    int 21h
     mov bx, 00
     inputLoop:
     call getNum
@@ -54,26 +59,26 @@ main proc
     jg lesser
     mov dl,arr[bx]
     lesser:
-    cmp bx,arrsize
+    cmp bx,maxIndex
     jl loop2
     mov greatest,dl
 
 
     ;displaying the results
 
-    lea dx,smallestPrompt
-    mov ah,9
-    int 21h
-
-    mov dl,smallest
-    mov num,dl
-    call outputNum
-
     lea dx,greatestPrompt
     mov ah,9
     int 21h
 
     mov dl,greatest
+    mov num,dl
+    call outputNum
+
+    lea dx,smallestPrompt
+    mov ah,9
+    int 21h
+
+    mov dl,smallest
     mov num,dl
     call outputNum
 

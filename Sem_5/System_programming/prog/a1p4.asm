@@ -2,8 +2,9 @@
 .stack 100h
 
 .data
-arr DB 1, 2, 3, 4, 5
+arr DB 1, 2, 3, 4, 6
 arrsize DW 5
+maxIndex DW 4
 smallest DB ?
 smallest2 DB ?
 greatest DB ?
@@ -48,7 +49,7 @@ main proc
     jl greater
     mov dl,arr[bx]
     greater:
-    cmp bx,arrsize
+    cmp bx,maxIndex
     jl loop1
     mov smallest,dl
 
@@ -62,7 +63,7 @@ main proc
     jg lesser
     mov dl,arr[bx]
     lesser:
-    cmp bx,arrsize
+    cmp bx,maxIndex
     jl loop2
     mov greatest,dl
 
@@ -103,16 +104,15 @@ main proc
     lesser2:
     inc bx          ;increment counter
     cmp bx,arrsize
-    jle loop3
+    jl loop3
     mov smallest2,dl
 
     ;finding 2nd largest element
     mov bx,00       ;bx is counter
-    mov dl,smallest   ;initializing dl with a[0]
-    mov dh,greatest    ;storing the value of the smallest 
-    ;looping through the array to find the largest element
+    mov dl,smallest   ;initializing dl with smallest number
+    mov dh,greatest    ;storing the value of the largerst number
+    ;looping through the array to find the 2nd largest element
     loop4:
-    inc bx          ;increment counter
     cmp dh, arr[bx]
     je greater2
     cmp dl,arr[bx]
@@ -121,7 +121,7 @@ main proc
     greater2:
     inc bx          ;increment counter
     cmp bx,arrsize
-    jle loop4
+    jl loop4
     mov greatest2,dl
 
     ;displaying the results
