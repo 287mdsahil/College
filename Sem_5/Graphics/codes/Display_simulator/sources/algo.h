@@ -33,6 +33,12 @@ public:
     QSpinBox *radiusSpinBox;
     QPushButton *drawCircleButton;
 
+    QLabel *ellipseMajorAxisLabel;
+    QLabel *ellipseMinorAxisLabel;
+    QSpinBox *ellipseMajorAxisSpinBox;
+    QSpinBox *ellipseMinorAxisSpinBox;
+    QPushButton *drawEllipseButton;
+
     //LINE DRAWING-----------------------------------------------------------------
 
     //parametric line drawing algorithm
@@ -272,6 +278,105 @@ public:
         }
     }
 
+    //ELLIPSE DRAWING ALGORITHM---------------------------------------------------
+
+    void EllipseMidPoint(pair<int, int> p, int a, int b)
+    {
+        int rx = a;
+        int ry = b;
+        int xc = p.first;
+        int yc = p.second;
+
+        float dx, dy, d1, d2, x, y;
+        x = 0;
+        y = ry;
+
+        // Initial decision parameter of region 1
+        d1 = (ry * ry) - (rx * rx * ry) +
+             (0.25 * rx * rx);
+        dx = 2 * ry * ry * x;
+        dy = 2 * rx * rx * y;
+
+        // For region 1
+        while (dx < dy)
+        {
+
+            // Print points based on 4-way symmetry
+            plotAllQuadrant(xc, yc, x, y);
+
+            // Checking and updating value of
+            // decision parameter based on algorithm
+            if (d1 < 0)
+            {
+                x++;
+                dx = dx + (2 * ry * ry);
+                d1 = d1 + dx + (ry * ry);
+            }
+            else
+            {
+                x++;
+                y--;
+                dx = dx + (2 * ry * ry);
+                dy = dy - (2 * rx * rx);
+                d1 = d1 + dx - dy + (ry * ry);
+            }
+        }
+
+        // Decision parameter of region 2
+        d2 = ((ry * ry) * ((x + 0.5) * (x + 0.5))) +
+             ((rx * rx) * ((y - 1) * (y - 1))) -
+             (rx * rx * ry * ry);
+
+        // Plotting points of region 2
+        while (y >= 0)
+        {
+
+            // Print points based on 4-way symmetry
+            plotAllQuadrant(xc, yc, x, y);
+
+            // Checking and updating parameter
+            // value based on algorithm
+            if (d2 > 0)
+            {
+                y--;
+                dy = dy - (2 * rx * rx);
+                d2 = d2 + (rx * rx) - dy;
+            }
+            else
+            {
+                y--;
+                x++;
+                dx = dx + (2 * ry * ry);
+                dy = dy - (2 * rx * rx);
+                d2 = d2 + dx - dy + (rx * rx);
+            }
+        }
+    }
+
+    void EllipseParametric(pair<int, int> p, int a, int b)
+    {
+        double step = 1 / double(sqrt(a * a + b * b));
+        double angle = 0;
+        int xc = p.first;
+        int yc = p.second;
+        emit paintPointSignal(pair<int, int>(xc, yc));
+        while (angle <= PI / 2)
+        {
+            int x = a * cos(angle);
+            int y = b * sin(angle);
+            plotAllQuadrant(xc, yc, x, y);
+            angle += step;
+        }
+    }
+
+    void plotAllQuadrant(int xc, int yc, int x, int y)
+    {
+        emit paintPointSignal(pair<int, int>(xc + x, yc + y));
+        emit paintPointSignal(pair<int, int>(xc + x, yc - y));
+        emit paintPointSignal(pair<int, int>(xc - x, yc - y));
+        emit paintPointSignal(pair<int, int>(xc - x, yc + y));
+    }
+
     //----------------------------------------------------------------------------
 
     void makelineDrawing()
@@ -359,6 +464,50 @@ public:
         setLayout(algoParentLayout);
     }
 
+    void makeEllipseDrawing()
+    {
+        points.push_back(pair<int, int>(0, 0));
+
+        drawingAlgoComboBox = new QComboBox();
+        drawingAlgoComboBox->addItem("Ellipse mid point drawing");
+        drawingAlgoComboBox->addItem("Ellipse parametric Drawing");
+
+        algoParentLayout = new QVBoxLayout();
+        QGroupBox *pointGroup = new QGroupBox("Ellipse parameters");
+        QGridLayout *pointLayout = new QGridLayout();
+        pointButtons.push_back(new QPushButton("Select Center"));
+        pointLabels.push_back(new QLabel(QString::fromStdString(string(to_string(points[0].first) + ", " + to_string(points[0].second)))));
+        ellipseMajorAxisLabel = new QLabel("Select major axis length");
+        ellipseMinorAxisLabel = new QLabel("Select minor axis length");
+        ellipseMajorAxisSpinBox = new QSpinBox();
+        ellipseMinorAxisSpinBox = new QSpinBox();
+        pointLayout->addWidget(pointButtons[0], 0, 0);
+        pointLayout->addWidget(pointLabels[0], 0, 1);
+        pointLayout->addWidget(ellipseMajorAxisLabel, 1, 0);
+        pointLayout->addWidget(ellipseMajorAxisSpinBox, 1, 1);
+        pointLayout->addWidget(ellipseMinorAxisLabel, 2, 0);
+        pointLayout->addWidget(ellipseMinorAxisSpinBox, 2, 1);
+
+        pointGroup->setLayout(pointLayout);
+
+        QSignalMapper *mapper = new QSignalMapper();
+        connect(mapper, SIGNAL(mapped(int)), this, SLOT(makePointRequest(int)));
+
+        mapper->setMapping(pointButtons[0], 0);
+        connect(pointButtons[0], SIGNAL(clicked()), mapper, SLOT(map()));
+
+        drawEllipseButton = new QPushButton("Draw Ellipse");
+        connect(drawEllipseButton, SIGNAL(clicked()), this, SLOT(callEllipseDrawingAlgorithm()));
+
+        timeLabel = new QLabel("Time required: -");
+
+        algoParentLayout->addWidget(drawingAlgoComboBox);
+        algoParentLayout->addWidget(pointGroup);
+        algoParentLayout->addWidget(drawEllipseButton);
+        algoParentLayout->addWidget(timeLabel);
+        setLayout(algoParentLayout);
+    }
+
     AlgoWidget(QWidget *parentPtr, int type)
     {
         parent = parentPtr;
@@ -370,6 +519,10 @@ public:
         if (type == 1)
         {
             makeCircleDrawing();
+        }
+        if (type == 2)
+        {
+            makeEllipseDrawing();
         }
     }
 
@@ -425,6 +578,20 @@ public slots:
             BresenhamCircle(points[0], radiusSpinBox->value());
         else if (i == 2)
             MidPointCircle(points[0], radiusSpinBox->value());
+        double tend = (chrono::system_clock::now().time_since_epoch()).count();
+        //end of algo
+        timeLabel->setText(QString::fromStdString("Time required : " + to_string((tend - tstart) / 1000000) + " ms"));
+    }
+
+    //function to decide the ellipse drawing algorithm
+    void callEllipseDrawingAlgorithm()
+    {
+        double tstart = (chrono::system_clock::now().time_since_epoch()).count();
+        int i = drawingAlgoComboBox->currentIndex();
+        if (i == 0)
+            EllipseMidPoint(points[0], ellipseMajorAxisSpinBox->value(), ellipseMinorAxisSpinBox->value());
+        if (i == 1)
+            EllipseParametric(points[0], ellipseMajorAxisSpinBox->value(), ellipseMinorAxisSpinBox->value());
         double tend = (chrono::system_clock::now().time_since_epoch()).count();
         //end of algo
         timeLabel->setText(QString::fromStdString("Time required : " + to_string((tend - tstart) / 1000000) + " ms"));

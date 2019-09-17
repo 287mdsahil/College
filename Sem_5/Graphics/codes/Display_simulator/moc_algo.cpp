@@ -19,8 +19,8 @@
 
 QT_BEGIN_MOC_NAMESPACE
 struct qt_meta_stringdata_AlgoWidget_t {
-    QByteArrayData data[12];
-    char stringdata0[170];
+    QByteArrayData data[13];
+    char stringdata0[198];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -40,14 +40,16 @@ QT_MOC_LITERAL(7, 92, 3), // "ind"
 QT_MOC_LITERAL(8, 96, 19), // "receiveClickedPoint"
 QT_MOC_LITERAL(9, 116, 1), // "p"
 QT_MOC_LITERAL(10, 118, 24), // "callLineDrawingAlgorithm"
-QT_MOC_LITERAL(11, 143, 26) // "callCircleDrawingAlgorithm"
+QT_MOC_LITERAL(11, 143, 26), // "callCircleDrawingAlgorithm"
+QT_MOC_LITERAL(12, 170, 27) // "callEllipseDrawingAlgorithm"
 
     },
     "AlgoWidget\0pointRequest\0\0paintPointSignal\0"
     "pair<int,int>\0unPaintPointSignal\0"
     "makePointRequest\0ind\0receiveClickedPoint\0"
     "p\0callLineDrawingAlgorithm\0"
-    "callCircleDrawingAlgorithm"
+    "callCircleDrawingAlgorithm\0"
+    "callEllipseDrawingAlgorithm"
 };
 #undef QT_MOC_LITERAL
 
@@ -57,7 +59,7 @@ static const uint qt_meta_data_AlgoWidget[] = {
        7,       // revision
        0,       // classname
        0,    0, // classinfo
-       7,   14, // methods
+       8,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -65,15 +67,16 @@ static const uint qt_meta_data_AlgoWidget[] = {
        3,       // signalCount
 
  // signals: name, argc, parameters, tag, flags
-       1,    1,   49,    2, 0x06 /* Public */,
-       3,    1,   52,    2, 0x06 /* Public */,
-       5,    1,   55,    2, 0x06 /* Public */,
+       1,    1,   54,    2, 0x06 /* Public */,
+       3,    1,   57,    2, 0x06 /* Public */,
+       5,    1,   60,    2, 0x06 /* Public */,
 
  // slots: name, argc, parameters, tag, flags
-       6,    1,   58,    2, 0x0a /* Public */,
-       8,    1,   61,    2, 0x0a /* Public */,
-      10,    0,   64,    2, 0x0a /* Public */,
-      11,    0,   65,    2, 0x0a /* Public */,
+       6,    1,   63,    2, 0x0a /* Public */,
+       8,    1,   66,    2, 0x0a /* Public */,
+      10,    0,   69,    2, 0x0a /* Public */,
+      11,    0,   70,    2, 0x0a /* Public */,
+      12,    0,   71,    2, 0x0a /* Public */,
 
  // signals: parameters
     QMetaType::Void, QMetaType::Int,    2,
@@ -83,6 +86,7 @@ static const uint qt_meta_data_AlgoWidget[] = {
  // slots: parameters
     QMetaType::Void, QMetaType::Int,    7,
     QMetaType::Void, 0x80000000 | 4,    9,
+    QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
 
@@ -102,6 +106,7 @@ void AlgoWidget::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
         case 4: _t->receiveClickedPoint((*reinterpret_cast< pair<int,int>(*)>(_a[1]))); break;
         case 5: _t->callLineDrawingAlgorithm(); break;
         case 6: _t->callCircleDrawingAlgorithm(); break;
+        case 7: _t->callEllipseDrawingAlgorithm(); break;
         default: ;
         }
     } else if (_c == QMetaObject::IndexOfMethod) {
@@ -156,13 +161,13 @@ int AlgoWidget::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 7)
+        if (_id < 8)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 7;
+        _id -= 8;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 7)
+        if (_id < 8)
             *reinterpret_cast<int*>(_a[0]) = -1;
-        _id -= 7;
+        _id -= 8;
     }
     return _id;
 }
