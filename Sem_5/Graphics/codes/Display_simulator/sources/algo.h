@@ -33,6 +33,9 @@ public:
     QSpinBox *radiusSpinBox;
     QPushButton *drawCircleButton;
 
+    //LINE DRAWING-----------------------------------------------------------------
+
+    //parametric line drawing algorithm
     void parametricLineDrawing(pair<int, int> p1, pair<int, int> p2)
     {
         cout << "parametirc line drawing called" << endl;
@@ -169,6 +172,108 @@ public:
         }
     }
 
+    //CIRCLE DRAWING ALGORITHM-----------------------------------------------------------------
+
+    void PolarCircle(pair<int, int> p, int r)
+    {
+        double step = 1 / double(r);
+        double angle = 0;
+        int xc = p.first;
+        int yc = p.second;
+        emit paintPointSignal(pair<int, int>(xc, yc));
+        while (angle <= PI / 4)
+        {
+            int x = r * cos(angle);
+            int y = r * sin(angle);
+            plotAllOctant(xc, yc, x, y);
+            angle += step;
+        }
+    }
+
+    void BresenhamCircle(pair<int, int> p, int r)
+    {
+        int xc = p.first;
+        int yc = p.second;
+        int x = 0, y = r;
+        int d = 3 - 2 * r;
+        plotAllOctant(xc, yc, x, y);
+        while (y >= x)
+        {
+            // for each pixel we will
+            // draw all eight pixels
+
+            x++;
+
+            // check for decision parameter
+            // and correspondingly
+            // update d, x, y
+            if (d > 0)
+            {
+                y--;
+                d = d + 4 * (x - y) + 10;
+            }
+            else
+                d = d + 4 * x + 6;
+            plotAllOctant(xc, yc, x, y);
+        }
+    }
+
+    void plotAllOctant(int xc, int yc, int x, int y)
+    {
+        emit paintPointSignal(pair<int, int>(xc + x, yc + y));
+        emit paintPointSignal(pair<int, int>(xc + x, yc - y));
+        emit paintPointSignal(pair<int, int>(xc - x, yc - y));
+        emit paintPointSignal(pair<int, int>(xc - x, yc + y));
+        emit paintPointSignal(pair<int, int>(xc + y, yc + x));
+        emit paintPointSignal(pair<int, int>(xc + y, yc - x));
+        emit paintPointSignal(pair<int, int>(xc - y, yc + x));
+        emit paintPointSignal(pair<int, int>(xc - y, yc - x));
+    }
+
+    void MidPointCircle(pair<int, int> p, int r)
+    {
+        int xc = p.first;
+        int yc = p.second;
+        int x = r, y = 0;
+
+        emit paintPointSignal(pair<int, int>(xc, yc));
+
+        // When radius is zero only a single
+        // point will be printed
+        if (r > 0)
+        {
+            plotAllOctant(xc, yc, x, y);
+        }
+
+        // Initialising the value of P
+        int P = 1 - r;
+        while (x > y)
+        {
+            y++;
+
+            // Mid-point is inside or on the perimeter
+            if (P <= 0)
+                P = P + 2 * y + 1;
+
+            // Mid-point is outside the perimeter
+            else
+            {
+                x--;
+                P = P + 2 * y - 2 * x + 1;
+            }
+
+            // All the perimeter points have already been printed
+            if (x < y)
+                break;
+
+            // Printing the generated point and its reflection
+            // in the other octants after translation
+            plotAllOctant(xc, yc, x, y);
+        }
+    }
+
+    //----------------------------------------------------------------------------
+
     void makelineDrawing()
     {
         points.push_back(pair<int, int>(0, 0));
@@ -218,7 +323,9 @@ public:
         points.push_back(pair<int, int>(0, 0));
 
         drawingAlgoComboBox = new QComboBox();
-        drawingAlgoComboBox->addItem("Circle drawing");
+        drawingAlgoComboBox->addItem("Parametric circle drawing");
+        drawingAlgoComboBox->addItem("Bresenham circle drawing");
+        drawingAlgoComboBox->addItem("Mid point circle drawing");
 
         algoParentLayout = new QVBoxLayout();
         QGroupBox *pointGroup = new QGroupBox("Circle parameters");
@@ -284,6 +391,7 @@ public slots:
         clickedPoint = p;
     }
 
+    // function to decide the line drawing algorithm
     void callLineDrawingAlgorithm()
     {
         //start of algo
@@ -306,34 +414,19 @@ public slots:
         timeLabel->setText(QString::fromStdString("Time required : " + to_string((tend - tstart) / 1000000) + " ms"));
     }
 
-    void PolarCircle(pair<int, int> p, int r)
-    {
-        double step = 1 / double(r);
-        double angle = 0;
-        int xc = p.first;
-        int yc = p.second;
-        while (angle <= PI/4)
-        {
-            int x = r * cos(angle);
-            int y = r * sin(angle);
-            plotAllOctant(xc, yc, x, y);
-            angle += step;
-        }
-    }
-    void plotAllOctant(int xc, int yc, int x, int y)
-    {
-        emit paintPointSignal(pair<int, int>(xc + x, yc + y));
-        emit paintPointSignal(pair<int, int>(xc + x, yc - y));
-        emit paintPointSignal(pair<int, int>(xc - x, yc - y));
-        emit paintPointSignal(pair<int, int>(xc - x, yc + y));
-        emit paintPointSignal(pair<int, int>(xc + y, yc + x));
-        emit paintPointSignal(pair<int, int>(xc + y, yc - x));
-        emit paintPointSignal(pair<int, int>(xc - y, yc + x));
-        emit paintPointSignal(pair<int, int>(xc - y, yc - x));
-    }
-
+    //function to decide the circle drawing algorithm
     void callCircleDrawingAlgorithm()
     {
-        PolarCircle(points[0], radiusSpinBox->value());
+        double tstart = (chrono::system_clock::now().time_since_epoch()).count();
+        int i = drawingAlgoComboBox->currentIndex();
+        if (i == 0)
+            PolarCircle(points[0], radiusSpinBox->value());
+        else if (i == 1)
+            BresenhamCircle(points[0], radiusSpinBox->value());
+        else if (i == 2)
+            MidPointCircle(points[0], radiusSpinBox->value());
+        double tend = (chrono::system_clock::now().time_since_epoch()).count();
+        //end of algo
+        timeLabel->setText(QString::fromStdString("Time required : " + to_string((tend - tstart) / 1000000) + " ms"));
     }
 };
