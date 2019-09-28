@@ -1,0 +1,3 @@
+[submodule "Sem_5/System_programming/8085Simulator"]
+	path = Sem_5/System_programming/8085Simulator
+	url = https://github.com/priyank23/8085Simulator.git
