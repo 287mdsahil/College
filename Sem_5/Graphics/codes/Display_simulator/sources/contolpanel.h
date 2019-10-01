@@ -33,18 +33,13 @@ class ControlPanel : public QWidget
     QLabel *clickCoordinate;
     QLabel *mouseCoordinate;
     AlgoWidget *algo;
-    // vector<QLabel *>pointLabels;
-    // vector<QPushButton *> pointButtons;
-    // vector<pair<int,int>> points;
 
 public:
     ControlPanel()
     {
         pixelsize = 5;
-        no_of_pixels = 100;
+        no_of_pixels = 120;
         this->setMinimumWidth(300);
-        // points.push_back(pair<int,int>(0,0));
-        // points.push_back(pair<int,int>(0,0));
 
         //Contents of graph setting----------------------------------------------------
         QGroupBox *setGraphGroup = new QGroupBox("Graph Setting");
@@ -81,18 +76,7 @@ public:
         clickCoordinate = new QLabel("Clicked Coordinate :\n 0, 0");
         mouseCoordinate = new QLabel("Mouse Coordinate :\n 0, 0");
 
-        // QGroupBox *pointGroup = new QGroupBox("Points");
-        // QGridLayout *pointLayout = new QGridLayout();
-        // pointButtons.push_back(new QPushButton("Select point 1"));
-        // pointButtons.push_back(new QPushButton("Select point 2"));
-        // pointLabels.push_back(new QLabel(QString::fromStdString(string(to_string(points[0].first) + ", " + to_string(points[0].second)))));
-        // pointLabels.push_back(new QLabel(QString::fromStdString(string(to_string(points[1].first) + ", " + to_string(points[1].second)))));
-        // pointLayout->addWidget(pointButtons[0],0,0);
-        // pointLayout->addWidget(pointButtons[1],1,0);
-        // pointLayout->addWidget(pointLabels[0],0,1);
-        // pointLayout->addWidget(pointLabels[1],1,1);
-        // pointGroup->setLayout(pointLayout);
-        algo = new AlgoWidget(this,2);
+        algo = new AlgoWidget(this,3,no_of_pixels,pixelsize);
 
         drawingLayout->addWidget(algo);
         drawingLayout->addWidget(clickCoordinate);
@@ -121,6 +105,7 @@ public slots:
         pixelsize = pixelsizeSpinBox->value();
         no_of_pixels = noOfPixelsSpinBox->value();
         emit GraphResetSignal(pixelsize, no_of_pixels);
+        algo->resetColormap(no_of_pixels,pixelsize);
     }
 
     void getPointHover(pair<int, int> point)

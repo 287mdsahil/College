@@ -11,6 +11,7 @@
 #include <iostream>
 #include <chrono>
 #include <math.h>
+#include <map>
 #define PI 3.14159265358979323846
 using namespace std;
 
@@ -28,6 +29,8 @@ public:
     QLabel *timeLabel;
     QPushButton *drawLineButton;
     int algoIndex;
+    int no_of_pixels;
+    int pixelsize;
 
     QLabel *radiusLabel;
     QSpinBox *radiusSpinBox;
@@ -38,6 +41,12 @@ public:
     QSpinBox *ellipseMajorAxisSpinBox;
     QSpinBox *ellipseMinorAxisSpinBox;
     QPushButton *drawEllipseButton;
+
+    QPushButton *fillButton;
+    pair<int, int> internalPoint;
+    QColor boundary_color = QColor(Qt::blue);
+    QColor fill_color = QColor(Qt::red);
+    map<pair<int, int>, QColor> colormap;
 
     //LINE DRAWING-----------------------------------------------------------------
 
@@ -66,7 +75,7 @@ public:
             for (int currX = x1; currX <= x2; ++currX)
             {
                 int currY = int(std::round(m * currX + b));
-                emit paintPointSignal(pair<int, int>(currX, currY));
+                paintSignalEmitter(pair<int, int>(currX, currY));
             }
         }
         else
@@ -84,7 +93,7 @@ public:
             for (int currY = y1; currY <= y2; ++currY)
             {
                 int currX = int(std::round((currY - b) / m));
-                emit paintPointSignal(pair<int, int>(currX, currY));
+                paintSignalEmitter(pair<int, int>(currX, currY));
             }
         }
     }
@@ -100,14 +109,14 @@ public:
             int y1 = min(p1.second, p2.second);
             int y2 = max(p1.second, p2.second);
             for (int y = y1; y <= y2; y++)
-                emit paintPointSignal(pair<int, int>(p1.first, y));
+                paintSignalEmitter(pair<int, int>(p1.first, y));
         }
         else if (p1.second == p2.second)
         {
             int x1 = min(p1.first, p2.first);
             int x2 = max(p1.first, p2.first);
             for (int x = x1; x <= x2; x++)
-                emit paintPointSignal(pair<int, int>(x, p1.second));
+                paintSignalEmitter(pair<int, int>(x, p1.second));
         }
         else
         {
@@ -119,7 +128,7 @@ public:
                 int incr = abs(p2.first - p1.first) / (p2.first - p1.first);
                 while (x != p2.first)
                 {
-                    emit paintPointSignal(pair<int, int>(x, y));
+                    paintSignalEmitter(pair<int, int>(x, y));
                     y += m * incr;
                     x = x + incr;
                 }
@@ -132,7 +141,7 @@ public:
                 int incr = abs(p2.second - p1.second) / (p2.second - p1.second);
                 while (y != p2.second)
                 {
-                    emit paintPointSignal(pair<int, int>(x, y));
+                    paintSignalEmitter(pair<int, int>(x, y));
                     x += m * incr;
                     y = y + incr;
                 }
@@ -163,7 +172,7 @@ public:
         int slope_error_new = m_new - (x2 - x1);
         for (int x = x1, y = y1; x <= x2; x++)
         {
-            emit paintPointSignal(pair<int, int>(x, y));
+            paintSignalEmitter(pair<int, int>(x, y));
 
             // Add slope to increment angle formed
             slope_error_new += m_new;
@@ -186,7 +195,7 @@ public:
         double angle = 0;
         int xc = p.first;
         int yc = p.second;
-        emit paintPointSignal(pair<int, int>(xc, yc));
+        paintSignalEmitter(pair<int, int>(xc, yc));
         while (angle <= PI / 4)
         {
             int x = r * cos(angle);
@@ -226,14 +235,14 @@ public:
 
     void plotAllOctant(int xc, int yc, int x, int y)
     {
-        emit paintPointSignal(pair<int, int>(xc + x, yc + y));
-        emit paintPointSignal(pair<int, int>(xc + x, yc - y));
-        emit paintPointSignal(pair<int, int>(xc - x, yc - y));
-        emit paintPointSignal(pair<int, int>(xc - x, yc + y));
-        emit paintPointSignal(pair<int, int>(xc + y, yc + x));
-        emit paintPointSignal(pair<int, int>(xc + y, yc - x));
-        emit paintPointSignal(pair<int, int>(xc - y, yc + x));
-        emit paintPointSignal(pair<int, int>(xc - y, yc - x));
+        paintSignalEmitter(pair<int, int>(xc + x, yc + y));
+        paintSignalEmitter(pair<int, int>(xc + x, yc - y));
+        paintSignalEmitter(pair<int, int>(xc - x, yc - y));
+        paintSignalEmitter(pair<int, int>(xc - x, yc + y));
+        paintSignalEmitter(pair<int, int>(xc + y, yc + x));
+        paintSignalEmitter(pair<int, int>(xc + y, yc - x));
+        paintSignalEmitter(pair<int, int>(xc - y, yc + x));
+        paintSignalEmitter(pair<int, int>(xc - y, yc - x));
     }
 
     void MidPointCircle(pair<int, int> p, int r)
@@ -242,7 +251,7 @@ public:
         int yc = p.second;
         int x = r, y = 0;
 
-        emit paintPointSignal(pair<int, int>(xc, yc));
+        paintSignalEmitter(pair<int, int>(xc, yc));
 
         // When radius is zero only a single
         // point will be printed
@@ -359,7 +368,7 @@ public:
         double angle = 0;
         int xc = p.first;
         int yc = p.second;
-        emit paintPointSignal(pair<int, int>(xc, yc));
+        paintSignalEmitter(pair<int, int>(xc, yc));
         while (angle <= PI / 2)
         {
             int x = a * cos(angle);
@@ -371,13 +380,91 @@ public:
 
     void plotAllQuadrant(int xc, int yc, int x, int y)
     {
-        emit paintPointSignal(pair<int, int>(xc + x, yc + y));
-        emit paintPointSignal(pair<int, int>(xc + x, yc - y));
-        emit paintPointSignal(pair<int, int>(xc - x, yc - y));
-        emit paintPointSignal(pair<int, int>(xc - x, yc + y));
+        paintSignalEmitter(pair<int, int>(xc + x, yc + y));
+        paintSignalEmitter(pair<int, int>(xc + x, yc - y));
+        paintSignalEmitter(pair<int, int>(xc - x, yc - y));
+        paintSignalEmitter(pair<int, int>(xc - x, yc + y));
     }
 
-    //----------------------------------------------------------------------------
+    //Filling algorithms----------------------------------------------------------------
+
+    void boundaryFill4(pair<int, int> p)
+    {
+        int x = p.first;
+        int y = p.second;
+        if (abs(x) <= no_of_pixels / 2 && abs(y) <= no_of_pixels / 2 && colormap[make_pair(x, y)] != boundary_color && colormap[make_pair(x, y)] != fill_color)
+        {
+            paintSignalEmitter(pair<int, int>(x, y), fill_color);
+            boundaryFill4(pair<int, int>(x + 1, y));
+            boundaryFill4(pair<int, int>(x, y + 1));
+            boundaryFill4(pair<int, int>(x - 1, y));
+            boundaryFill4(pair<int, int>(x, y - 1));
+        }
+    }
+
+    void floodFill4(pair<int, int> p, QColor curColor)
+    {
+        int x = p.first;
+        int y = p.second;
+
+        if (abs(x) <= no_of_pixels / 2 && abs(y) <= no_of_pixels / 2 && colormap[p] == curColor)
+        {
+            paintSignalEmitter(pair<int, int>(x, y), fill_color);
+            floodFill4(pair<int, int>(x + 1, y), curColor);
+            floodFill4(pair<int, int>(x, y + 1), curColor);
+            floodFill4(pair<int, int>(x - 1, y), curColor);
+            floodFill4(pair<int, int>(x, y - 1), curColor);
+        }
+    }
+
+    void scanlineFill()
+    {
+        cout<<"scan line called"<<endl;
+        for (int i = -no_of_pixels / 2; i <= no_of_pixels / 2; i++)
+        {
+            vector<pair<int, int>> linepoints;
+            for (int j = no_of_pixels / 2; j >= -no_of_pixels / 2; j--)
+            {
+                QColor colorPix = colormap[make_pair(i, j)];
+                if (colorPix == Qt::blue)
+                {
+                    linepoints.push_back((make_pair(i, j)));
+                    if (searchPoint(make_pair(i, j)))
+                       linepoints.push_back((make_pair(i, j)));
+                    
+                    while(colormap[make_pair(i,j-1)]==Qt::blue)
+                    {
+                        j--;
+                    }
+                }
+            }
+
+            if (linepoints.size() > 1)
+            {
+                int flag = 0;
+                for (unsigned int i = 0; i < linepoints.size() - 1; i++)
+                {
+                    pair<int, int> x(linepoints[i].first, linepoints[i].second);
+                    pair<int, int> y(linepoints[i + 1].first, linepoints[i + 1].second);
+                    if (x.second + 1 != y.second && flag == 0)
+                    {
+                        for (int j = x.second - 1; j > y.second; j--)
+                        {
+                            paintSignalEmitter(make_pair(x.first, j), fill_color);
+                            cout << j << " " << x.second << endl;
+                        }
+                        i++;
+                        flag = flag ^ 1;
+                    }
+                    else if (x.second + 1 != y.second)
+                    {
+                        flag = flag ^ 1;
+                    }
+                }
+            }
+        }
+    }
+    //----------------------------------------------------------------------------------
 
     void makelineDrawing()
     {
@@ -508,10 +595,87 @@ public:
         setLayout(algoParentLayout);
     }
 
-    AlgoWidget(QWidget *parentPtr, int type)
+    void makeFilling()
     {
+        points.clear();
+        internalPoint = pair<int, int>(0, 0);
+        algoParentLayout = new QVBoxLayout();
+
+        drawingAlgoComboBox = new QComboBox();
+        drawingAlgoComboBox->addItem("Boundary fill algorithm");
+        drawingAlgoComboBox->addItem("Flood fill algorithm");
+        drawingAlgoComboBox->addItem("Scanline fill algorithm");
+
+        QGroupBox *pointGroup = new QGroupBox("Points");
+        QGridLayout *pointLayout = new QGridLayout();
+        pointButtons.push_back(new QPushButton("Add polygon point"));
+        pointButtons.push_back(new QPushButton("Connect"));
+        pointButtons.push_back(new QPushButton("clear points stack"));
+        pointButtons.push_back(new QPushButton("select internal point"));
+        pointLabels.push_back(new QLabel("0,0"));
+        pointLayout->addWidget(pointButtons[0], 0, 0);
+        pointLayout->addWidget(pointButtons[1], 1, 0);
+        pointLayout->addWidget(pointButtons[2], 2, 0);
+        pointLayout->addWidget(pointButtons[3], 3, 0);
+        pointLayout->addWidget(pointLabels[0], 3, 1);
+        pointGroup->setLayout(pointLayout);
+
+        connect(pointButtons[0], SIGNAL(clicked()), this, SLOT(makePointRequestPolygon()));
+        connect(pointButtons[1], SIGNAL(clicked()), this, SLOT(connectPolygon()));
+        connect(pointButtons[2], SIGNAL(clicked()), this, SLOT(clearPoints()));
+        connect(pointButtons[3], SIGNAL(clicked()), this, SLOT(setInternalPoint()));
+
+        fillButton = new QPushButton("Fill");
+        connect(fillButton, SIGNAL(clicked()), this, SLOT(callFillingAlgorithm()));
+
+        timeLabel = new QLabel("Time required: -");
+
+        algoParentLayout->addWidget(drawingAlgoComboBox);
+        algoParentLayout->addWidget(pointGroup);
+        algoParentLayout->addWidget(fillButton);
+        algoParentLayout->addWidget(timeLabel);
+        setLayout(algoParentLayout);
+    }
+
+    void resetColormap(int npixel, int spixel)
+    {
+        no_of_pixels = npixel;
+        pixelsize = spixel;
+
+        for (int i = -no_of_pixels / 2; i <= no_of_pixels; i++)
+            for (int j = -no_of_pixels / 2; j <= no_of_pixels; j++)
+                if (i == 0 || j == 0)
+                    colormap[make_pair(i, j)] = Qt::lightGray;
+                else
+                    colormap[make_pair(i, j)] = Qt::white;
+    }
+
+    int searchPoint(pair<int, int> p)
+    {
+        for (vector<pair<int, int>>::iterator i = points.begin(); i != points.end(); i++)
+        {
+            if (*i == p)
+            {
+                return 1;
+            }
+        }
+        return 0;
+    }
+
+    AlgoWidget(QWidget *parentPtr, int type, int npixel, int spixel)
+    {
+        no_of_pixels = npixel;
+        pixelsize = spixel;
         parent = parentPtr;
         algoIndex = 0;
+
+        for (int i = -no_of_pixels / 2; i <= no_of_pixels; i++)
+            for (int j = -no_of_pixels / 2; j <= no_of_pixels; j++)
+                if (i == 0 || j == 0)
+                    colormap.insert(make_pair(make_pair(i, j), Qt::lightGray));
+                else
+                    colormap.insert(make_pair(make_pair(i, j), Qt::white));
+
         if (type == 0)
         {
             makelineDrawing();
@@ -524,11 +688,22 @@ public:
         {
             makeEllipseDrawing();
         }
+        if (type == 3)
+        {
+            makeFilling();
+        }
+    }
+
+    void paintSignalEmitter(pair<int, int> p, QColor color = Qt::blue)
+    {
+        emit paintPointSignal(p, color);
+        colormap[p] = color;
     }
 
 signals:
     void pointRequest(int);
     void paintPointSignal(pair<int, int>);
+    void paintPointSignal(pair<int, int>, QColor);
     void unPaintPointSignal(pair<int, int>);
 
 public slots:
@@ -538,9 +713,18 @@ public slots:
         pointLabels[ind]->setText(QString::fromStdString(string(to_string(points[ind].first) + ", " + to_string(points[ind].second))));
     }
 
+    void makePointRequestPolygon()
+    {
+        points.push_back(clickedPoint);
+        if (points.size() > 1)
+        {
+            DDA(points[points.size() - 1], points[points.size() - 2]);
+        }
+    }
+
     void receiveClickedPoint(pair<int, int> p)
     {
-        emit unPaintPointSignal(clickedPoint);
+        //emit unPaintPointSignal(clickedPoint);
         clickedPoint = p;
     }
 
@@ -595,5 +779,51 @@ public slots:
         double tend = (chrono::system_clock::now().time_since_epoch()).count();
         //end of algo
         timeLabel->setText(QString::fromStdString("Time required : " + to_string((tend - tstart) / 1000000) + " ms"));
+    }
+
+    // function to decide the filling algorithm
+    void callFillingAlgorithm()
+    {
+        //start of algo
+        algoIndex = drawingAlgoComboBox->currentIndex();
+        double tstart = (chrono::system_clock::now().time_since_epoch()).count();
+        if (algoIndex == 0)
+        {
+            boundaryFill4(internalPoint);
+        }
+        else if (algoIndex == 1)
+        {
+            floodFill4(internalPoint, colormap[internalPoint]);
+        }
+        else if (algoIndex == 2)
+        {
+            scanlineFill();
+        }
+
+        double tend = (chrono::system_clock::now().time_since_epoch()).count();
+        //end of algo
+        timeLabel->setText(QString::fromStdString("Time required : " + to_string((tend - tstart) / 1000000) + " ms"));
+    }
+
+    //function to set the internal point
+    void setInternalPoint()
+    {
+        internalPoint = clickedPoint;
+        string showInternalPoint = to_string(internalPoint.first) + " " + to_string(internalPoint.second);
+        QString QShowInternalPoint = QString::fromStdString(showInternalPoint);
+        pointLabels[0]->setText(QShowInternalPoint);
+    }
+
+    //function to connect the last and first points of the polygon
+    void connectPolygon()
+    {
+        //connect the first and last points
+        parametricLineDrawing(points[points.size() - 1], points[0]);
+    }
+
+    void clearPoints()
+    {
+        //clear the points vector
+        points.clear();
     }
 };

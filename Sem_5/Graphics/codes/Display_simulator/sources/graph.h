@@ -96,6 +96,8 @@ public:
         pixelsize = p;
         no_of_pixels = n;
         GenerateGraph();
+        this->setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
+        this->setUpdatesEnabled(1);
     }
 
     pair<int, int> coordinateTransform(pair<int, int> point)
@@ -123,6 +125,31 @@ public:
 
             QBrush *br = new QBrush(Qt::SolidPattern);
             br->setColor(Qt::blue);
+            rect->setBrush(*br);
+            rect->update();
+        }
+    }
+
+    void GraphPointPaint(int x, int y, QColor fillColor)
+    {
+        if (abs(x) > no_of_pixels / 2 && abs(y) > no_of_pixels / 2)
+        {
+            cout << "pixel coordinates: (" << x << "," << y << ") incorrect " << no_of_pixels * pixelsize / 2 << endl;
+            return;
+        }
+        else
+        {
+            QGraphicsItem *item = graphscene->itemAt(x * pixelsize, y * pixelsize, QTransform());
+            if (item == NULL)
+            {
+                cout << " item at pixel coordinates: (" << x << "," << y << ") not found" << endl;
+                return;
+            }
+
+            QGraphicsRectItem *rect = qgraphicsitem_cast<QGraphicsRectItem *>(item);
+
+            QBrush *br = new QBrush(Qt::SolidPattern);
+            br->setColor(fillColor);
             rect->setBrush(*br);
             rect->update();
         }
@@ -183,6 +210,13 @@ public slots:
         point = coordinateTransform(point);
         GraphPointPaint(point.first, point.second);
     }
+
+    void GraphPaintPointSlot(pair<int, int> point, QColor fillColor)
+    {
+        point = coordinateTransform(point);
+        GraphPointPaint(point.first, point.second, fillColor);
+    }
+
     void GraphUnPaintPointSlot(pair<int, int> point)
     {
         point = coordinateTransform(point);
