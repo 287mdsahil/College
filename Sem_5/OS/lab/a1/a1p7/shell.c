@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
 #include <string.h>
 
 void showPrompt()
@@ -12,6 +13,23 @@ void getCommand(char str[100])
     scanf("%[^\n]%*c", str);
 };
 
+void parseCommand(char str[100])
+{
+    char *command;
+    command = strtok (str," ");
+
+    if(strcmp("exit",command)==0)
+    {
+        exit(0);
+    }
+    char *pch;
+    while (pch != NULL)
+    {
+        printf("%s\n", pch);
+        pch = strtok(NULL, " ,.-");
+    }
+}
+
 int main()
 {
     system("clear");
@@ -20,13 +38,7 @@ int main()
         showPrompt();
         char command[100];
         getCommand(command);
-        if(strcmp(command,"exit")==0)
-            break;
-        else
-        {
-
-        }
-        
+        parseCommand(command);
     }
     return 0;
 }
