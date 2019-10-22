@@ -76,7 +76,7 @@ public:
         clickCoordinate = new QLabel("Clicked Coordinate :\n 0, 0");
         mouseCoordinate = new QLabel("Mouse Coordinate :\n 0, 0");
 
-        algo = new AlgoWidget(this,3,no_of_pixels,pixelsize);
+        algo = new AlgoWidget(this,4,no_of_pixels,pixelsize);
 
         drawingLayout->addWidget(algo);
         drawingLayout->addWidget(clickCoordinate);

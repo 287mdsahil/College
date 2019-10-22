@@ -48,6 +48,15 @@ public:
     QColor fill_color = QColor(Qt::red);
     map<pair<int, int>, QColor> colormap;
 
+    //variable for clipping
+    const int INSIDE = 0; // 0000
+    const int LEFT = 1;   // 0001
+    const int RIGHT = 2;  // 0010
+    const int BOTTOM = 4; // 0100
+    const int TOP = 8;    // 1000
+    vector<pair<int, int>> clippingRectPoints;
+    vector<pair<int, int>> linePoints;
+
     //LINE DRAWING-----------------------------------------------------------------
 
     //parametric line drawing algorithm
@@ -99,7 +108,7 @@ public:
     }
 
     //DDA Line Drawing algorithm
-    void DDA(pair<int, int> p1, pair<int, int> p2)
+    void DDA(pair<int, int> p1, pair<int, int> p2, QColor paintcolor = Qt::blue)
     {
         cout << "DDA line drawing called" << endl;
         pair<int, int> point1, point2;
@@ -109,14 +118,14 @@ public:
             int y1 = min(p1.second, p2.second);
             int y2 = max(p1.second, p2.second);
             for (int y = y1; y <= y2; y++)
-                paintSignalEmitter(pair<int, int>(p1.first, y));
+                paintSignalEmitter(pair<int, int>(p1.first, y), paintcolor);
         }
         else if (p1.second == p2.second)
         {
             int x1 = min(p1.first, p2.first);
             int x2 = max(p1.first, p2.first);
             for (int x = x1; x <= x2; x++)
-                paintSignalEmitter(pair<int, int>(x, p1.second));
+                paintSignalEmitter(pair<int, int>(x, p1.second), paintcolor);
         }
         else
         {
@@ -128,7 +137,7 @@ public:
                 int incr = abs(p2.first - p1.first) / (p2.first - p1.first);
                 while (x != p2.first)
                 {
-                    paintSignalEmitter(pair<int, int>(x, y));
+                    paintSignalEmitter(pair<int, int>(x, y), paintcolor);
                     y += m * incr;
                     x = x + incr;
                 }
@@ -141,7 +150,7 @@ public:
                 int incr = abs(p2.second - p1.second) / (p2.second - p1.second);
                 while (y != p2.second)
                 {
-                    paintSignalEmitter(pair<int, int>(x, y));
+                    paintSignalEmitter(pair<int, int>(x, y), paintcolor);
                     x += m * incr;
                     y = y + incr;
                 }
@@ -419,7 +428,7 @@ public:
 
     void scanlineFill()
     {
-        cout<<"scan line called"<<endl;
+        cout << "scan line called" << endl;
         for (int i = -no_of_pixels / 2; i <= no_of_pixels / 2; i++)
         {
             vector<pair<int, int>> linepoints;
@@ -430,9 +439,9 @@ public:
                 {
                     linepoints.push_back((make_pair(i, j)));
                     if (searchPoint(make_pair(i, j)))
-                       linepoints.push_back((make_pair(i, j)));
-                    
-                    while(colormap[make_pair(i,j-1)]==Qt::blue)
+                        linepoints.push_back((make_pair(i, j)));
+
+                    while (colormap[make_pair(i, j - 1)] == Qt::blue)
                     {
                         j--;
                     }
@@ -464,7 +473,147 @@ public:
             }
         }
     }
-    //----------------------------------------------------------------------------------
+
+    //Clipping algorithms----------------------------------------------------------------------------------
+
+    int computeCode(int x, int y) //compare (X,Y) with boundary
+    {
+
+        int x_max = max(clippingRectPoints[1].first,clippingRectPoints[0].first);
+        int y_max = max(clippingRectPoints[1].second,clippingRectPoints[0].second);
+        int x_min = min(clippingRectPoints[1].first,clippingRectPoints[0].first);
+        int y_min = min(clippingRectPoints[1].second,clippingRectPoints[0].second);
+
+        // initialized as being inside
+        int code = INSIDE;
+
+        if (x < x_min) // to the left of rectangle
+            code |= LEFT;
+        else if (x > x_max) // to the right of rectangle
+            code |= RIGHT;
+        if (y < y_min) // below the rectangle
+            code |= BOTTOM;
+        else if (y > y_max) // above the rectangle
+            code |= TOP;
+
+        return code;
+    }
+
+    // Implementing Cohen-Sutherland algorithm
+    // Clipping a line from P1 = (x2, y2) to P2 = (x2, y2)
+    void cohenSutherlandClip(pair<int, int> p1, pair<int, int> p2)
+    {
+        cout << "cohen sutherland line clipping called" << endl;
+
+        //DDA(p1, p2, Qt::white);
+        int x1 = p1.first;
+        int y1 = p1.second;
+        int x2 = p2.first;
+        int y2 = p2.second;
+
+        //cout<<x1<<","<<y1<<" - "<<x2<<","<<y2<<endl;
+
+        int x_max = max(clippingRectPoints[1].first,clippingRectPoints[0].first);
+        int y_max = max(clippingRectPoints[1].second,clippingRectPoints[0].second);
+        int x_min = min(clippingRectPoints[1].first,clippingRectPoints[0].first);
+        int y_min = min(clippingRectPoints[1].second,clippingRectPoints[0].second);
+
+        // Compute region codes for P1, P2
+        int code1 = computeCode(x1, y1);
+        int code2 = computeCode(x2, y2);
+
+        // Initialize line as outside the rectangular window
+        bool accept = false;
+
+        while (true)
+        {
+            if ((code1 == 0) && (code2 == 0))
+            {
+                // If both endpoints lie within rectangle
+                accept = true;
+                break;
+            }
+            else if (code1 & code2)
+            {
+                // If both endpoints are outside rectangle,
+                // in same region
+                break;
+            }
+            else
+            {
+                // Some segment of line lies within the
+                // rectangle
+                int code_out;
+                int x, y;
+
+                // At least one endpoint is outside the
+                // rectangle, pick it.
+                if (code1 != 0)
+                    code_out = code1;
+                else
+                    code_out = code2;
+
+                // Find intersection point;
+                // using formulas y = y1 + slope * (x - x1),
+                // x = x1 + (1 / slope) * (y - y1)
+                if (code_out & TOP)
+                {
+                    // point is above the clip rectangle
+                    x = x1 + (x2 - x1) * (y_max - y1) / (y2 - y1);
+                    y = y_max;
+                }
+                else if (code_out & BOTTOM)
+                {
+                    // point is below the rectangle
+                    x = x1 + (x2 - x1) * (y_min - y1) / (y2 - y1);
+                    y = y_min;
+                }
+                else if (code_out & RIGHT)
+                {
+                    // point is to the right of rectangle
+                    y = y1 + (y2 - y1) * (x_max - x1) / (x2 - x1);
+                    x = x_max;
+                }
+                else if (code_out & LEFT)
+                {
+                    // point is to the left of rectangle
+                    y = y1 + (y2 - y1) * (x_min - x1) / (x2 - x1);
+                    x = x_min;
+                }
+
+                // Now intersection point x,y is found
+                // We replace point outside rectangle
+                // by intersection point
+                if (code_out == code1)
+                {
+                    x1 = x;
+                    y1 = y;
+                    code1 = computeCode(x1, y1);
+                }
+                else
+                {
+                    x2 = x;
+                    y2 = y;
+                    code2 = computeCode(x2, y2);
+                }
+            }
+        }
+
+        cout<<accept<<endl;
+        if (accept)
+        {
+            //You have (X1,Y1) and (X2,Y2).Draw the line.
+
+            DDA(pair<int, int>(x1, y1), pair<int, int>(x2, y2),Qt::green);
+
+            // cout <<"Line accepted from " << x1 << ", "
+            //     << y1 << " to "<< x2 << ", " << y2 << endl;
+            // Here the user can add code to display the rectangle
+            // along with the accepted (portion of) lines
+        }
+    }
+
+    //-----------------------------------------------------------------------------------------------------
 
     void makelineDrawing()
     {
@@ -637,6 +786,55 @@ public:
         setLayout(algoParentLayout);
     }
 
+    void makeClipping()
+    {
+        points.clear();
+        points.push_back(pair<int, int>(0, 0));
+        points.push_back(pair<int, int>(0, 0));
+        internalPoint = pair<int, int>(0, 0);
+        algoParentLayout = new QVBoxLayout();
+
+        drawingAlgoComboBox = new QComboBox();
+        drawingAlgoComboBox->addItem("line clipping");
+
+        QGroupBox *pointGroup = new QGroupBox("Line");
+        QGridLayout *pointLayout = new QGridLayout();
+        pointButtons.push_back(new QPushButton("Point 1"));
+        pointButtons.push_back(new QPushButton("Point 2"));
+        pointLabels.push_back(new QLabel("0,0"));
+        pointLabels.push_back(new QLabel("0,0"));
+        pointButtons.push_back(new QPushButton("Draw line"));
+        pointButtons.push_back(new QPushButton("Draw rectangle"));
+        pointButtons.push_back(new QPushButton("CLip Line"));
+        pointLayout->addWidget(pointButtons[0], 0, 0);
+        pointLayout->addWidget(pointLabels[0], 0, 1);
+        pointLayout->addWidget(pointButtons[1], 1, 0);
+        pointLayout->addWidget(pointLabels[1], 1, 1);
+        pointLayout->addWidget(pointButtons[2], 2, 0);
+        pointLayout->addWidget(pointButtons[3], 3, 0);
+        pointLayout->addWidget(pointButtons[4], 4, 0);
+        pointGroup->setLayout(pointLayout);
+
+        QSignalMapper *mapper = new QSignalMapper();
+        connect(mapper, SIGNAL(mapped(int)), this, SLOT(makePointRequest(int)));
+        mapper->setMapping(pointButtons[0], 0);
+        connect(pointButtons[0], SIGNAL(clicked()), mapper, SLOT(map()));
+        mapper->setMapping(pointButtons[1], 1);
+        connect(pointButtons[1], SIGNAL(clicked()), mapper, SLOT(map()));
+        connect(pointButtons[2], SIGNAL(clicked()), this, SLOT(drawLine()));
+
+        connect(pointButtons[3], SIGNAL(clicked()), this, SLOT(drawRect()));
+
+        connect(pointButtons[4], SIGNAL(clicked()), this, SLOT(callClippingAlgorithm()));
+
+        timeLabel = new QLabel("Time required: -");
+
+        algoParentLayout->addWidget(drawingAlgoComboBox);
+        algoParentLayout->addWidget(pointGroup);
+        algoParentLayout->addWidget(timeLabel);
+        setLayout(algoParentLayout);
+    }
+
     void resetColormap(int npixel, int spixel)
     {
         no_of_pixels = npixel;
@@ -680,17 +878,21 @@ public:
         {
             makelineDrawing();
         }
-        if (type == 1)
+        else if (type == 1)
         {
             makeCircleDrawing();
         }
-        if (type == 2)
+        else if (type == 2)
         {
             makeEllipseDrawing();
         }
-        if (type == 3)
+        else if (type == 3)
         {
             makeFilling();
+        }
+        else if (type == 4)
+        {
+            makeClipping();
         }
     }
 
@@ -805,6 +1007,22 @@ public slots:
         timeLabel->setText(QString::fromStdString("Time required : " + to_string((tend - tstart) / 1000000) + " ms"));
     }
 
+    //function to call the clipping algorithm
+    void callClippingAlgorithm()
+    {
+        //start of algo
+        algoIndex = drawingAlgoComboBox->currentIndex();
+        double tstart = (chrono::system_clock::now().time_since_epoch()).count();
+        if (algoIndex == 0)
+        {
+            cohenSutherlandClip(linePoints[0], linePoints[1]);
+        }
+
+        double tend = (chrono::system_clock::now().time_since_epoch()).count();
+        //end of algo
+        timeLabel->setText(QString::fromStdString("Time required : " + to_string((tend - tstart) / 1000000) + " ms"));
+    }
+
     //function to set the internal point
     void setInternalPoint()
     {
@@ -825,5 +1043,28 @@ public slots:
     {
         //clear the points vector
         points.clear();
+    }
+
+    void drawLine()
+    {
+        linePoints.clear();
+        DDA(points[0], points[1]);
+        linePoints.push_back(points[0]);
+        linePoints.push_back(points[1]);
+    }
+
+    void drawRect() //p1->top left;p2->bottom right
+    {
+        clippingRectPoints.clear();
+        pair<int, int> p1 = points[0];
+        pair<int, int> p2 = points[1];
+
+        clippingRectPoints.push_back(points[0]);
+        clippingRectPoints.push_back(points[1]);
+
+        DDA(p1, pair<int, int>(p2.first, p1.second),Qt::red);
+        DDA(p1, pair<int, int>(p1.first, p2.second),Qt::red);
+        DDA(p2, pair<int, int>(p1.first, p2.second),Qt::red);
+        DDA(p2, pair<int, int>(p2.first, p1.second),Qt::red);
     }
 };

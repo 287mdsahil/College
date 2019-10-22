@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'contolpanel.h'
 **
-** Created by: The Qt Meta Object Compiler version 67 (Qt 5.7.1)
+** Created by: The Qt Meta Object Compiler version 67 (Qt 5.11.3)
 **
 ** WARNING! All changes made in this file will be lost!
 *****************************************************************************/
@@ -12,12 +12,14 @@
 #if !defined(Q_MOC_OUTPUT_REVISION)
 #error "The header file 'contolpanel.h' doesn't include <QObject>."
 #elif Q_MOC_OUTPUT_REVISION != 67
-#error "This file was generated using the moc from 5.7.1. It"
+#error "This file was generated using the moc from 5.11.3. It"
 #error "cannot be used with the include files from this version of Qt."
 #error "(The moc has changed too much.)"
 #endif
 
 QT_BEGIN_MOC_NAMESPACE
+QT_WARNING_PUSH
+QT_WARNING_DISABLE_DEPRECATED
 struct qt_meta_stringdata_ControlPanel_t {
     QByteArrayData data[9];
     char stringdata0[107];
@@ -95,17 +97,16 @@ void ControlPanel::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id
         }
     } else if (_c == QMetaObject::IndexOfMethod) {
         int *result = reinterpret_cast<int *>(_a[0]);
-        void **func = reinterpret_cast<void **>(_a[1]);
         {
-            typedef void (ControlPanel::*_t)(int , int );
-            if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&ControlPanel::GraphResetSignal)) {
+            using _t = void (ControlPanel::*)(int , int );
+            if (*reinterpret_cast<_t *>(_a[1]) == static_cast<_t>(&ControlPanel::GraphResetSignal)) {
                 *result = 0;
                 return;
             }
         }
         {
-            typedef void (ControlPanel::*_t)(int );
-            if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&ControlPanel::pointRequest)) {
+            using _t = void (ControlPanel::*)(int );
+            if (*reinterpret_cast<_t *>(_a[1]) == static_cast<_t>(&ControlPanel::pointRequest)) {
                 *result = 1;
                 return;
             }
@@ -113,9 +114,9 @@ void ControlPanel::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id
     }
 }
 
-const QMetaObject ControlPanel::staticMetaObject = {
+QT_INIT_METAOBJECT const QMetaObject ControlPanel::staticMetaObject = {
     { &QWidget::staticMetaObject, qt_meta_stringdata_ControlPanel.data,
-      qt_meta_data_ControlPanel,  qt_static_metacall, Q_NULLPTR, Q_NULLPTR}
+      qt_meta_data_ControlPanel,  qt_static_metacall, nullptr, nullptr}
 };
 
 
@@ -126,9 +127,9 @@ const QMetaObject *ControlPanel::metaObject() const
 
 void *ControlPanel::qt_metacast(const char *_clname)
 {
-    if (!_clname) return Q_NULLPTR;
+    if (!_clname) return nullptr;
     if (!strcmp(_clname, qt_meta_stringdata_ControlPanel.stringdata0))
-        return static_cast<void*>(const_cast< ControlPanel*>(this));
+        return static_cast<void*>(this);
     return QWidget::qt_metacast(_clname);
 }
 
@@ -152,14 +153,15 @@ int ControlPanel::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
 // SIGNAL 0
 void ControlPanel::GraphResetSignal(int _t1, int _t2)
 {
-    void *_a[] = { Q_NULLPTR, const_cast<void*>(reinterpret_cast<const void*>(&_t1)), const_cast<void*>(reinterpret_cast<const void*>(&_t2)) };
+    void *_a[] = { nullptr, const_cast<void*>(reinterpret_cast<const void*>(&_t1)), const_cast<void*>(reinterpret_cast<const void*>(&_t2)) };
     QMetaObject::activate(this, &staticMetaObject, 0, _a);
 }
 
 // SIGNAL 1
 void ControlPanel::pointRequest(int _t1)
 {
-    void *_a[] = { Q_NULLPTR, const_cast<void*>(reinterpret_cast<const void*>(&_t1)) };
+    void *_a[] = { nullptr, const_cast<void*>(reinterpret_cast<const void*>(&_t1)) };
     QMetaObject::activate(this, &staticMetaObject, 1, _a);
 }
+QT_WARNING_POP
 QT_END_MOC_NAMESPACE
