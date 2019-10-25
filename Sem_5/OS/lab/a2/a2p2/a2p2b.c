@@ -63,16 +63,13 @@ int main()
             sem_t *sem = sem_open("a2p2b_semaphore", 0);
             int flag = 0;
 
-            if (*iterLock < i)
-            {
+            if (*iterLock > i)
                 sem_wait(sem);
-                flag = 1;
-            }
 
             printf("Iteration:%d\tPId:%d\n", i + 1, pid);
             sleep(sleepTime);
 
-            if (flag)
+            if (*iterLock > i)
                 sem_post(sem);
         }
         break;
