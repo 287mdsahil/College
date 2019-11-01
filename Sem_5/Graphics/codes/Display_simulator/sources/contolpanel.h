@@ -7,6 +7,7 @@
 #include <QGridLayout>
 #include <QGroupBox>
 #include <QComboBox>
+#include <QTabWidget>
 #include <QSignalMapper>
 #include <QString>
 #include <string>
@@ -32,7 +33,8 @@ class ControlPanel : public QWidget
     //members of drawing------------------------------------
     QLabel *clickCoordinate;
     QLabel *mouseCoordinate;
-    AlgoWidget *algo;
+    vector<AlgoWidget*> algo;
+    QTabWidget *algoView;
 
 public:
     ControlPanel()
@@ -75,10 +77,21 @@ public:
         QLayout *drawingLayout = new QVBoxLayout();
         clickCoordinate = new QLabel("Clicked Coordinate :\n 0, 0");
         mouseCoordinate = new QLabel("Mouse Coordinate :\n 0, 0");
+	algoView = new QTabWidget();
 
-        algo = new AlgoWidget(this,4,no_of_pixels,pixelsize);
+	algo.push_back(new AlgoWidget(this,0,no_of_pixels,pixelsize));
+        algo.push_back(new AlgoWidget(this,1,no_of_pixels,pixelsize));
+        algo.push_back(new AlgoWidget(this,2,no_of_pixels,pixelsize));
+        algo.push_back(new AlgoWidget(this,3,no_of_pixels,pixelsize));
+        algo.push_back(new AlgoWidget(this,4,no_of_pixels,pixelsize));
 
-        drawingLayout->addWidget(algo);
+	algoView->addTab(algo[0],QString("Line"));
+	algoView->addTab(algo[1],QString("Circle"));
+	algoView->addTab(algo[2],QString("Ellipse"));
+	algoView->addTab(algo[3],QString("Filling"));
+	algoView->addTab(algo[4],QString("Clipping"));
+	
+        drawingLayout->addWidget(algoView);
         drawingLayout->addWidget(clickCoordinate);
         drawingLayout->addWidget(mouseCoordinate);
         drawingGroup->setLayout(drawingLayout);
@@ -92,7 +105,7 @@ public:
 
     AlgoWidget *getAlgo()
     {
-        return algo;
+        return algo[algoView->currentIndex()];
     }
 
 signals:
@@ -105,7 +118,7 @@ public slots:
         pixelsize = pixelsizeSpinBox->value();
         no_of_pixels = noOfPixelsSpinBox->value();
         emit GraphResetSignal(pixelsize, no_of_pixels);
-        algo->resetColormap(no_of_pixels,pixelsize);
+        algo[algoView->currentIndex()]->resetColormap(no_of_pixels,pixelsize);
     }
 
     void getPointHover(pair<int, int> point)

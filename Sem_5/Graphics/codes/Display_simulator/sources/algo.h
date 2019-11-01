@@ -6,6 +6,7 @@
 #include <QSpinBox>
 #include <QVBoxLayout>
 #include <QComboBox>
+#include <QStackedWidget>
 #include <utility>
 #include <vector>
 #include <iostream>
@@ -56,6 +57,11 @@ public:
     const int TOP = 8;    // 1000
     vector<pair<int, int>> clippingRectPoints;
     vector<pair<int, int>> linePoints;
+    QWidget *lineClippingWidget;
+    QWidget *polygonClippingWidget;
+    QVBoxLayout *lineClippingLayout;
+    QVBoxLayout *ploygonClippingLayout;
+    QStackedWidget *clippingStackedWidget;
 
     //LINE DRAWING-----------------------------------------------------------------
 
@@ -111,7 +117,6 @@ public:
     void DDA(pair<int, int> p1, pair<int, int> p2, QColor paintcolor = Qt::blue)
     {
         cout << "DDA line drawing called" << endl;
-        pair<int, int> point1, point2;
 
         if (p1.first == p2.first)
         {
@@ -796,6 +801,11 @@ public:
 
         drawingAlgoComboBox = new QComboBox();
         drawingAlgoComboBox->addItem("line clipping");
+	drawingAlgoComboBox->addItem("Polygon clipping");
+	
+	//line clipping------------------------------------------------
+	lineClippingWidget = new QWidget();
+	lineClippingLayout = new QVBoxLayout();
 
         QGroupBox *pointGroup = new QGroupBox("Line");
         QGridLayout *pointLayout = new QGridLayout();
@@ -829,10 +839,26 @@ public:
 
         timeLabel = new QLabel("Time required: -");
 
-        algoParentLayout->addWidget(drawingAlgoComboBox);
-        algoParentLayout->addWidget(pointGroup);
-        algoParentLayout->addWidget(timeLabel);
-        setLayout(algoParentLayout);
+        lineClippingLayout->addWidget(pointGroup);
+        lineClippingLayout->addWidget(timeLabel);
+        lineClippingWidget->setLayout(lineClippingLayout);
+	
+
+	//polygon clipping-----------------------------------
+	polygonClippingWidget = new QWidget();
+	ploygonClippingLayout = new QVBoxLayout();
+
+
+
+	clippingStackedWidget = new QStackedWidget();
+	clippingStackedWidget->addWidget(lineClippingWidget);
+	clippingStackedWidget->addWidget(polygonClippingWidget);
+
+	connect(drawingAlgoComboBox,SIGNAL(currentIndexChanged(int)),clippingStackedWidget,SLOT(setCurrentIndex(int)));
+	
+	algoParentLayout->addWidget(drawingAlgoComboBox);
+	algoParentLayout->addWidget(clippingStackedWidget);
+	setLayout(algoParentLayout);
     }
 
     void resetColormap(int npixel, int spixel)
