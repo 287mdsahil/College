@@ -22,7 +22,7 @@ int main(int argc, char *argv[])
     QObject::connect(controlpanel, SIGNAL(GraphResetSignal(int, int)), graph, SLOT(GraphResetSlot(int, int)));
     QObject::connect(graph, SIGNAL(pointSelect(pair<int, int>)), controlpanel, SLOT(getPointClicked(pair<int, int>)));
     QObject::connect(graph, SIGNAL(pointHover(pair<int, int>)), controlpanel, SLOT(getPointHover(pair<int, int>)));
-    for(int i=0;i<5;i++)
+    for(int i=0;i<6;i++)
     {
     	QObject::connect(graph, SIGNAL(pointSelect(pair<int, int>)), controlpanel->getAlgo(i), SLOT(receiveClickedPoint(pair<int, int>)));
     	QObject::connect(controlpanel->getAlgo(i), SIGNAL(paintPointSignal(pair<int, int>)), graph, SLOT(GraphPaintPointSlot(pair<int, int>)),Qt::DirectConnection);

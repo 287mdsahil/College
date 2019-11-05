@@ -620,9 +620,161 @@ public:
         }
     }
 
+
+    	const int MAX_POINTS = 20;
+
+	// Returns x-value of point of intersectipn of two
+	// lines
+	int x_intersect(int x1, int y1, int x2, int y2, int x3, int y3, int x4, int y4)
+	{
+    		int num = (x1*y2 - y1*x2) * (x3-x4) - (x1-x2) * (x3*y4 - y3*x4);
+    		int den = (x1-x2) * (y3-y4) - (y1-y2) * (x3-x4);
+    		return num/den;
+	}
+
+	// Returns y-value of point of intersectipn of
+	// two lines
+	int y_intersect(int x1, int y1, int x2, int y2, int x3, int y3, int x4, int y4)
+	{
+    		int num = (x1*y2 - y1*x2) * (y3-y4) - (y1-y2) * (x3*y4 - y3*x4);
+    		int den = (x1-x2) * (y3-y4) - (y1-y2) * (x3-x4);
+    		return num/den;
+	}
+
+	// This functions clips all the edges w.r.t one clip
+	// edge of clipping area
+	void clip(int poly_points[][2], int &poly_size, int x1, int y1, int x2, int y2)
+	{
+		cout<<"clipping poly, polysize:"<<poly_size<<endl;
+    		int new_points[MAX_POINTS][2], new_poly_size = 0;
+
+    		// (ix,iy),(kx,ky) are the co-ordinate values of
+    		// the points
+    		for (int i = 0; i < poly_size; i++)
+    		{
+        		// i and k form a line in polygon
+        		int k = (i+1) % poly_size;
+        		int ix = poly_points[i][0], iy = poly_points[i][1];
+        		int kx = poly_points[k][0], ky = poly_points[k][1];
+
+        		// Calculating position of first point
+        		// w.r.t. clipper line
+        		int i_pos = (x2-x1) * (iy-y1) - (y2-y1) * (ix-x1);
+
+        		// Calculating position of second point
+        		// w.r.t. clipper line
+        		int k_pos = (x2-x1) * (ky-y1) - (y2-y1) * (kx-x1);
+
+        		// Case 1 : When both points are inside
+        		if (i_pos < 0  && k_pos < 0)
+        		{
+				cout<<"case1"<<endl;
+            		//Only second point is added
+            			new_points[new_poly_size][0] = kx;
+            			new_points[new_poly_size][1] = ky;
+            			new_poly_size++;
+        		}
+
+        		// Case 2: When only first point is outside
+        		else if (i_pos >= 0  && k_pos < 0)
+        		{
+				cout<<"case2"<<endl;
+            			// Point of intersection with edge
+            			// and the second point is added
+            			new_points[new_poly_size][0] = x_intersect(x1, y1, x2, y2, ix, iy, kx, ky);
+            			new_points[new_poly_size][1] = y_intersect(x1, y1, x2, y2, ix, iy, kx, ky);
+            			new_poly_size++;
+
+            			new_points[new_poly_size][0] = kx;
+            			new_points[new_poly_size][1] = ky;
+            			new_poly_size++;
+        		}
+
+        		// Case 3: When only second point is outside
+        		else if (i_pos < 0  && k_pos >= 0)
+        		{
+				cout<<"case3"<<endl;
+            			//Only point of intersection with edge is added
+            			new_points[new_poly_size][0] = x_intersect(x1, y1, x2, y2, ix, iy, kx, ky);
+            			new_points[new_poly_size][1] = y_intersect(x1, y1, x2, y2, ix, iy, kx, ky);
+            			new_poly_size++;
+        		}
+
+       		 	// Case 4: When both points are outside
+        		else
+        		{
+				cout<<"case4"<<endl;
+            			//No points are added
+        		}
+    		}
+		
+		cout<<"poly_size"<<poly_size<<endl;
+    		// Copying new points into original array
+    		// and changing the no. of vertices
+    		poly_size = new_poly_size;
+    		for (int i = 0; i < poly_size; i++)
+    		{
+        		poly_points[i][0] = new_points[i][0];
+       			poly_points[i][1] = new_points[i][1];
+    		}
+	}
+
+	// Implements Sutherland–Hodgman algorithm
+	void suthHodgClip(int poly_points[][2], int &poly_size, int clipper_points[][2], int clipper_size)
+	{
+		cout<<"clipping polygon"<<endl;
+    		//i and k are two consecutive indexes
+    		for (int i=0; i<clipper_size; i++)
+    		{
+        		int k = (i+1) % clipper_size;
+
+        		// We pass the current array of vertices, it's size
+        		// and the end points of the selected clipper line
+        		clip(poly_points, poly_size, clipper_points[i][0], clipper_points[i][1], clipper_points[k][0], clipper_points[k][1]);
+    		}
+
+    		// Printing vertices of clipped polygon
+    		for (int i=0; i < poly_size; i++)
+        		cout << '(' << poly_points[i][0] << ", " << poly_points[i][1] << ") ";
+
+		for(int i=0; i< poly_size;i++)
+		{
+			int p1 = i;
+			int p2 = (i+1)%poly_size;
+
+			DDA(pair<int,int>(poly_points[p1][0],poly_points[p1][1]),pair<int,int>(poly_points[p2][0],poly_points[p2][1]),Qt::green);
+		}
+	}
+
     void cohenSutherlandPolygonClipping(vector<pair<int,int>> polygon)
     {
-	int xmax,xmin,ymax,ymin;
+	cout<<"Cohen Sutherland Polygon clipping called"<<endl;
+	int clipper_size = 4;
+	int poly_size = polygon.size();
+	int poly_points[poly_size][2];
+	int clipper_points[4][2];
+	clipper_points[0][0] = clippingRectPoints[0].first; clipper_points[0][1] = clippingRectPoints[0].second;
+	clipper_points[1][0] = clippingRectPoints[1].first; clipper_points[1][1] = clippingRectPoints[0].second;
+	clipper_points[2][0] = clippingRectPoints[1].first; clipper_points[2][1] = clippingRectPoints[1].second;
+	clipper_points[3][0] = clippingRectPoints[0].first; clipper_points[3][1] = clippingRectPoints[1].second;
+
+	for(int i=0;i<poly_size;i++)
+	{
+		poly_points[i][0] = polygon[i].first;
+		poly_points[i][1] = polygon[i].second;
+	}
+	
+	cout<<"clipper rectangle:";	
+	for(int i=0;i<4;i++)
+	{
+		//clipper_points[i][0] = clippingRectPoints[i].first;
+		//clipper_points[i][1] = clippingRectPoints[i].second;
+		cout<<"("<<clipper_points[i][0]<<","<<clipper_points[i][1]<<") ";	
+	}
+	cout<<endl;	
+	
+	suthHodgClip(poly_points,poly_size,clipper_points,clipper_size);
+	
 	return;
     }
 
@@ -868,9 +1020,21 @@ public:
 
 	pointButtons.push_back(new QPushButton("clip polygon"));
 	polygonClippingLayout->addWidget(pointButtons[5]);
-        connect(pointButtons[4], SIGNAL(clicked()), this, SLOT(callClippingAlgorithm()));
+        connect(pointButtons[5], SIGNAL(clicked()), this, SLOT(callClippingAlgorithm()));
 	polygonClippingWidget->setLayout(polygonClippingLayout);
+	
+	//---------------------------------------------------------
+       	QPushButton *addPolygonPoint = new QPushButton("Add polygon point");
+        QPushButton *connectPolygon =  new QPushButton("Connect");
+        QPushButton *clearStack = new QPushButton("clear points stack");
+       	polygonClippingLayout->addWidget(addPolygonPoint);
+	polygonClippingLayout->addWidget(connectPolygon);
+	polygonClippingLayout->addWidget(clearStack);
 
+        connect(addPolygonPoint, SIGNAL(clicked()), this, SLOT(makePointRequestPolygon()));
+        connect(connectPolygon, SIGNAL(clicked()), this, SLOT(connectPolygon()));
+        connect(clearStack, SIGNAL(clicked()), this, SLOT(clearPoints()));
+	//-----------------------------------------------------------------------------
 
 	clippingStackedWidget = new QStackedWidget();
 	clippingStackedWidget->addWidget(lineClippingWidget);
@@ -1068,6 +1232,10 @@ public slots:
         {
             cohenSutherlandClip(linePoints[0], linePoints[1]);
         }
+	else if(algoIndex == 1)
+	{
+	    cohenSutherlandPolygonClipping(points);
+	}
 
         double tend = (chrono::system_clock::now().time_since_epoch()).count();
         //end of algo
@@ -1100,6 +1268,7 @@ public slots:
     {
         linePoints.clear();
         DDA(points[0], points[1]);
+	points.clear();
         linePoints.push_back(points[0]);
         linePoints.push_back(points[1]);
     }
