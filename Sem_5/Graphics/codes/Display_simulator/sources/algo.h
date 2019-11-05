@@ -55,13 +55,15 @@ public:
     const int RIGHT = 2;  // 0010
     const int BOTTOM = 4; // 0100
     const int TOP = 8;    // 1000
+    //line clipping
     vector<pair<int, int>> clippingRectPoints;
     vector<pair<int, int>> linePoints;
     QWidget *lineClippingWidget;
     QWidget *polygonClippingWidget;
     QVBoxLayout *lineClippingLayout;
-    QVBoxLayout *ploygonClippingLayout;
+    QVBoxLayout *polygonClippingLayout;
     QStackedWidget *clippingStackedWidget;
+    //polygon clipping
 
     //LINE DRAWING-----------------------------------------------------------------
 
@@ -796,33 +798,29 @@ public:
         points.clear();
         points.push_back(pair<int, int>(0, 0));
         points.push_back(pair<int, int>(0, 0));
+        points.push_back(pair<int, int>(0, 0));
+        points.push_back(pair<int, int>(0, 0));
+        points.push_back(pair<int, int>(0, 0));
+        points.push_back(pair<int, int>(0, 0));
+        points.push_back(pair<int, int>(0, 0));
+        points.push_back(pair<int, int>(0, 0));
         internalPoint = pair<int, int>(0, 0);
         algoParentLayout = new QVBoxLayout();
 
-        drawingAlgoComboBox = new QComboBox();
-        drawingAlgoComboBox->addItem("line clipping");
-	drawingAlgoComboBox->addItem("Polygon clipping");
-	
-	//line clipping------------------------------------------------
-	lineClippingWidget = new QWidget();
-	lineClippingLayout = new QVBoxLayout();
 
-        QGroupBox *pointGroup = new QGroupBox("Line");
+
+        QGroupBox *pointGroup = new QGroupBox("Set points");
         QGridLayout *pointLayout = new QGridLayout();
         pointButtons.push_back(new QPushButton("Point 1"));
         pointButtons.push_back(new QPushButton("Point 2"));
         pointLabels.push_back(new QLabel("0,0"));
         pointLabels.push_back(new QLabel("0,0"));
-        pointButtons.push_back(new QPushButton("Draw line"));
         pointButtons.push_back(new QPushButton("Draw rectangle"));
-        pointButtons.push_back(new QPushButton("CLip Line"));
         pointLayout->addWidget(pointButtons[0], 0, 0);
         pointLayout->addWidget(pointLabels[0], 0, 1);
         pointLayout->addWidget(pointButtons[1], 1, 0);
         pointLayout->addWidget(pointLabels[1], 1, 1);
         pointLayout->addWidget(pointButtons[2], 2, 0);
-        pointLayout->addWidget(pointButtons[3], 3, 0);
-        pointLayout->addWidget(pointButtons[4], 4, 0);
         pointGroup->setLayout(pointLayout);
 
         QSignalMapper *mapper = new QSignalMapper();
@@ -831,33 +829,49 @@ public:
         connect(pointButtons[0], SIGNAL(clicked()), mapper, SLOT(map()));
         mapper->setMapping(pointButtons[1], 1);
         connect(pointButtons[1], SIGNAL(clicked()), mapper, SLOT(map()));
-        connect(pointButtons[2], SIGNAL(clicked()), this, SLOT(drawLine()));
 
-        connect(pointButtons[3], SIGNAL(clicked()), this, SLOT(drawRect()));
+	connect(pointButtons[2], SIGNAL(clicked()), this, SLOT(drawRect()));
+
+        drawingAlgoComboBox = new QComboBox();
+        drawingAlgoComboBox->addItem("line clipping");
+	drawingAlgoComboBox->addItem("Polygon clipping");
+	
+	//line clipping------------------------------------------------
+	lineClippingWidget = new QWidget();
+	lineClippingLayout = new QVBoxLayout();
+	
+
+        pointButtons.push_back(new QPushButton("Draw line"));
+        pointButtons.push_back(new QPushButton("CLip Line"));
+        lineClippingLayout->addWidget(pointButtons[3]);
+        lineClippingLayout->addWidget(pointButtons[4]);
+
+        connect(pointButtons[3], SIGNAL(clicked()), this, SLOT(drawLine()));
+
 
         connect(pointButtons[4], SIGNAL(clicked()), this, SLOT(callClippingAlgorithm()));
 
-        timeLabel = new QLabel("Time required: -");
-
-        lineClippingLayout->addWidget(pointGroup);
-        lineClippingLayout->addWidget(timeLabel);
+	//lineClippingLayout->addWidget(pointGroup);
+        //lineClippingLayout->addWidget(timeLabel);
         lineClippingWidget->setLayout(lineClippingLayout);
 	
 
 	//polygon clipping-----------------------------------
 	polygonClippingWidget = new QWidget();
-	ploygonClippingLayout = new QVBoxLayout();
-
+	polygonClippingLayout = new QVBoxLayout();
+	polygonClippingWidget->setLayout(polygonClippingLayout);
 
 
 	clippingStackedWidget = new QStackedWidget();
 	clippingStackedWidget->addWidget(lineClippingWidget);
 	clippingStackedWidget->addWidget(polygonClippingWidget);
+	connect(drawingAlgoComboBox,SIGNAL(currentIndexChanged(int)),clippingStackedWidget,SLOT(setCurrentIndex(int)));	
 
-	connect(drawingAlgoComboBox,SIGNAL(currentIndexChanged(int)),clippingStackedWidget,SLOT(setCurrentIndex(int)));
-	
+        timeLabel = new QLabel("Time required: -");
+	algoParentLayout->addWidget(pointGroup);
 	algoParentLayout->addWidget(drawingAlgoComboBox);
 	algoParentLayout->addWidget(clippingStackedWidget);
+	algoParentLayout->addWidget(timeLabel);
 	setLayout(algoParentLayout);
     }
 
@@ -937,6 +951,7 @@ signals:
 public slots:
     void makePointRequest(int ind)
     {
+	cout<<"Point request for "<<ind<<endl;
         points[ind] = clickedPoint;
         pointLabels[ind]->setText(QString::fromStdString(string(to_string(points[ind].first) + ", " + to_string(points[ind].second))));
     }

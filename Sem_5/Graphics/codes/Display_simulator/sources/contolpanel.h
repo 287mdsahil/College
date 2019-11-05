@@ -103,9 +103,9 @@ public:
         this->setLayout(layout);
     }
 
-    AlgoWidget *getAlgo()
+    AlgoWidget *getAlgo(int ind)
     {
-        return algo[algoView->currentIndex()];
+        return algo[ind];
     }
 
 signals:
