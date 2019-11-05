@@ -620,6 +620,12 @@ public:
         }
     }
 
+    void cohenSutherlandPolygonClipping(vector<pair<int,int>> polygon)
+    {
+	int xmax,xmin,ymax,ymin;
+	return;
+    }
+
     //-----------------------------------------------------------------------------------------------------
 
     void makelineDrawing()
@@ -859,6 +865,10 @@ public:
 	//polygon clipping-----------------------------------
 	polygonClippingWidget = new QWidget();
 	polygonClippingLayout = new QVBoxLayout();
+
+	pointButtons.push_back(new QPushButton("clip polygon"));
+	polygonClippingLayout->addWidget(pointButtons[5]);
+        connect(pointButtons[4], SIGNAL(clicked()), this, SLOT(callClippingAlgorithm()));
 	polygonClippingWidget->setLayout(polygonClippingLayout);
 
 
