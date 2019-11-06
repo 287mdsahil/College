@@ -118,7 +118,7 @@ public:
     //DDA Line Drawing algorithm
     void DDA(pair<int, int> p1, pair<int, int> p2, QColor paintcolor = Qt::blue)
     {
-        cout << "DDA line drawing called" << endl;
+        cout << "DDA line drawing called" <<","<< p1.first<<","<<p1.second<<") ("<<p2.first<<","<<p2.second<<")"<<endl;
 
         if (p1.first == p2.first)
         {
@@ -714,6 +714,7 @@ public:
     		poly_size = new_poly_size;
     		for (int i = 0; i < poly_size; i++)
     		{
+			cout<<"entered lop"<<endl;//debug
         		poly_points[i][0] = new_points[i][0];
        			poly_points[i][1] = new_points[i][1];
     		}
@@ -736,6 +737,7 @@ public:
     		// Printing vertices of clipped polygon
     		for (int i=0; i < poly_size; i++)
         		cout << '(' << poly_points[i][0] << ", " << poly_points[i][1] << ") ";
+		cout<<endl;
 
 		for(int i=0; i< poly_size;i++)
 		{
@@ -743,6 +745,7 @@ public:
 			int p2 = (i+1)%poly_size;
 
 			DDA(pair<int,int>(poly_points[p1][0],poly_points[p1][1]),pair<int,int>(poly_points[p2][0],poly_points[p2][1]),Qt::green);
+			cout<<"line "<<p1<<" and "<<p2<<" drawn"<<endl;
 		}
 	}
 
@@ -751,7 +754,7 @@ public:
 	cout<<"Cohen Sutherland Polygon clipping called"<<endl;
 	int clipper_size = 4;
 	int poly_size = polygon.size();
-	int poly_points[poly_size][2];
+	int poly_points[MAX_POINTS][2];
 	int clipper_points[4][2];
 	clipper_points[0][0] = clippingRectPoints[0].first; clipper_points[0][1] = clippingRectPoints[0].second;
 	clipper_points[1][0] = clippingRectPoints[1].first; clipper_points[1][1] = clippingRectPoints[0].second;
