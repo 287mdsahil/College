@@ -292,7 +292,7 @@ int FCFS(struct Job jobs[], int waiting_times[], int turn_around_times[], int n_
 
 
 
-void Priority_queue_enqueue(int val, struct Queue *q, struct Job jobs[], int n_jobs)
+void Priority_queue_enqueue(int val, struct Queue *q, struct Job jobs[])
 {
 	struct Node *node;
 	node = (struct Node*) malloc(sizeof(struct Node));
@@ -308,7 +308,7 @@ void Priority_queue_enqueue(int val, struct Queue *q, struct Job jobs[], int n_j
 	}
 	
 	struct Node *curnext = cur->next;
-	while( curnext != NULL && jobs[curnext->val].priority < jobs[val].priority)
+	while( curnext != NULL && jobs[curnext->val].priority <= jobs[val].priority)
 	{
 		struct Node *dummy = curnext;
 		curnext = curnext->next;
@@ -360,7 +360,7 @@ int Priority(struct Job jobs[], int waiting_times[], int turn_around_times[], in
 			if(jobs[i].next_alloted_runtime == t)
 			{
 				jobs[i].state = 1;
-				Priority_queue_enqueue(i,&readyQueue,jobs,n_jobs);
+				Priority_queue_enqueue(i,&readyQueue,jobs);
 			}
 
 		//debug
