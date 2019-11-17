@@ -19,12 +19,12 @@ int main()
     // shm_unlink(shmname);
 
     //sem_t *semaphore = mmap(NULL, sizeof(sem_t), PROT_READ | PROT_WRITE, MAP_SHARED, -1, 0);
-    int *iterLock = mmap(NULL, sizeof(int), PROT_WRITE, MAP_SHARED | MAP_ANONYMOUS, -1, 0);
-    *iterLock = -1;
+    //int *iterLock = mmap(NULL, sizeof(int), PROT_WRITE, MAP_SHARED | MAP_ANONYMOUS, -1, 0);
+    //*iterLock = -1;
 
     //initialize semaphore
     //sem_init(semaphore,1,1);
-    sem_t *semaphore = sem_open("a2p2b_semaphore", O_CREAT, 0644, 1);
+    /*sem_t *semaphore = */sem_open("a2p2b_semaphore", O_CREAT, 0644, 0);
 
     //initialize iterLock
 
@@ -45,15 +45,10 @@ int main()
     case 0:
         for (int i = 0; i < niter; i++)
         {
-            (*iterLock)++;
             sem_t *sem = sem_open("a2p2b_semaphore", 0);
-
-            sem_wait(sem);
-
+	    sem_post(sem);
             printf("Iteration:%d\tPId:%d\n", i + 1, pid);
             sleep(sleepTime);
-
-            sem_post(sem);
         }
         break;
 
@@ -61,16 +56,9 @@ int main()
         for (int i = 0; i < niter; i++)
         {
             sem_t *sem = sem_open("a2p2b_semaphore", 0);
-            int flag = 0;
-
-            if (*iterLock > i)
-                sem_wait(sem);
-
+	    sem_wait(sem);
             printf("Iteration:%d\tPId:%d\n", i + 1, pid);
             sleep(sleepTime);
-
-            if (*iterLock > i)
-                sem_post(sem);
         }
         break;
     }
