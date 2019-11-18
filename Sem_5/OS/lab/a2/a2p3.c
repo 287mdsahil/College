@@ -54,7 +54,6 @@ void execution(ShBuf *samp,int p,int c)
 		//create producers
 		if(pchild==0)
 		{
-			sem_open("a2p3_producer", O_CREAT, 0644, 0);
 			for(int i=0;i<p;i++)
 			{
 				pid_t pchildchild = fork();
@@ -75,7 +74,6 @@ void execution(ShBuf *samp,int p,int c)
 		else
 		{
 
-			sem_open("a2p3_consumer", O_CREAT, 0644, 0);
 			for(int i=0;i<c;i++)
 			{
 				pid_t pchildchild = fork();
