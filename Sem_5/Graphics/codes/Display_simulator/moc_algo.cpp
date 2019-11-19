@@ -22,8 +22,8 @@ QT_BEGIN_MOC_NAMESPACE
 QT_WARNING_PUSH
 QT_WARNING_DISABLE_DEPRECATED
 struct qt_meta_stringdata_AlgoWidget_t {
-    QByteArrayData data[21];
-    char stringdata0[327];
+    QByteArrayData data[26];
+    char stringdata0[433];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -41,29 +41,37 @@ QT_MOC_LITERAL(5, 56, 18), // "unPaintPointSignal"
 QT_MOC_LITERAL(6, 75, 16), // "makePointRequest"
 QT_MOC_LITERAL(7, 92, 3), // "ind"
 QT_MOC_LITERAL(8, 96, 23), // "makePointRequestPolygon"
-QT_MOC_LITERAL(9, 120, 19), // "receiveClickedPoint"
-QT_MOC_LITERAL(10, 140, 1), // "p"
-QT_MOC_LITERAL(11, 142, 24), // "callLineDrawingAlgorithm"
-QT_MOC_LITERAL(12, 167, 26), // "callCircleDrawingAlgorithm"
-QT_MOC_LITERAL(13, 194, 27), // "callEllipseDrawingAlgorithm"
-QT_MOC_LITERAL(14, 222, 20), // "callFillingAlgorithm"
-QT_MOC_LITERAL(15, 243, 21), // "callClippingAlgorithm"
-QT_MOC_LITERAL(16, 265, 16), // "setInternalPoint"
-QT_MOC_LITERAL(17, 282, 14), // "connectPolygon"
-QT_MOC_LITERAL(18, 297, 11), // "clearPoints"
-QT_MOC_LITERAL(19, 309, 8), // "drawLine"
-QT_MOC_LITERAL(20, 318, 8) // "drawRect"
+QT_MOC_LITERAL(9, 120, 37), // "makePointRequestPolygonTransf..."
+QT_MOC_LITERAL(10, 158, 19), // "receiveClickedPoint"
+QT_MOC_LITERAL(11, 178, 1), // "p"
+QT_MOC_LITERAL(12, 180, 24), // "callLineDrawingAlgorithm"
+QT_MOC_LITERAL(13, 205, 26), // "callCircleDrawingAlgorithm"
+QT_MOC_LITERAL(14, 232, 27), // "callEllipseDrawingAlgorithm"
+QT_MOC_LITERAL(15, 260, 20), // "callFillingAlgorithm"
+QT_MOC_LITERAL(16, 281, 21), // "callClippingAlgorithm"
+QT_MOC_LITERAL(17, 303, 16), // "setInternalPoint"
+QT_MOC_LITERAL(18, 320, 14), // "connectPolygon"
+QT_MOC_LITERAL(19, 335, 13), // "translateSlot"
+QT_MOC_LITERAL(20, 349, 12), // "rotationSlot"
+QT_MOC_LITERAL(21, 362, 11), // "scalingSlot"
+QT_MOC_LITERAL(22, 374, 28), // "connectPolygonTransformation"
+QT_MOC_LITERAL(23, 403, 11), // "clearPoints"
+QT_MOC_LITERAL(24, 415, 8), // "drawLine"
+QT_MOC_LITERAL(25, 424, 8) // "drawRect"
 
     },
     "AlgoWidget\0pointRequest\0\0paintPointSignal\0"
     "pair<int,int>\0unPaintPointSignal\0"
     "makePointRequest\0ind\0makePointRequestPolygon\0"
+    "makePointRequestPolygonTransformation\0"
     "receiveClickedPoint\0p\0callLineDrawingAlgorithm\0"
     "callCircleDrawingAlgorithm\0"
     "callEllipseDrawingAlgorithm\0"
     "callFillingAlgorithm\0callClippingAlgorithm\0"
     "setInternalPoint\0connectPolygon\0"
-    "clearPoints\0drawLine\0drawRect"
+    "translateSlot\0rotationSlot\0scalingSlot\0"
+    "connectPolygonTransformation\0clearPoints\0"
+    "drawLine\0drawRect"
 };
 #undef QT_MOC_LITERAL
 
@@ -73,7 +81,7 @@ static const uint qt_meta_data_AlgoWidget[] = {
        8,       // revision
        0,       // classname
        0,    0, // classinfo
-      17,   14, // methods
+      22,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -81,25 +89,30 @@ static const uint qt_meta_data_AlgoWidget[] = {
        4,       // signalCount
 
  // signals: name, argc, parameters, tag, flags
-       1,    1,   99,    2, 0x06 /* Public */,
-       3,    1,  102,    2, 0x06 /* Public */,
-       3,    2,  105,    2, 0x06 /* Public */,
-       5,    1,  110,    2, 0x06 /* Public */,
+       1,    1,  124,    2, 0x06 /* Public */,
+       3,    1,  127,    2, 0x06 /* Public */,
+       3,    2,  130,    2, 0x06 /* Public */,
+       5,    1,  135,    2, 0x06 /* Public */,
 
  // slots: name, argc, parameters, tag, flags
-       6,    1,  113,    2, 0x0a /* Public */,
-       8,    0,  116,    2, 0x0a /* Public */,
-       9,    1,  117,    2, 0x0a /* Public */,
-      11,    0,  120,    2, 0x0a /* Public */,
-      12,    0,  121,    2, 0x0a /* Public */,
-      13,    0,  122,    2, 0x0a /* Public */,
-      14,    0,  123,    2, 0x0a /* Public */,
-      15,    0,  124,    2, 0x0a /* Public */,
-      16,    0,  125,    2, 0x0a /* Public */,
-      17,    0,  126,    2, 0x0a /* Public */,
-      18,    0,  127,    2, 0x0a /* Public */,
-      19,    0,  128,    2, 0x0a /* Public */,
-      20,    0,  129,    2, 0x0a /* Public */,
+       6,    1,  138,    2, 0x0a /* Public */,
+       8,    0,  141,    2, 0x0a /* Public */,
+       9,    0,  142,    2, 0x0a /* Public */,
+      10,    1,  143,    2, 0x0a /* Public */,
+      12,    0,  146,    2, 0x0a /* Public */,
+      13,    0,  147,    2, 0x0a /* Public */,
+      14,    0,  148,    2, 0x0a /* Public */,
+      15,    0,  149,    2, 0x0a /* Public */,
+      16,    0,  150,    2, 0x0a /* Public */,
+      17,    0,  151,    2, 0x0a /* Public */,
+      18,    0,  152,    2, 0x0a /* Public */,
+      19,    0,  153,    2, 0x0a /* Public */,
+      20,    0,  154,    2, 0x0a /* Public */,
+      21,    0,  155,    2, 0x0a /* Public */,
+      22,    0,  156,    2, 0x0a /* Public */,
+      23,    0,  157,    2, 0x0a /* Public */,
+      24,    0,  158,    2, 0x0a /* Public */,
+      25,    0,  159,    2, 0x0a /* Public */,
 
  // signals: parameters
     QMetaType::Void, QMetaType::Int,    2,
@@ -110,7 +123,12 @@ static const uint qt_meta_data_AlgoWidget[] = {
  // slots: parameters
     QMetaType::Void, QMetaType::Int,    7,
     QMetaType::Void,
-    QMetaType::Void, 0x80000000 | 4,   10,
+    QMetaType::Void,
+    QMetaType::Void, 0x80000000 | 4,   11,
+    QMetaType::Void,
+    QMetaType::Void,
+    QMetaType::Void,
+    QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
@@ -137,17 +155,22 @@ void AlgoWidget::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
         case 3: _t->unPaintPointSignal((*reinterpret_cast< pair<int,int>(*)>(_a[1]))); break;
         case 4: _t->makePointRequest((*reinterpret_cast< int(*)>(_a[1]))); break;
         case 5: _t->makePointRequestPolygon(); break;
-        case 6: _t->receiveClickedPoint((*reinterpret_cast< pair<int,int>(*)>(_a[1]))); break;
-        case 7: _t->callLineDrawingAlgorithm(); break;
-        case 8: _t->callCircleDrawingAlgorithm(); break;
-        case 9: _t->callEllipseDrawingAlgorithm(); break;
-        case 10: _t->callFillingAlgorithm(); break;
-        case 11: _t->callClippingAlgorithm(); break;
-        case 12: _t->setInternalPoint(); break;
-        case 13: _t->connectPolygon(); break;
-        case 14: _t->clearPoints(); break;
-        case 15: _t->drawLine(); break;
-        case 16: _t->drawRect(); break;
+        case 6: _t->makePointRequestPolygonTransformation(); break;
+        case 7: _t->receiveClickedPoint((*reinterpret_cast< pair<int,int>(*)>(_a[1]))); break;
+        case 8: _t->callLineDrawingAlgorithm(); break;
+        case 9: _t->callCircleDrawingAlgorithm(); break;
+        case 10: _t->callEllipseDrawingAlgorithm(); break;
+        case 11: _t->callFillingAlgorithm(); break;
+        case 12: _t->callClippingAlgorithm(); break;
+        case 13: _t->setInternalPoint(); break;
+        case 14: _t->connectPolygon(); break;
+        case 15: _t->translateSlot(); break;
+        case 16: _t->rotationSlot(); break;
+        case 17: _t->scalingSlot(); break;
+        case 18: _t->connectPolygonTransformation(); break;
+        case 19: _t->clearPoints(); break;
+        case 20: _t->drawLine(); break;
+        case 21: _t->drawRect(); break;
         default: ;
         }
     } else if (_c == QMetaObject::IndexOfMethod) {
@@ -212,13 +235,13 @@ int AlgoWidget::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 17)
+        if (_id < 22)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 17;
+        _id -= 22;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 17)
+        if (_id < 22)
             *reinterpret_cast<int*>(_a[0]) = -1;
-        _id -= 17;
+        _id -= 22;
     }
     return _id;
 }

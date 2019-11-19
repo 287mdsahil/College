@@ -84,12 +84,14 @@ public:
         algo.push_back(new AlgoWidget(this,2,no_of_pixels,pixelsize));
         algo.push_back(new AlgoWidget(this,3,no_of_pixels,pixelsize));
         algo.push_back(new AlgoWidget(this,4,no_of_pixels,pixelsize));
+	algo.push_back(new AlgoWidget(this,5,no_of_pixels,pixelsize));
 
 	algoView->addTab(algo[0],QString("Line"));
 	algoView->addTab(algo[1],QString("Circle"));
 	algoView->addTab(algo[2],QString("Ellipse"));
 	algoView->addTab(algo[3],QString("Filling"));
 	algoView->addTab(algo[4],QString("Clipping"));
+	algoView->addTab(algo[5],QString("Transfomation"));
 	
         drawingLayout->addWidget(algoView);
         drawingLayout->addWidget(clickCoordinate);

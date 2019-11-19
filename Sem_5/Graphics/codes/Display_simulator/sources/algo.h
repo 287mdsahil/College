@@ -2,8 +2,10 @@
 #include <QLabel>
 #include <QPushButton>
 #include <QGroupBox>
+#include <math.h>
 #include <QSignalMapper>
 #include <QSpinBox>
+#include <QDoubleSpinBox>
 #include <QVBoxLayout>
 #include <QComboBox>
 #include <QStackedWidget>
@@ -64,12 +66,23 @@ public:
     QVBoxLayout *polygonClippingLayout;
     QStackedWidget *clippingStackedWidget;
     //polygon clipping
+	
+
+	// variables for tranformations
+	vector<pair<int,int>> transformationBody;
+	QComboBox *transformationComboBox;
+	QStackedWidget *transformationStackedWidget;
+	int addPointToBody = 0;
+	QSpinBox *translateYSpinBox,*translateXSpinBox;
+	QDoubleSpinBox *scalingXSpinBox,*scalingYSpinBox, *rotationSpinBox;
+	QPushButton *translateButton,*scalingButton, *rotationButton;
 
     //LINE DRAWING-----------------------------------------------------------------
 
     //parametric line drawing algorithm
     void parametricLineDrawing(pair<int, int> p1, pair<int, int> p2)
     {
+
         cout << "parametirc line drawing called" << endl;
         int x1 = p1.first, x2 = p2.first;
         int y1 = p1.second, y2 = p2.second;
@@ -751,35 +764,118 @@ public:
 
     void cohenSutherlandPolygonClipping(vector<pair<int,int>> polygon)
     {
-	cout<<"Cohen Sutherland Polygon clipping called"<<endl;
-	int clipper_size = 4;
-	int poly_size = polygon.size();
-	int poly_points[MAX_POINTS][2];
-	int clipper_points[4][2];
-	clipper_points[0][0] = clippingRectPoints[0].first; clipper_points[0][1] = clippingRectPoints[0].second;
-	clipper_points[1][0] = clippingRectPoints[1].first; clipper_points[1][1] = clippingRectPoints[0].second;
-	clipper_points[2][0] = clippingRectPoints[1].first; clipper_points[2][1] = clippingRectPoints[1].second;
-	clipper_points[3][0] = clippingRectPoints[0].first; clipper_points[3][1] = clippingRectPoints[1].second;
+		cout<<"Cohen Sutherland Polygon clipping called"<<endl;
+		int clipper_size = 4;
+		int poly_size = polygon.size();
+		int poly_points[MAX_POINTS][2];
+		int clipper_points[4][2];
+		clipper_points[0][0] = clippingRectPoints[0].first; clipper_points[0][1] = clippingRectPoints[0].second;
+		clipper_points[1][0] = clippingRectPoints[1].first; clipper_points[1][1] = clippingRectPoints[0].second;
+		clipper_points[2][0] = clippingRectPoints[1].first; clipper_points[2][1] = clippingRectPoints[1].second;
+		clipper_points[3][0] = clippingRectPoints[0].first; clipper_points[3][1] = clippingRectPoints[1].second;
 
-	for(int i=0;i<poly_size;i++)
-	{
-		poly_points[i][0] = polygon[i].first;
-		poly_points[i][1] = polygon[i].second;
-	}
-	
-	cout<<"clipper rectangle:";	
-	for(int i=0;i<4;i++)
-	{
-		//clipper_points[i][0] = clippingRectPoints[i].first;
-		//clipper_points[i][1] = clippingRectPoints[i].second;
-		cout<<"("<<clipper_points[i][0]<<","<<clipper_points[i][1]<<") ";	
-	}
-	cout<<endl;	
-	
-	suthHodgClip(poly_points,poly_size,clipper_points,clipper_size);
-	
-	return;
+		for(int i=0;i<poly_size;i++)
+		{
+			poly_points[i][0] = polygon[i].first;
+			poly_points[i][1] = polygon[i].second;
+		}
+		
+		cout<<"clipper rectangle:";	
+		for(int i=0;i<4;i++)
+		{
+			//clipper_points[i][0] = clippingRectPoints[i].first;
+			//clipper_points[i][1] = clippingRectPoints[i].second;
+			cout<<"("<<clipper_points[i][0]<<","<<clipper_points[i][1]<<") ";	
+		}
+		cout<<endl;	
+		
+		suthHodgClip(poly_points,poly_size,clipper_points,clipper_size);
+		
+		return;
     }
+
+
+	//transformation--------------------------------------------------------------------------------------
+	void translate(int x,int y, vector<pair<int,int>> &body)
+	{
+		for(unsigned int i=0;i<body.size();i++)
+		{
+			body[i].first = body[i].first +  x;
+			body[i].second = body[i].second +  y;
+		}
+	}
+
+	void rotation(float angle, vector<pair<int,int>> &body)
+	{
+
+		float s = sin(angle);
+		float c = cos(angle);
+
+		int maxx = body[0].first, minx = body[0].first;
+		int maxy = body[0].second, miny= body[0].second;
+		for(unsigned int i = 0;i<body.size();i++)
+		{
+			if(body[i].first > maxx)
+				maxx = body[i].first;
+			if(body[i].first < minx)
+				minx = body[i].first;
+			if(body[i].second > maxy)
+				maxy = body[i].second;
+			if(body[i].second < miny)
+				miny = body[i].second;
+		}
+
+		int midx = (minx+maxx)/2;
+		int midy = (miny+maxy)/2;
+
+		cout<<"rotating by"<<angle<<" rad about:"<<midx<<","<<midy<<endl;
+
+		cout<<body[0].first<<","<<body[0].second<<endl;
+		for(unsigned int i=0;i<body.size();i++)
+		{
+			int x = body[i].first - midx;
+			int y = body[i].second - midy;
+
+			float xnew = x*c - y*s;
+			float ynew = x*s + y*c;
+
+			body[i].first = xnew + midx;
+			body[i].second = ynew + midy;
+				
+		}
+		cout<<body[0].first<<","<<body[0].second<<endl;
+
+	}
+
+	void scaling(float x, float y, vector<pair<int,int>> &body)
+	{
+		int maxx = body[0].first, minx = body[0].first;
+		int maxy = body[0].second, miny= body[0].second;
+		for(unsigned int i = 0;i<body.size();i++)
+		{
+			if(body[i].first > maxx)
+				maxx = body[i].first;
+			if(body[i].first < minx)
+				minx = body[i].first;
+			if(body[i].second > maxy)
+				maxy = body[i].second;
+			if(body[i].second < miny)
+				miny = body[i].second;
+		}
+
+		int midx = (minx+maxx)/2;
+		int midy = (miny+maxy)/2;
+
+		cout<<"scaling by"<<x<<","<<y<<"  about:"<<midx<<","<<midy<<endl;
+
+		cout<<body[0].first<<","<<body[0].second<<endl;
+		for(unsigned int i=0;i<body.size();i++)
+		{
+			body[i].first = (body[i].first - midx)*x + midx;
+			body[i].second = (body[i].second - midy)*y + midy;
+		}
+		cout<<body[0].first<<","<<body[0].second<<endl;
+	}
 
     //-----------------------------------------------------------------------------------------------------
 
@@ -991,15 +1087,15 @@ public:
         mapper->setMapping(pointButtons[1], 1);
         connect(pointButtons[1], SIGNAL(clicked()), mapper, SLOT(map()));
 
-	connect(pointButtons[2], SIGNAL(clicked()), this, SLOT(drawRect()));
+		connect(pointButtons[2], SIGNAL(clicked()), this, SLOT(drawRect()));
 
         drawingAlgoComboBox = new QComboBox();
         drawingAlgoComboBox->addItem("line clipping");
-	drawingAlgoComboBox->addItem("Polygon clipping");
+		drawingAlgoComboBox->addItem("Polygon clipping");
 	
-	//line clipping------------------------------------------------
-	lineClippingWidget = new QWidget();
-	lineClippingLayout = new QVBoxLayout();
+		//line clipping------------------------------------------------
+		lineClippingWidget = new QWidget();
+		lineClippingLayout = new QVBoxLayout();
 	
 
         pointButtons.push_back(new QPushButton("Draw line"));
@@ -1012,45 +1108,124 @@ public:
 
         connect(pointButtons[4], SIGNAL(clicked()), this, SLOT(callClippingAlgorithm()));
 
-	//lineClippingLayout->addWidget(pointGroup);
+		//lineClippingLayout->addWidget(pointGroup);
         //lineClippingLayout->addWidget(timeLabel);
         lineClippingWidget->setLayout(lineClippingLayout);
 	
 
-	//polygon clipping-----------------------------------
-	polygonClippingWidget = new QWidget();
-	polygonClippingLayout = new QVBoxLayout();
+		//polygon clipping-----------------------------------
+		polygonClippingWidget = new QWidget();
+		polygonClippingLayout = new QVBoxLayout();
 
-	pointButtons.push_back(new QPushButton("clip polygon"));
-	polygonClippingLayout->addWidget(pointButtons[5]);
+		pointButtons.push_back(new QPushButton("clip polygon"));
+		polygonClippingLayout->addWidget(pointButtons[5]);
         connect(pointButtons[5], SIGNAL(clicked()), this, SLOT(callClippingAlgorithm()));
-	polygonClippingWidget->setLayout(polygonClippingLayout);
+		polygonClippingWidget->setLayout(polygonClippingLayout);
 	
-	//---------------------------------------------------------
+		//---------------------------------------------------------
        	QPushButton *addPolygonPoint = new QPushButton("Add polygon point");
         QPushButton *connectPolygon =  new QPushButton("Connect");
         QPushButton *clearStack = new QPushButton("clear points stack");
        	polygonClippingLayout->addWidget(addPolygonPoint);
-	polygonClippingLayout->addWidget(connectPolygon);
-	polygonClippingLayout->addWidget(clearStack);
+		polygonClippingLayout->addWidget(connectPolygon);
+		polygonClippingLayout->addWidget(clearStack);
 
         connect(addPolygonPoint, SIGNAL(clicked()), this, SLOT(makePointRequestPolygon()));
         connect(connectPolygon, SIGNAL(clicked()), this, SLOT(connectPolygon()));
         connect(clearStack, SIGNAL(clicked()), this, SLOT(clearPoints()));
-	//-----------------------------------------------------------------------------
+		//-----------------------------------------------------------------------------
 
-	clippingStackedWidget = new QStackedWidget();
-	clippingStackedWidget->addWidget(lineClippingWidget);
-	clippingStackedWidget->addWidget(polygonClippingWidget);
-	connect(drawingAlgoComboBox,SIGNAL(currentIndexChanged(int)),clippingStackedWidget,SLOT(setCurrentIndex(int)));	
+		clippingStackedWidget = new QStackedWidget();
+		clippingStackedWidget->addWidget(lineClippingWidget);
+		clippingStackedWidget->addWidget(polygonClippingWidget);
+		connect(drawingAlgoComboBox,SIGNAL(currentIndexChanged(int)),clippingStackedWidget,SLOT(setCurrentIndex(int)));	
 
         timeLabel = new QLabel("Time required: -");
-	algoParentLayout->addWidget(pointGroup);
-	algoParentLayout->addWidget(drawingAlgoComboBox);
-	algoParentLayout->addWidget(clippingStackedWidget);
-	algoParentLayout->addWidget(timeLabel);
-	setLayout(algoParentLayout);
+		algoParentLayout->addWidget(pointGroup);
+		algoParentLayout->addWidget(drawingAlgoComboBox);
+		algoParentLayout->addWidget(clippingStackedWidget);
+		algoParentLayout->addWidget(timeLabel);
+		setLayout(algoParentLayout);
     }
+
+	void makeTransformation()
+	{
+		algoParentLayout = new QVBoxLayout();
+
+       	QPushButton *addPolygonPoint = new QPushButton("Add polygon point");
+        QPushButton *connectPolygon =  new QPushButton("Connect");
+        QPushButton *clearStack = new QPushButton("clear points stack");
+       	algoParentLayout->addWidget(addPolygonPoint);
+		algoParentLayout->addWidget(connectPolygon);
+		algoParentLayout->addWidget(clearStack);
+
+        connect(addPolygonPoint, SIGNAL(clicked()), this, SLOT(makePointRequestPolygonTransformation()));
+        connect(connectPolygon, SIGNAL(clicked()), this, SLOT(connectPolygonTransformation()));
+        connect(clearStack, SIGNAL(clicked()), this, SLOT(clearPoints()));
+
+
+
+		transformationComboBox = new QComboBox();
+		transformationComboBox->addItem("Translation");
+		transformationComboBox->addItem("Rotation");
+		transformationComboBox->addItem("Scaling");
+		transformationComboBox->addItem("Reflection");
+
+		transformationStackedWidget = new QStackedWidget();
+		QLayout *translationLayout = new QGridLayout();
+		QLayout *rotationLayout = new QVBoxLayout();
+		QLayout *scalingLayout = new QVBoxLayout();
+		QLayout *reflectionLayout = new QVBoxLayout();
+
+		//transformation
+		translateXSpinBox = new QSpinBox();
+		translateXSpinBox->setMaximum(no_of_pixels);
+		translateXSpinBox->setMinimum(no_of_pixels);
+		translateYSpinBox = new QSpinBox();
+		translateYSpinBox->setMaximum(no_of_pixels);
+		translateYSpinBox->setMinimum(no_of_pixels);
+		translateButton = new QPushButton("Translate");
+		translationLayout->addWidget(translateXSpinBox);
+		translationLayout->addWidget(translateYSpinBox);
+		translationLayout->addWidget(translateButton);
+		connect(translateButton, SIGNAL(clicked()), this, SLOT(translateSlot()));
+
+		//rotation
+		rotationSpinBox = new QDoubleSpinBox();
+		rotationButton = new QPushButton("rotate");
+		rotationLayout->addWidget(rotationSpinBox);
+		rotationLayout->addWidget(rotationButton);
+		connect(rotationButton, SIGNAL(clicked()), this, SLOT(rotationSlot()));
+
+
+		//scaling
+		scalingXSpinBox = new QDoubleSpinBox();
+		scalingYSpinBox = new QDoubleSpinBox();
+		scalingButton = new QPushButton("Scale");
+		scalingLayout->addWidget(scalingXSpinBox);
+		scalingLayout->addWidget(scalingYSpinBox);
+		scalingLayout->addWidget(scalingButton);
+		connect(scalingButton, SIGNAL(clicked()), this, SLOT(scalingSlot()));
+
+
+
+		QWidget *translationWidget = new QWidget();
+		QWidget *rotationWidget = new QWidget();
+		QWidget *scalingWidget = new QWidget();
+		QWidget *reflectionWidget = new QWidget();
+		translationWidget->setLayout(translationLayout);
+		rotationWidget->setLayout(rotationLayout);
+		scalingWidget->setLayout(scalingLayout);
+		transformationStackedWidget->addWidget(translationWidget);
+		transformationStackedWidget->addWidget(rotationWidget);
+		transformationStackedWidget->addWidget(scalingWidget);
+		transformationStackedWidget->addWidget(reflectionWidget);
+		connect(transformationComboBox, SIGNAL(currentIndexChanged(int)),transformationStackedWidget,SLOT(setCurrentIndex(int)));
+
+		algoParentLayout->addWidget(transformationComboBox);
+		algoParentLayout->addWidget(transformationStackedWidget);
+		setLayout(algoParentLayout);
+	}
 
     void resetColormap(int npixel, int spixel)
     {
@@ -1111,6 +1286,10 @@ public:
         {
             makeClipping();
         }
+		else if(type == 5)
+		{
+	    	makeTransformation();
+		}
     }
 
     void paintSignalEmitter(pair<int, int> p, QColor color = Qt::blue)
@@ -1138,8 +1317,21 @@ public slots:
         points.push_back(clickedPoint);
         if (points.size() > 1)
         {
-            DDA(points[points.size() - 1], points[points.size() - 2]);
+            parametricLineDrawing(points[points.size() - 1], points[points.size() - 2]);
         }
+    }
+
+    void makePointRequestPolygonTransformation()
+    {
+		addPointToBody = 1;
+        points.push_back(clickedPoint);
+        if (points.size() > 1)
+        {
+			transformationBody.push_back(points[points.size() - 1]);
+			transformationBody.push_back(points[points.size() - 2]);
+            parametricLineDrawing(points[points.size() - 1], points[points.size() - 2]);
+        }
+		addPointToBody = 0;
     }
 
     void receiveClickedPoint(pair<int, int> p)
@@ -1261,17 +1453,132 @@ public slots:
         parametricLineDrawing(points[points.size() - 1], points[0]);
     }
 
+	//translate
+	void translateSlot()
+	{
+		cout<<"translate button clicked"<<endl;
+
+		int x = translateXSpinBox->value();
+		int y = translateYSpinBox->value();
+		vector<pair<int,int>> newBody;
+
+		for(int i=0;i<transformationBody.size();i++)
+			newBody.push_back(transformationBody[i]);
+
+		cout<<"old body size:"<<newBody.size()<<endl;
+		cout<<newBody[0].first<<","<<newBody[0].second<<endl;
+
+		translate(x,y,newBody);
+
+		cout<<newBody[0].first<<","<<newBody[0].second<<endl;
+		cout<<"new body size:"<<newBody.size()<<endl;
+
+		transformationBody.clear();
+		addPointToBody = 0;
+		for(int i=0;i<newBody.size();i++)
+		{
+			transformationBody.push_back(newBody[i]);
+		}
+
+		for(int i=0;i<newBody.size()-1;i=i+2)
+		{
+			parametricLineDrawing(newBody[i],newBody[i+1]);
+		}
+	}
+
+	// rotate slot
+	void rotationSlot()
+	{
+		cout<<"rotate button clicked"<<endl;
+
+		float x = rotationSpinBox->value();
+		vector<pair<int,int>> newBody;
+
+		for(unsigned int i=0;i<transformationBody.size();i++)
+			newBody.push_back(transformationBody[i]);
+
+		cout<<"old body size:"<<newBody.size()<<endl;
+		cout<<newBody[0].first<<","<<newBody[0].second<<endl;
+
+		rotation(x,newBody);
+
+		cout<<newBody[0].first<<","<<newBody[0].second<<endl;
+		cout<<"new body size:"<<newBody.size()<<endl;
+
+		transformationBody.clear();
+		addPointToBody = 0;
+		for(unsigned int i=0;i<newBody.size();i++)
+		{
+			transformationBody.push_back(newBody[i]);
+		}
+	
+		for(unsigned int i=0;i<newBody.size()-1;i=i+2)
+		{
+			parametricLineDrawing(newBody[i],newBody[i+1]);
+		}
+	}
+
+	// scale slot
+	void scalingSlot()
+	{
+		cout<<"scale button clicked"<<endl;
+
+		float x = scalingXSpinBox->value();
+		float y = scalingYSpinBox->value();
+		vector<pair<int,int>> newBody;
+
+		for(unsigned int i=0;i<transformationBody.size();i++)
+			newBody.push_back(transformationBody[i]);
+
+		cout<<"old body size:"<<newBody.size()<<endl;
+		cout<<newBody[0].first<<","<<newBody[0].second<<endl;
+
+		scaling(x,y,newBody);
+
+		cout<<newBody[0].first<<","<<newBody[0].second<<endl;
+		cout<<"new body size:"<<newBody.size()<<endl;
+
+		transformationBody.clear();
+		addPointToBody = 0;
+		for(unsigned int i=0;i<newBody.size();i++)
+		{
+			transformationBody.push_back(newBody[i]);
+		}
+	
+		for(unsigned int i=0;i<newBody.size()-1;i=i+2)
+		{
+			parametricLineDrawing(newBody[i],newBody[i+1]);
+		}
+	}
+
+    void connectPolygonTransformation()
+    {
+		addPointToBody = 1;
+        //connect the first and last points
+		transformationBody.push_back(points[points.size() - 1]);
+		transformationBody.push_back(points[0]);
+        parametricLineDrawing(points[points.size() - 1], points[0]);
+
+		addPointToBody = 0;
+
+		//debug
+		cout<<"Transformation body size: "<<transformationBody.size()<<endl;
+    }
+
+
+
     void clearPoints()
     {
         //clear the points vector
         points.clear();
+		transformationBody.clear();
     }
 
     void drawLine()
     {
         linePoints.clear();
         DDA(points[0], points[1]);
-	points.clear();
+		points.clear();
         linePoints.push_back(points[0]);
         linePoints.push_back(points[1]);
     }
