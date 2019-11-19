@@ -13,6 +13,7 @@
 #include <vector>
 #include <iostream>
 #include <chrono>
+#include <complex.h>
 #include <math.h>
 #include <map>
 #define PI 3.14159265358979323846
@@ -76,11 +77,12 @@ public:
 	QSpinBox *translateYSpinBox,*translateXSpinBox;
 	QDoubleSpinBox *scalingXSpinBox,*scalingYSpinBox, *rotationSpinBox;
 	QPushButton *translateButton,*scalingButton, *rotationButton;
+	pair<int,int> rp1,rp2;
 
     //LINE DRAWING-----------------------------------------------------------------
 
     //parametric line drawing algorithm
-    void parametricLineDrawing(pair<int, int> p1, pair<int, int> p2)
+    void parametricLineDrawing(pair<int, int> p1, pair<int, int> p2, int unpaint = 0)
     {
 
         cout << "parametirc line drawing called" << endl;
@@ -105,7 +107,10 @@ public:
             for (int currX = x1; currX <= x2; ++currX)
             {
                 int currY = int(std::round(m * currX + b));
-                paintSignalEmitter(pair<int, int>(currX, currY));
+				if(!unpaint)
+                	paintSignalEmitter(pair<int, int>(currX, currY));
+				else
+					unPaintSignalEmitter(pair<int,int>(currX, currY));
             }
         }
         else
@@ -123,7 +128,10 @@ public:
             for (int currY = y1; currY <= y2; ++currY)
             {
                 int currX = int(std::round((currY - b) / m));
-                paintSignalEmitter(pair<int, int>(currX, currY));
+				if(!unpaint)
+                	paintSignalEmitter(pair<int, int>(currX, currY));
+				else
+					unPaintSignalEmitter(pair<int,int>(currX, currY));
             }
         }
     }
@@ -805,12 +813,13 @@ public:
 		}
 	}
 
-	void rotation(float angle, vector<pair<int,int>> &body)
+	void rotation(float angle,pair<int,int>p, vector<pair<int,int>> &body)
 	{
 
 		float s = sin(angle);
 		float c = cos(angle);
 
+		/*
 		int maxx = body[0].first, minx = body[0].first;
 		int maxy = body[0].second, miny= body[0].second;
 		for(unsigned int i = 0;i<body.size();i++)
@@ -823,10 +832,12 @@ public:
 				maxy = body[i].second;
 			if(body[i].second < miny)
 				miny = body[i].second;
-		}
+		}*/
 
-		int midx = (minx+maxx)/2;
-		int midy = (miny+maxy)/2;
+		//int midx = (minx+maxx)/2;
+		//int midy = (miny+maxy)/2;
+		int midx = p.first;
+		int midy = p.second;
 
 		cout<<"rotating by"<<angle<<" rad about:"<<midx<<","<<midy<<endl;
 
@@ -876,6 +887,85 @@ public:
 		}
 		cout<<body[0].first<<","<<body[0].second<<endl;
 	}
+
+
+	//reflecgtion
+	//
+	//
+	typedef complex<double> point; 
+	//#define x real() 
+	//#define y imag() 
+  
+	// Constant PI for providing angles in radians 
+	//#define PI 3.1415926535897932384626 
+  
+	// Function for Reflection of P about line AB 
+	point reflect(point P, point A, point B) 
+	{ 
+		// Performing translation and shifting origin at A 
+		point Pt = P-A; 
+		point Bt = B-A; 
+	  
+		// Performing rotation in clockwise direction 
+		// BtAt becomes the X-Axis in the new coordinate system 
+		point Pr = Pt/Bt; 
+	  
+		// Reflection of Pr about the new X-Axis 
+		// Followed by restoring from rotation 
+		// Followed by restoring from translation 
+	  
+		return conj(Pr)*Bt + A; 
+	} 
+
+
+
+	void reflection(pair<int,int> p1,pair<int,int> p2,vector<pair<int,int>> &pts)
+	{
+		vector<pair<int,int>> ref_pts;
+
+		for(int i=0;i<pts.size();i++)
+		{
+			point p(pts[i].first,pts[i].second);
+			point a(p1.first,p1.second);
+			point b(p2.first,p2.second);
+			
+			point new_p=reflect(p,a,b);
+			pts[i].first=new_p.real();
+			pts[i].second=new_p.imag();
+
+		}
+	}	
+
+
+	//------------------------------------------------------------------------------------------------
+
+	int ncr(int n,int r)
+	{
+    	int num=1,den=1;
+   	 	for(int i=n-r+1;i<=n;i++)
+        	num*=i;
+    	for(int i=1;i<=r;i++)
+        	den*=i;
+    	return (int)(num/den);
+	}
+	
+	void bezier(vector<pair<int,int>> pts)
+	{
+		double t=0;
+    	for(t=0;t<=1;t+=0.0001)
+    	{
+        	double sumx=0,sumy=0;
+        	for(int i=0;i<pts.size();i++)
+        	{
+            	//cout<<ncr(pts.size()-1,i)<<'\t'<<pts[i].first<<'\t'<<pts[i].second;
+            	sumx+=ncr(pts.size()-1,i)*pow(1-t,pts.size()-1-i)*pow(t,i)*pts[i].first;
+            	sumy+=ncr(pts.size()-1,i)*pow(1-t,pts.size()-1-i)*pow(t,i)*pts[i].second;
+        	}
+		
+      		//Change this setPixel((int)sumx,(int)sumy);
+			paintSignalEmitter(pair<int,int>(sumx,sumy));
+		}
+    }
 
     //-----------------------------------------------------------------------------------------------------
 
@@ -1152,6 +1242,7 @@ public:
 	{
 		algoParentLayout = new QVBoxLayout();
 
+
        	QPushButton *addPolygonPoint = new QPushButton("Add polygon point");
         QPushButton *connectPolygon =  new QPushButton("Connect");
         QPushButton *clearStack = new QPushButton("clear points stack");
@@ -1180,22 +1271,27 @@ public:
 		//transformation
 		translateXSpinBox = new QSpinBox();
 		translateXSpinBox->setMaximum(no_of_pixels);
-		translateXSpinBox->setMinimum(no_of_pixels);
+		translateXSpinBox->setMinimum(-no_of_pixels);
 		translateYSpinBox = new QSpinBox();
 		translateYSpinBox->setMaximum(no_of_pixels);
-		translateYSpinBox->setMinimum(no_of_pixels);
+		translateYSpinBox->setMinimum(-no_of_pixels);
 		translateButton = new QPushButton("Translate");
 		translationLayout->addWidget(translateXSpinBox);
 		translationLayout->addWidget(translateYSpinBox);
 		translationLayout->addWidget(translateButton);
 		connect(translateButton, SIGNAL(clicked()), this, SLOT(translateSlot()));
 
-		//rotation
+		//rotation	
+		QPushButton *rpointButton = new QPushButton("select point");
 		rotationSpinBox = new QDoubleSpinBox();
+		rotationSpinBox->setMinimum(-100);
+		rotationSpinBox->setMaximum(100);
 		rotationButton = new QPushButton("rotate");
+		rotationLayout->addWidget(rpointButton);
 		rotationLayout->addWidget(rotationSpinBox);
 		rotationLayout->addWidget(rotationButton);
 		connect(rotationButton, SIGNAL(clicked()), this, SLOT(rotationSlot()));
+		connect(rpointButton, SIGNAL(clicked()), this, SLOT(selectPoint1Slot()));
 
 
 		//scaling
@@ -1208,6 +1304,25 @@ public:
 		connect(scalingButton, SIGNAL(clicked()), this, SLOT(scalingSlot()));
 
 
+		//reflection
+		QPushButton *pb1 = new QPushButton("select point 1");
+		QPushButton *pb2 = new QPushButton("select point 2");
+		QPushButton *drawLine = new QPushButton("Draw line");
+		QPushButton *reflectButton = new QPushButton("reflect");
+		reflectionLayout->addWidget(pb1);
+		reflectionLayout->addWidget(pb2);
+		reflectionLayout->addWidget(drawLine);
+		reflectionLayout->addWidget(reflectButton);
+        
+        connect(pb1, SIGNAL(clicked()), this, SLOT(selectPoint1Slot()));
+        connect(pb2, SIGNAL(clicked()), this, SLOT(selectPoint2Slot()));
+		connect(drawLine, SIGNAL(clicked()), this, SLOT(drawReflectionLineSlot())); 
+
+		connect(reflectButton,SIGNAL(clicked()), this, SLOT(reflectionSlot()));
+		
+
+
+
 
 		QWidget *translationWidget = new QWidget();
 		QWidget *rotationWidget = new QWidget();
@@ -1216,6 +1331,7 @@ public:
 		translationWidget->setLayout(translationLayout);
 		rotationWidget->setLayout(rotationLayout);
 		scalingWidget->setLayout(scalingLayout);
+		reflectionWidget->setLayout(reflectionLayout);
 		transformationStackedWidget->addWidget(translationWidget);
 		transformationStackedWidget->addWidget(rotationWidget);
 		transformationStackedWidget->addWidget(scalingWidget);
@@ -1225,6 +1341,30 @@ public:
 		algoParentLayout->addWidget(transformationComboBox);
 		algoParentLayout->addWidget(transformationStackedWidget);
 		setLayout(algoParentLayout);
+	}
+
+	void makeBezierCurve()
+	{
+		points.clear();
+		algoParentLayout = new QVBoxLayout();
+	
+		QPushButton *addPolygonPoint = new QPushButton("Add polygon point");
+        QPushButton *connectPolygon =  new QPushButton("Connect");
+        QPushButton *clearStack = new QPushButton("clear points stack");
+       	algoParentLayout->addWidget(addPolygonPoint);
+		algoParentLayout->addWidget(connectPolygon);
+		algoParentLayout->addWidget(clearStack);
+
+        connect(addPolygonPoint, SIGNAL(clicked()), this, SLOT(makePointRequestPolygonTransformation()));
+        connect(connectPolygon, SIGNAL(clicked()), this, SLOT(connectPolygonTransformation()));
+        connect(clearStack, SIGNAL(clicked()), this, SLOT(clearPoints()));
+
+
+		QPushButton *drawBezier  = new QPushButton("Draw Bezzier");
+		connect(drawBezier, SIGNAL(clicked()), this, SLOT(bezierSlot()));
+		algoParentLayout->addWidget(drawBezier);
+
+		this->setLayout(algoParentLayout);
 	}
 
     void resetColormap(int npixel, int spixel)
@@ -1290,6 +1430,10 @@ public:
 		{
 	    	makeTransformation();
 		}
+		else if(type == 6)
+		{
+			makeBezierCurve();
+		}
     }
 
     void paintSignalEmitter(pair<int, int> p, QColor color = Qt::blue)
@@ -1298,6 +1442,16 @@ public:
         colormap[p] = color;
     }
 
+	void unPaintSignalEmitter(pair<int,int> p)
+	{
+		int x = p.first;
+		int y = p.second;
+		if(x==0 || y==0)
+			emit paintPointSignal(p, Qt::gray);
+		else
+			emit paintPointSignal(p, Qt::white);
+	}
+
 signals:
     void pointRequest(int);
     void paintPointSignal(pair<int, int>);
@@ -1305,6 +1459,22 @@ signals:
     void unPaintPointSignal(pair<int, int>);
 
 public slots:
+
+	void selectPoint1Slot()
+	{
+		rp1 = clickedPoint;
+	}
+	
+	void selectPoint2Slot()
+	{
+		rp2 = clickedPoint;
+	}
+
+	void drawReflectionLineSlot()
+	{
+		parametricLineDrawing(rp1,rp2);
+	}
+
     void makePointRequest(int ind)
     {
 	cout<<"Point request for "<<ind<<endl;
@@ -1463,7 +1633,15 @@ public slots:
 		vector<pair<int,int>> newBody;
 
 		for(int i=0;i<transformationBody.size();i++)
+		{
 			newBody.push_back(transformationBody[i]);
+		}
+
+
+		for(int i=0;i<newBody.size()-1;i=i+2)
+		{
+			parametricLineDrawing(newBody[i],newBody[i+1],1);
+		}
 
 		cout<<"old body size:"<<newBody.size()<<endl;
 		cout<<newBody[0].first<<","<<newBody[0].second<<endl;
@@ -1495,12 +1673,20 @@ public slots:
 		vector<pair<int,int>> newBody;
 
 		for(unsigned int i=0;i<transformationBody.size();i++)
+		{
+			unPaintSignalEmitter(transformationBody[i]);
 			newBody.push_back(transformationBody[i]);
+		}
+
+		for(int i=0;i<newBody.size()-1;i=i+2)
+		{
+			parametricLineDrawing(newBody[i],newBody[i+1],1);
+		}
 
 		cout<<"old body size:"<<newBody.size()<<endl;
 		cout<<newBody[0].first<<","<<newBody[0].second<<endl;
 
-		rotation(x,newBody);
+		rotation(x,rp1,newBody);
 
 		cout<<newBody[0].first<<","<<newBody[0].second<<endl;
 		cout<<"new body size:"<<newBody.size()<<endl;
@@ -1528,7 +1714,16 @@ public slots:
 		vector<pair<int,int>> newBody;
 
 		for(unsigned int i=0;i<transformationBody.size();i++)
+		{
+			unPaintSignalEmitter(transformationBody[i]);
 			newBody.push_back(transformationBody[i]);
+		}
+
+		for(int i=0;i<newBody.size()-1;i=i+2)
+		{
+			parametricLineDrawing(newBody[i],newBody[i+1],1);
+		}
+
 
 		cout<<"old body size:"<<newBody.size()<<endl;
 		cout<<newBody[0].first<<","<<newBody[0].second<<endl;
@@ -1549,6 +1744,54 @@ public slots:
 		{
 			parametricLineDrawing(newBody[i],newBody[i+1]);
 		}
+	}
+
+
+	// reflection
+	void reflectionSlot()
+	{
+		//parametricLineDrawing(points[0],points[1]);
+		cout<<"reflection button clicked"<<endl;
+
+		vector<pair<int,int>> newBody;
+
+		for(unsigned int i=0;i<transformationBody.size();i++)
+		{
+			unPaintSignalEmitter(transformationBody[i]);
+			newBody.push_back(transformationBody[i]);
+		}
+
+		for(int i=0;i<newBody.size()-1;i=i+2)
+		{
+			parametricLineDrawing(newBody[i],newBody[i+1],1);
+		}
+
+
+		cout<<"old body size:"<<newBody.size()<<endl;
+		cout<<newBody[0].first<<","<<newBody[0].second<<endl;
+
+		reflection(rp1,rp2,newBody);
+
+		cout<<newBody[0].first<<","<<newBody[0].second<<endl;
+		cout<<"new body size:"<<newBody.size()<<endl;
+
+		transformationBody.clear();
+		addPointToBody = 0;
+		for(unsigned int i=0;i<newBody.size();i++)
+		{
+			transformationBody.push_back(newBody[i]);
+		}
+	
+		for(unsigned int i=0;i<newBody.size()-1;i=i+2)
+		{
+			parametricLineDrawing(newBody[i],newBody[i+1]);
+		}
+	}
+
+	void bezierSlot()
+	{
+		cout<<"Drawing bezier curve with control points:"<<points.size()<<endl;
+		bezier(points);
 	}
 
     void connectPolygonTransformation()

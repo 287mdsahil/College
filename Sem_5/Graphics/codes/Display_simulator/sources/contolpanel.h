@@ -77,21 +77,23 @@ public:
         QLayout *drawingLayout = new QVBoxLayout();
         clickCoordinate = new QLabel("Clicked Coordinate :\n 0, 0");
         mouseCoordinate = new QLabel("Mouse Coordinate :\n 0, 0");
-	algoView = new QTabWidget();
+		algoView = new QTabWidget();
 
-	algo.push_back(new AlgoWidget(this,0,no_of_pixels,pixelsize));
+		algo.push_back(new AlgoWidget(this,0,no_of_pixels,pixelsize));
         algo.push_back(new AlgoWidget(this,1,no_of_pixels,pixelsize));
         algo.push_back(new AlgoWidget(this,2,no_of_pixels,pixelsize));
         algo.push_back(new AlgoWidget(this,3,no_of_pixels,pixelsize));
         algo.push_back(new AlgoWidget(this,4,no_of_pixels,pixelsize));
-	algo.push_back(new AlgoWidget(this,5,no_of_pixels,pixelsize));
+		algo.push_back(new AlgoWidget(this,5,no_of_pixels,pixelsize));
+		algo.push_back(new AlgoWidget(this,6,no_of_pixels,pixelsize));
 
-	algoView->addTab(algo[0],QString("Line"));
-	algoView->addTab(algo[1],QString("Circle"));
-	algoView->addTab(algo[2],QString("Ellipse"));
-	algoView->addTab(algo[3],QString("Filling"));
-	algoView->addTab(algo[4],QString("Clipping"));
-	algoView->addTab(algo[5],QString("Transfomation"));
+		algoView->addTab(algo[0],QString("Line"));
+		algoView->addTab(algo[1],QString("Circle"));
+		algoView->addTab(algo[2],QString("Ellipse"));
+		algoView->addTab(algo[3],QString("Filling"));
+		algoView->addTab(algo[4],QString("Clipping"));
+		algoView->addTab(algo[5],QString("Transfomation"));
+		algoView->addTab(algo[6],QString("Bezzier Curve"));
 	
         drawingLayout->addWidget(algoView);
         drawingLayout->addWidget(clickCoordinate);
