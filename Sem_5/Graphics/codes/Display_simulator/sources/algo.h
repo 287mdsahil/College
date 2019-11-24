@@ -1,4 +1,5 @@
 #include <QWidget>
+
 #include <QLabel>
 #include <QPushButton>
 #include <QGroupBox>
@@ -191,36 +192,60 @@ public:
     {
         cout << "Bresenham line drawing called" << endl;
         int x1, y1, x2, y2;
-        if (p1.first < p2.first)
-        {
-            x1 = p1.first;
-            x2 = p2.first;
-            y1 = p1.second;
-            y2 = p2.second;
-        }
-        else
-        {
-            x1 = p2.first;
-            x2 = p1.first;
-            y1 = p2.second;
-            y2 = p1.second;
-        }
-        int m_new = 2 * (y2 - y1);
-        int slope_error_new = m_new - (x2 - x1);
-        for (int x = x1, y = y1; x <= x2; x++)
+
+        x1 = p1.first;
+        x2 = p2.first;
+       	y1 = p1.second;
+        y2 = p2.second;
+
+		int xinc = (p2.first > p1.first)? 1:-1;
+		int yinc = (p2.second > p1.second)? 1:-1;
+
+		int dx = abs(x2 - x1);
+		int dy = abs(y2 - y1);
+
+		// 0 for m <= 1 and 1 for m > 1
+		int flag = 0;
+		int p;
+		int dp0;
+		int dp1;
+
+		if(dx >= dy)
+		{
+			flag = 0;
+			p = 2*dy - dx;
+			dp0 = 2*(dy - dx);
+			dp1 = 2*dy;
+		}
+		else
+		{
+			flag = 1;
+			p = 2*dx - dy;
+			dp0 = 2*(dx - dy);
+			dp1 = 2*dx;
+		}
+
+        for (int x = x1, y = y1, i = 0; i < max(dx,dy);i++)
         {
             paintSignalEmitter(pair<int, int>(x, y));
-
-            // Add slope to increment angle formed
-            slope_error_new += m_new;
-            cout << slope_error_new << endl;
-            // Slope error reached limit, time to
-            // increment y and update slope error.
-            if (slope_error_new >= 0)
+            if (p >= 0)
             {
-                y++;
-                slope_error_new -= 2 * (x2 - x1);
+                y += yinc;
+				x += xinc;
+				p += dp0;
             }
+			else
+			{
+				if(flag == 1)
+				{
+					y += yinc;
+				}
+				else
+				{
+					x += xinc;
+				}
+				p+=dp1;
+			}
         }
     }
 
