@@ -1,3 +1,4 @@
+package lexicalAnalyzer;
 import java.util.*;
 
 public class Symtab {
@@ -14,7 +15,7 @@ public class Symtab {
 			id = i;
 		}
 
-		public String getToken() { return token; }
+		public String getString() { return token; }
 		public int getId() { return id; }
 		public int getRow() { return row; }
 		public int getCol() { return col; }
@@ -25,6 +26,8 @@ public class Symtab {
 	public Symtab() {
 		sl = new ArrayList<Sym>();
 	}
+
+	public int size() { return sl.size(); }
 
 	public void insert(String s, int r, int c, int i) {
 		sl.add(new Sym(s,r,c,i));

@@ -40,6 +40,10 @@ public class Dictionary {
 	}
 		
 	public int getType(String s) {
-		return dict.get(s);
+		try {
+			return dict.get(s);
+		} catch (NullPointerException e) {
+			return -1;
+		}
 	}
 }
