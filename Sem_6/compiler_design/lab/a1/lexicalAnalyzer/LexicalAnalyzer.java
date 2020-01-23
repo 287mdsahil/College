@@ -12,7 +12,14 @@ public class LexicalAnalyzer {
 		for(int i=0; i<st.size(); i++) {
 			System.out.print(st.get(i).getString() + "\t");
 			System.out.print("(" + st.get(i).getRow() + "," + st.get(i).getCol()  + ")\t");
-			System.out.print(st.get(i).getId() + "\n");
+			int id = st.get(i).getId();
+			String s = new String();
+			if(id == 0) s = "adjectives";
+			else if(id == 1) s = "articles";
+			else if(id == 2) s = "conjucntions";
+			else if(id == 3) s = "prepositions";
+			else if(id == 4) s = "verbs";
+			System.out.print(s + "\n");
 		}
 		System.out.println("---------------------");
 	}

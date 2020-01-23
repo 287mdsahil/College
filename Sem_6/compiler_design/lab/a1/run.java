@@ -1,4 +1,4 @@
-import lexicalAnalyzer.LexicalAnalyzer;
+import lexicalAnalyzer.*;
 import java.util.*;
 
 public class run {
