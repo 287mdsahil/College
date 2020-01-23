@@ -23,6 +23,30 @@ public class LexicalAnalyzer {
 		}
 		System.out.println("---------------------");
 	}
+	
+	private static void printFileSymtab(Symtab st) {
+		try {
+			FileWriter fw = new FileWriter("SymtabOutput", false);
+			PrintWriter outf = new PrintWriter(fw);
+			for(int i=0; i<st.size(); i++) {
+				outf.print(st.get(i).getString() + "\t");
+				outf.print("(" + st.get(i).getRow() + "," + st.get(i).getCol()  + ")\t");
+				int id = st.get(i).getId();
+				String s = new String();
+				if(id == 0) s = "adjectives";
+				else if(id == 1) s = "articles";
+				else if(id == 2) s = "conjucntions";
+				else if(id == 3) s = "prepositions";
+				else if(id == 4) s = "verbs";
+				outf.print(s + "\n");
+			}
+			outf.close();
+		} catch (IOException e) {
+			System.out.println("IOException:" + e.getMessage());
+			e.printStackTrace();
+			System.exit(0);
+		}
+	}
 
 	private static Symtab generateSymtab(TokenList tl, Dictionary dict){
 		Symtab st = new Symtab();
@@ -48,5 +72,6 @@ public class LexicalAnalyzer {
 		Symtab st = generateSymtab(tl,dict);
 
 		printSymtab(st);
+		printFileSymtab(st);
 	}
 }
