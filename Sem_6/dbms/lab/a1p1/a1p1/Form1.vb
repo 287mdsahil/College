@@ -43,4 +43,40 @@
     Private Sub Timer1_Tick(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Timer1.Tick
         Text = "Add and Sub " + Date.Now.ToString()
     End Sub
+
+    Private Sub Button3_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Button3.Click
+        Dim s As String
+        s = TextBox1.Text
+        If s = String.Empty Then
+            num1 = 0
+        Else
+            num1 = Double.Parse(s)
+        End If
+        s = TextBox2.Text
+        If s = String.Empty Then
+            num2 = 0
+        Else
+            num2 = Double.Parse(s)
+        End If
+        num3 = (num1 * num2)
+        Label1.Text = CStr(num3)
+    End Sub
+
+    Private Sub Button4_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Button4.Click
+        Dim s As String
+        s = TextBox1.Text
+        If s = String.Empty Then
+            num1 = 0
+        Else
+            num1 = Double.Parse(s)
+        End If
+        s = TextBox2.Text
+        If s = String.Empty Then
+            num2 = 0
+        Else
+            num2 = Double.Parse(s)
+        End If
+        num3 = (num1 / num2)
+        Label1.Text = CStr(num3)
+    End Sub
 End Class

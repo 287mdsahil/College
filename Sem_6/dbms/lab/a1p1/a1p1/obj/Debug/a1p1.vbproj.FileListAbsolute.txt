@@ -17,3 +17,12 @@ C:\Users\user1\Desktop\sahil\a1p1\a1p1\bin\Debug\a1p1.xml
 C:\Users\user1\Desktop\sahil\a1p1\a1p1\obj\Debug\a1p1.Form1.resources
 C:\Users\user1\Desktop\sahil\a1p1\a1p1\obj\Debug\a1p1.Resources.resources
 C:\Users\user1\Desktop\sahil\a1p1\a1p1\obj\Debug\a1p1.vbproj.GenerateResource.Cache
+C:\Users\user1\Desktop\lab\a1p1\a1p1\obj\Debug\a1p1.exe
+C:\Users\user1\Desktop\lab\a1p1\a1p1\obj\Debug\a1p1.xml
+C:\Users\user1\Desktop\lab\a1p1\a1p1\obj\Debug\a1p1.pdb
+C:\Users\user1\Desktop\lab\a1p1\a1p1\bin\Debug\a1p1.exe
+C:\Users\user1\Desktop\lab\a1p1\a1p1\bin\Debug\a1p1.pdb
+C:\Users\user1\Desktop\lab\a1p1\a1p1\bin\Debug\a1p1.xml
+C:\Users\user1\Desktop\lab\a1p1\a1p1\obj\Debug\a1p1.Form1.resources
+C:\Users\user1\Desktop\lab\a1p1\a1p1\obj\Debug\a1p1.Resources.resources
+C:\Users\user1\Desktop\lab\a1p1\a1p1\obj\Debug\a1p1.vbproj.GenerateResource.Cache
