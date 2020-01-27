@@ -38,8 +38,8 @@ public class Sender {
 	public static void main(String args[]) {
 		String inputString = readInput();
 		System.out.println("Input : " + inputString);
-		LRC vrc = new LRC(8);
-		String outputString = vrc.generator(inputString);
+		CRC crc = new CRC(8,"1011");
+		String outputString = crc.generator(inputString);
 		writeOutput(outputString);
 	}
 }
