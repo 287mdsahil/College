@@ -1,12 +1,12 @@
 ﻿Public Class Form1
 
-    Dim students(2) As Student
+    Dim students As New List(Of Student)()
     Dim dcode = New String() {"CSE", "ETCE", "MECH"}
     Dim dname = New String() {"Computer Science", "Electronics", "Mechanical"}
 
     Private Sub DisplayRefresh()
         ListView1.Items.Clear()
-        For i = 0 To UBound(students)
+        For i = 0 To students.Count - 1
             Dim Item1 As New ListViewItem(students(i).roll)
             Item1.SubItems.Add(students(i).dept)
             Item1.SubItems.Add(students(i).code)
@@ -18,9 +18,9 @@
     End Sub
 
     Private Sub Form1_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
-        students(0) = New Student(1, dname(0), dcode(0), "Sahil", "Dubrajpur", "12345678")
-        students(1) = New Student(2, dname(1), dcode(1), "Boote", "Durgapur", "14464524")
-        students(2) = New Student(3, dname(2), dcode(2), "Tommy", "Baruipur", "52454525")
+        students.Add(New Student(1, dname(0), dcode(0), "Sahil", "Dubrajpur", "12345678"))
+        students.Add(New Student(2, dname(1), dcode(1), "Boote", "Durgapur", "14464524"))
+        students.Add(New Student(3, dname(2), dcode(2), "Tommy", "Baruipur", "52454525"))
 
         'Tab1
 
@@ -52,7 +52,7 @@
     Private Sub Button1_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Button1.Click
         Dim r As Int32
         r = TextBox1.Text
-        For i = 0 To UBound(students)
+        For i = 0 To students.Count - 1
             If students(i).roll = r Then
                 TextBox2.Visible = True
                 Label2.Visible = True
@@ -80,11 +80,18 @@
         Dim sname As String = TextBox9.Text
         Dim saddress As String = TextBox8.Text
         Dim sphone As String = TextBox7.Text
-        Dim sroll As Int32 = UBound(students) + 1
+        Dim sroll As Int32 = students.Count + 1
 
-        students(UBound(students)) = New Student(sroll, sdname, sdcode, sname, saddress, sphone)
-        DisplayRefresh()
-        MessageBox.Show("added with Roll:")
+
+        Dim messageString As String = "Add the student with roll:" & sroll.ToString() & "?"
+        Dim resutl As DialogResult = MessageBox.Show(messageString, "Confirmation", MessageBoxButtons.OKCancel)
+        If resutl = DialogResult.OK Then
+            students.Add(New Student(sroll, sdname, sdcode, sname, saddress, sphone))
+            DisplayRefresh()
+            MessageBox.Show("New Student added")
+        Else
+            MessageBox.Show("Operation cancelled by user")
+        End If
         TextBox9.Clear()
         TextBox7.Clear()
         TextBox8.Clear()
