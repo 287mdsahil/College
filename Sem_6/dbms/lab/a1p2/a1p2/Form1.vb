@@ -47,30 +47,45 @@
 
     End Sub
 
+    Private Function searchByRoll(ByVal r As Int32)
+        For i = 0 To students.Count - 1
+            If students(i).roll Then
+                Return students(i)
+            End If
+        Next
+        Return Nothing
+    End Function
+
 
 
     Private Sub Button1_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Button1.Click
         Dim r As Int32
+        If String.IsNullOrEmpty(TextBox1.Text) Then
+            MessageBox.Show("Please insert a value to search")
+            Exit Sub
+        End If
         r = TextBox1.Text
-        For i = 0 To students.Count - 1
-            If students(i).roll = r Then
-                TextBox2.Visible = True
-                Label2.Visible = True
-                TextBox2.Text = students(i).dept
-                TextBox3.Visible = True
-                Label3.Visible = True
-                TextBox3.Text = students(i).code
-                TextBox4.Visible = True
-                Label4.Visible = True
-                TextBox4.Text = students(i).name
-                TextBox5.Visible = True
-                Label5.Visible = True
-                TextBox5.Text = students(i).address
-                TextBox6.Visible = True
-                Label6.Visible = True
-                TextBox6.Text = students(i).phone
-            End If
-        Next
+
+        Dim s As Student = searchByRoll(r)
+        If s Is Nothing Then
+            MessageBox.Show("Not found")
+        Else
+            TextBox2.Visible = True
+            Label2.Visible = True
+            TextBox2.Text = s.dept
+            TextBox3.Visible = True
+            Label3.Visible = True
+            TextBox3.Text = s.code
+            TextBox4.Visible = True
+            Label4.Visible = True
+            TextBox4.Text = s.name
+            TextBox5.Visible = True
+            Label5.Visible = True
+            TextBox5.Text = s.address
+            TextBox6.Visible = True
+            Label6.Visible = True
+            TextBox6.Text = s.phone
+        End If
     End Sub
 
     Private Sub Button2_Click(sender As Object, e As EventArgs) Handles Button2.Click
@@ -96,6 +111,10 @@
         TextBox7.Clear()
         TextBox8.Clear()
         ComboBox1.SelectedIndex = -1
+
+    End Sub
+
+    Private Sub Button3_Click(sender As Object, e As EventArgs) Handles Button3.Click
 
     End Sub
 End Class

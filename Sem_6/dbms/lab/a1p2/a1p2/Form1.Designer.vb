@@ -55,10 +55,26 @@ Partial Class Form1
         Me.TextBox9 = New System.Windows.Forms.TextBox()
         Me.Label11 = New System.Windows.Forms.Label()
         Me.Button2 = New System.Windows.Forms.Button()
+        Me.TabPage4 = New System.Windows.Forms.TabPage()
+        Me.TabPage5 = New System.Windows.Forms.TabPage()
+        Me.Label10 = New System.Windows.Forms.Label()
+        Me.TextBox10 = New System.Windows.Forms.TextBox()
+        Me.Label12 = New System.Windows.Forms.Label()
+        Me.TextBox11 = New System.Windows.Forms.TextBox()
+        Me.Label13 = New System.Windows.Forms.Label()
+        Me.TextBox12 = New System.Windows.Forms.TextBox()
+        Me.Label14 = New System.Windows.Forms.Label()
+        Me.TextBox13 = New System.Windows.Forms.TextBox()
+        Me.Label15 = New System.Windows.Forms.Label()
+        Me.TextBox14 = New System.Windows.Forms.TextBox()
+        Me.Button3 = New System.Windows.Forms.Button()
+        Me.Label16 = New System.Windows.Forms.Label()
+        Me.TextBox15 = New System.Windows.Forms.TextBox()
         Me.TabControl1.SuspendLayout()
         Me.TabPage1.SuspendLayout()
         Me.TabPage2.SuspendLayout()
         Me.TabPage3.SuspendLayout()
+        Me.TabPage5.SuspendLayout()
         Me.SuspendLayout()
         '
         'TabControl1
@@ -66,6 +82,8 @@ Partial Class Form1
         Me.TabControl1.Controls.Add(Me.TabPage1)
         Me.TabControl1.Controls.Add(Me.TabPage2)
         Me.TabControl1.Controls.Add(Me.TabPage3)
+        Me.TabControl1.Controls.Add(Me.TabPage4)
+        Me.TabControl1.Controls.Add(Me.TabPage5)
         Me.TabControl1.Location = New System.Drawing.Point(13, 15)
         Me.TabControl1.Margin = New System.Windows.Forms.Padding(4)
         Me.TabControl1.Name = "TabControl1"
@@ -364,6 +382,157 @@ Partial Class Form1
         Me.Button2.Text = "Add"
         Me.Button2.UseVisualStyleBackColor = True
         '
+        'TabPage4
+        '
+        Me.TabPage4.Location = New System.Drawing.Point(4, 25)
+        Me.TabPage4.Name = "TabPage4"
+        Me.TabPage4.Padding = New System.Windows.Forms.Padding(3)
+        Me.TabPage4.Size = New System.Drawing.Size(464, 274)
+        Me.TabPage4.TabIndex = 3
+        Me.TabPage4.Text = "Edit"
+        Me.TabPage4.UseVisualStyleBackColor = True
+        '
+        'TabPage5
+        '
+        Me.TabPage5.Controls.Add(Me.Label10)
+        Me.TabPage5.Controls.Add(Me.TextBox10)
+        Me.TabPage5.Controls.Add(Me.Label12)
+        Me.TabPage5.Controls.Add(Me.TextBox11)
+        Me.TabPage5.Controls.Add(Me.Label13)
+        Me.TabPage5.Controls.Add(Me.TextBox12)
+        Me.TabPage5.Controls.Add(Me.Label14)
+        Me.TabPage5.Controls.Add(Me.TextBox13)
+        Me.TabPage5.Controls.Add(Me.Label15)
+        Me.TabPage5.Controls.Add(Me.TextBox14)
+        Me.TabPage5.Controls.Add(Me.Button3)
+        Me.TabPage5.Controls.Add(Me.Label16)
+        Me.TabPage5.Controls.Add(Me.TextBox15)
+        Me.TabPage5.Location = New System.Drawing.Point(4, 25)
+        Me.TabPage5.Name = "TabPage5"
+        Me.TabPage5.Padding = New System.Windows.Forms.Padding(3)
+        Me.TabPage5.Size = New System.Drawing.Size(464, 274)
+        Me.TabPage5.TabIndex = 4
+        Me.TabPage5.Text = "Delete"
+        Me.TabPage5.UseVisualStyleBackColor = True
+        '
+        'Label10
+        '
+        Me.Label10.AutoSize = True
+        Me.Label10.Location = New System.Drawing.Point(156, 206)
+        Me.Label10.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.Label10.Name = "Label10"
+        Me.Label10.Size = New System.Drawing.Size(49, 17)
+        Me.Label10.TabIndex = 38
+        Me.Label10.Text = "Phone"
+        '
+        'TextBox10
+        '
+        Me.TextBox10.Location = New System.Drawing.Point(224, 206)
+        Me.TextBox10.Margin = New System.Windows.Forms.Padding(4)
+        Me.TextBox10.Name = "TextBox10"
+        Me.TextBox10.Size = New System.Drawing.Size(183, 22)
+        Me.TextBox10.TabIndex = 37
+        '
+        'Label12
+        '
+        Me.Label12.AutoSize = True
+        Me.Label12.Location = New System.Drawing.Point(156, 174)
+        Me.Label12.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.Label12.Name = "Label12"
+        Me.Label12.Size = New System.Drawing.Size(60, 17)
+        Me.Label12.TabIndex = 36
+        Me.Label12.Text = "Address"
+        '
+        'TextBox11
+        '
+        Me.TextBox11.Location = New System.Drawing.Point(224, 174)
+        Me.TextBox11.Margin = New System.Windows.Forms.Padding(4)
+        Me.TextBox11.Name = "TextBox11"
+        Me.TextBox11.Size = New System.Drawing.Size(183, 22)
+        Me.TextBox11.TabIndex = 35
+        '
+        'Label13
+        '
+        Me.Label13.AutoSize = True
+        Me.Label13.Location = New System.Drawing.Point(170, 146)
+        Me.Label13.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.Label13.Name = "Label13"
+        Me.Label13.Size = New System.Drawing.Size(45, 17)
+        Me.Label13.TabIndex = 34
+        Me.Label13.Text = "Name"
+        '
+        'TextBox12
+        '
+        Me.TextBox12.Location = New System.Drawing.Point(224, 142)
+        Me.TextBox12.Margin = New System.Windows.Forms.Padding(4)
+        Me.TextBox12.Name = "TextBox12"
+        Me.TextBox12.Size = New System.Drawing.Size(183, 22)
+        Me.TextBox12.TabIndex = 33
+        '
+        'Label14
+        '
+        Me.Label14.AutoSize = True
+        Me.Label14.Location = New System.Drawing.Point(174, 114)
+        Me.Label14.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.Label14.Name = "Label14"
+        Me.Label14.Size = New System.Drawing.Size(41, 17)
+        Me.Label14.TabIndex = 32
+        Me.Label14.Text = "Code"
+        '
+        'TextBox13
+        '
+        Me.TextBox13.Location = New System.Drawing.Point(224, 110)
+        Me.TextBox13.Margin = New System.Windows.Forms.Padding(4)
+        Me.TextBox13.Name = "TextBox13"
+        Me.TextBox13.Size = New System.Drawing.Size(183, 22)
+        Me.TextBox13.TabIndex = 31
+        '
+        'Label15
+        '
+        Me.Label15.AutoSize = True
+        Me.Label15.Location = New System.Drawing.Point(176, 82)
+        Me.Label15.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.Label15.Name = "Label15"
+        Me.Label15.Size = New System.Drawing.Size(38, 17)
+        Me.Label15.TabIndex = 30
+        Me.Label15.Text = "Dept"
+        '
+        'TextBox14
+        '
+        Me.TextBox14.Location = New System.Drawing.Point(224, 78)
+        Me.TextBox14.Margin = New System.Windows.Forms.Padding(4)
+        Me.TextBox14.Name = "TextBox14"
+        Me.TextBox14.Size = New System.Drawing.Size(183, 22)
+        Me.TextBox14.TabIndex = 29
+        '
+        'Button3
+        '
+        Me.Button3.Location = New System.Drawing.Point(58, 46)
+        Me.Button3.Margin = New System.Windows.Forms.Padding(4)
+        Me.Button3.Name = "Button3"
+        Me.Button3.Size = New System.Drawing.Size(117, 23)
+        Me.Button3.TabIndex = 28
+        Me.Button3.Text = "Search"
+        Me.Button3.UseVisualStyleBackColor = True
+        '
+        'Label16
+        '
+        Me.Label16.AutoSize = True
+        Me.Label16.Location = New System.Drawing.Point(183, 50)
+        Me.Label16.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.Label16.Name = "Label16"
+        Me.Label16.Size = New System.Drawing.Size(32, 17)
+        Me.Label16.TabIndex = 27
+        Me.Label16.Text = "Roll"
+        '
+        'TextBox15
+        '
+        Me.TextBox15.Location = New System.Drawing.Point(224, 46)
+        Me.TextBox15.Margin = New System.Windows.Forms.Padding(4)
+        Me.TextBox15.Name = "TextBox15"
+        Me.TextBox15.Size = New System.Drawing.Size(183, 22)
+        Me.TextBox15.TabIndex = 26
+        '
         'Form1
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 16.0!)
@@ -379,6 +548,8 @@ Partial Class Form1
         Me.TabPage2.ResumeLayout(False)
         Me.TabPage3.ResumeLayout(False)
         Me.TabPage3.PerformLayout()
+        Me.TabPage5.ResumeLayout(False)
+        Me.TabPage5.PerformLayout()
         Me.ResumeLayout(False)
 
     End Sub
@@ -415,4 +586,19 @@ Partial Class Form1
     Friend WithEvents Button2 As Button
     Friend WithEvents ComboBox1 As ComboBox
     Friend WithEvents Label11 As Label
+    Friend WithEvents TabPage4 As TabPage
+    Friend WithEvents TabPage5 As TabPage
+    Friend WithEvents Label10 As Label
+    Friend WithEvents TextBox10 As TextBox
+    Friend WithEvents Label12 As Label
+    Friend WithEvents TextBox11 As TextBox
+    Friend WithEvents Label13 As Label
+    Friend WithEvents TextBox12 As TextBox
+    Friend WithEvents Label14 As Label
+    Friend WithEvents TextBox13 As TextBox
+    Friend WithEvents Label15 As Label
+    Friend WithEvents TextBox14 As TextBox
+    Friend WithEvents Button3 As Button
+    Friend WithEvents Label16 As Label
+    Friend WithEvents TextBox15 As TextBox
 End Class
