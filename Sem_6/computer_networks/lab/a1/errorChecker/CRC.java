@@ -1,6 +1,6 @@
 package errorChecker;
 
-public class CRC {
+public class CRC implements Checker{
 	
 	int frameSize;
 	int rBitSize;
@@ -28,16 +28,43 @@ public class CRC {
 		return '1';
 	}
 
-	String generator(String input) {
+	private String divide(int mBitSize, int rBitSize, String div, String s) {
+		String r_new = div;
+		String r = s.substring(0,rBitSize + 1);
+		String ddiv = div;
+		String r0 = "";
+		for(int i=0;i<r.length();i++)
+			r0 += '0';
+		for(int i = 0; i < mBitSize ; i++) {
+			r_new = "";
+			
+			if(r.charAt(0) == '0')
+				ddiv = r0;
+			else
+				ddiv = div;
+				
+			for(int j = 0; j < rBitSize + 1; j++) {
+				r_new += xor(r.charAt(j),ddiv.charAt(j));
+				//System.out.println(r_new.charAt(j) + ","  + r.charAt(j) + "," + ddiv.charAt(j));
+			}
+
+			//System.out.println(r_new);
+			r = r_new;
+			if(s.length() > i+rBitSize + 1)
+				r = r.substring(1,rBitSize+1) +  s.charAt(i+rBitSize+1);
+		}
+		return r_new;
+	}
+
+	public String generator(String input) {
 
 		// Applying zero padding to make frames evenly sized
-		System.out.println(div);
 		String paddingDummy = "";
 		for(int i=0;i<mBitSize;i++)
 			paddingDummy += '0';
-		input = input + paddingDummy.substring((input.length() % mBitSize));
-
-		
+		int l = (mBitSize - input.length() % mBitSize) % mBitSize;
+		input = input + paddingDummy.substring(0,l);
+			
 		String output = "";
 		
 		// Iterate per frames
@@ -45,46 +72,37 @@ public class CRC {
 		while( input.length() != 0 ) {
 			String s = input.substring(0,mBitSize);
 			s = s + paddingDummy.substring(0,rBitSize);
+			String r0 = paddingDummy.substring(0,div.length()); 
 			String r = div;
 			String r_new = "";
 			input = input.substring(mBitSize,input.length());
-			for(int i = 0; i < mBitSize - 1; i++) {
-				r_new = "";
-				for(int j = 0; j < rBitSize + 1; j++) {
-					r_new += xor(r.charAt(i),s.charAt(i+j));
-				}
-				r = r_new;
-				r = r.substring(1,r.length()) + s.charAt(i+rBitSize);
-			}
+			r_new = divide(mBitSize,rBitSize,div,s);
 			r_new = r_new.substring(1,r_new.length());
-			//debug
-			System.out.println("String:" + s);
-			System.out.println("Rcode:" + r_new);
-			System.out.println(s.substring(0,s.length() - r_new.length()) + r_new);
 			output += s.substring(0,s.length() - r_new.length()) + r_new;
 		}
-		check(output);	
 		return output;
 	}
 
-	boolean check(String input) {
-		/*while( input.length() != 0 ) {
+	public boolean check(String input) {	
+		String r = div;
+		String r_new = "";
+		String correct = "";	
+		for(int i=0;i<r.length();i++)
+			correct += '0';
+		while( input.length()!= 0 ) {
 			String s = input.substring(0,frameSize);
-			String r = div;
-			String r_new = "";
-			input = input.substring(frameSize,input.length());
-			for(int i = 0; i < mBitSize - 1; i++) {
-				r_new = "";
-				for(int j = 0; j < rBitSize + 1; j++) {
-					r_new += xor(r.charAt(i),s.charAt(i+j));
-				}
-				r = r_new;
-				r = r.substring(1,r.length()) + s.charAt(i+rBitSize);
+			//input = input.substring(frameSize,input.length());
+
+			r = divide(mBitSize,rBitSize,div,s);
+			
+				
+			if(!r.equals(correct)) {
+				System.out.println("r:"+r);
+				return false;
 			}
-			System.out.println("String:" + s);
-			System.out.println("Rcode:" + r_new);
-			output += s + r_new;
-		}*/
+
+			break;
+		}
 		return true;
 	}
 }

@@ -7,14 +7,14 @@ import java.io.*;
 
 public class Receiver {
 
-	private static String readInput() {
-		String inputFilename = "senderFile";
+	private static String readInput(String inputFilename) {
 		String inputString = "";
 		File inputFile = new File(inputFilename);
 		try {
 			Scanner inputScanner = new Scanner(inputFile);
 			if(inputScanner.hasNextLine()) {
 				inputString = inputScanner.nextLine();
+			inputScanner.close();
 			}
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
@@ -24,11 +24,22 @@ public class Receiver {
 		return inputString;
 	}
 
-	public static void main(String args[]) {
-		LRC lrc = new LRC(8);
-		String receivedString = readInput();
+	public static void receive(String method, String outputFile) {
 		
-		if(lrc.check(receivedString))
+		Checker checker;
+		if(method.toUpperCase().equals("CHECKSUM")) 
+			checker = new CheckSum(8);
+		else if(method.toUpperCase().equals("VRC"))
+			checker = new VRC(8);
+		else if(method.toUpperCase().equals("LRC"))
+			checker = new LRC(8);
+		else 	
+			checker = new CRC(7,"1101");
+
+		String receivedString = readInput(outputFile);
+		System.out.println("Received input:\t" + receivedString);
+		
+		if(checker.check(receivedString))
 			System.out.println("True");
 		else 
 			System.out.println("False");

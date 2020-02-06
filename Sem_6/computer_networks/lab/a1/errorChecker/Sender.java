@@ -4,8 +4,7 @@ import java.util.*;
 import java.io.*;
 
 public class Sender {
-	private static String readInput() {
-		String inputFilename = "input";
+	private static String readInput(String inputFilename) {
 		String inputString = "";
 		File inputFile = new File(inputFilename);
 		try {
@@ -13,6 +12,7 @@ public class Sender {
 			if(inputScanner.hasNextLine()) {
 				inputString = inputScanner.nextLine();
 			}
+			inputScanner.close();
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 			System.out.println(e);
@@ -21,10 +21,9 @@ public class Sender {
 		return inputString;
 	}
 
-	private static void writeOutput(String output) {
-		System.out.println("Output : " + output);
+	private static void writeOutput(String output,String outputFile) {
 		try {
-			FileWriter fw = new FileWriter("senderFile",false);
+			FileWriter fw = new FileWriter(outputFile,false);
 			PrintWriter outf = new PrintWriter(fw);
 			outf.println(output);
 			outf.close();
@@ -35,11 +34,24 @@ public class Sender {
 		}
 	}
 		
-	public static void main(String args[]) {
-		String inputString = readInput();
-		System.out.println("Input : " + inputString);
-		CRC crc = new CRC(8,"1011");
-		String outputString = crc.generator(inputString);
-		writeOutput(outputString);
+	public static void send(String method, String inputFile, String outputFile) {
+		String inputString = readInput(inputFile);
+		System.out.println("Input :\t\t" + inputString);
+		
+		Checker checker;
+		if(method.toUpperCase().equals("CHECKSUM")) 
+			checker = new CheckSum(8);
+		else if(method.toUpperCase().equals("VRC"))
+			checker = new VRC(8);
+		else if(method.toUpperCase().equals("LRC"))
+			checker = new LRC(8);
+		else 	
+			checker = new CRC(7,"1101");
+
+		String outputString = checker.generator(inputString);
+		
+		System.out.println("Output :\t" + outputString);
+
+		writeOutput(outputString,outputFile);
 	}
 }

@@ -1,6 +1,6 @@
 package errorChecker;
 
-public class LRC {
+public class LRC implements Checker{
 	
 	int frameSize;
 
@@ -8,17 +8,22 @@ public class LRC {
 		frameSize = p;
 	}
 
-	String generator(String input) {
-		String output = input;
-		String paddingDummy = "00000000";
-		input = input + paddingDummy.substring((input.length() % frameSize));
+	public String generator(String input) {
+		String paddingDummy = "";
+		for(int i=0;i<frameSize;i++)
+			paddingDummy += '0';
+		int l = (frameSize - input.length() % frameSize) % frameSize;
+		input = input + paddingDummy.substring(0,l);
+		String output = "";
 		int parityBits[] = new int[frameSize];
 		for(int i=0;i<frameSize;i++)
 			parityBits[i]=0;
 		
-		while(input.length() != 0) {
+		while(input.length()!=0) {
 			int limit = frameSize;
 			String frame = input.substring(0,limit);
+			System.out.println(frame);
+			output += frame;
 			input = input.substring(limit,input.length());
 			int parity = 0;
 	
@@ -35,14 +40,14 @@ public class LRC {
 			else
 				parityFrame += '1';
 		}
+		
+		System.out.println(parityFrame);	
 		output += parityFrame;
-
-		System.out.println(output.length());
 		return output;
 	}
 
 
-	boolean check(String input) {
+	public boolean check(String input) {
 		if(input.length() % (frameSize) != 0){
 			System.out.println("Incorrect size: " + input.length());
 			return false;

@@ -1,6 +1,6 @@
 package errorChecker;
 
-public class VRC {
+public class VRC implements Checker{
 	
 	int frameSize;
 
@@ -8,11 +8,15 @@ public class VRC {
 		frameSize = p;
 	}
 
-	String generator(String input) {
+	public String generator(String input) {
 		String output = "";
-		String paddingDummy = "00000000";
-		input = input + paddingDummy.substring((input.length() % frameSize));
-		
+		String paddingDummy = "";
+		for(int i=0;i<frameSize;i++)
+			paddingDummy += '0';
+
+		int l = (frameSize - input.length() % frameSize) % frameSize;
+		input = input + paddingDummy.substring(0,l);
+
 		while(input.length() != 0) {
 			int limit = frameSize;
 			String frame = input.substring(0,limit);
@@ -31,11 +35,13 @@ public class VRC {
 			}
 			
 			output = output + frame;
+			System.out.println(frame);
+
 		}
 		return output;
 	}
 
-	boolean check(String input) {
+	public boolean check(String input) {
 		if(input.length() % (frameSize + 1) != 0)
 			return false;
 
