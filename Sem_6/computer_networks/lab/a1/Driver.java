@@ -70,11 +70,18 @@ public class Driver{
 	public static void main(String args[]) {
 		String inputFile = "input";
 		String outputFile = "output";
-		String method = "vrc";
+		String method = "checksum";
+		Scanner cin = new Scanner(System.in);
+		System.out.print("Method used:");
+		method = cin.next();
 		System.out.println("Sender:------");
 		Sender.send(method,inputFile,outputFile);
 
-		//error(outputFile);
+		System.out.println("Error?(y,n)");
+		if(cin.next().charAt(0) == 'y')
+			error(outputFile);
+
+		cin.close();
 
 		System.out.println("Receiver:------");
 		Receiver.receive(method,outputFile);
