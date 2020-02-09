@@ -4,24 +4,52 @@
     Public dcode = New String() {"CSE", "ETCE", "MECH"}
     Public dname = New String() {"Computer Science", "Electronics", "Mechanical"}
     Dim s As Student
+    Dim displayStart As Int32
+
+    Private Function min(ByVal a As Int32, ByVal b As Int32)
+        If (a > b) Then
+            Return b
+        Else
+            Return a
+        End If
+    End Function
 
     Public Sub DisplayRefresh()
-        ListView1.Items.Clear()
-        For i = 0 To students.Count - 1
-            Dim Item1 As New ListViewItem(students(i).roll)
-            Item1.SubItems.Add(students(i).dept)
-            Item1.SubItems.Add(students(i).code)
-            Item1.SubItems.Add(students(i).name)
-            Item1.SubItems.Add(students(i).address)
-            Item1.SubItems.Add(students(i).phone)
-            ListView1.Items.Add(Item1)
+        DataGridView1.Rows.Clear()
+        For i = displayStart To min(students.Count - 1, displayStart + 5 - 1)
+            Me.DataGridView1.Rows.Add(students(i).roll, students(i).code, students(i).name, students(i).address, students(i).dept, students(i).phone)
         Next
+    End Sub
+
+    Private Sub DisplayButtons()
+        If (displayStart < 5) Then
+            Button6.Visible = False
+        Else
+            Button6.Visible = True
+        End If
+
+
+        If (displayStart + 5 > students.Count - 1) Then
+            Button7.Visible = False
+        Else
+            Button7.Visible = True
+        End If
     End Sub
 
     Private Sub Form1_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
         students.Add(New Student(1, dname(0), dcode(0), "Sahil", "Dubrajpur", "12345678"))
         students.Add(New Student(2, dname(1), dcode(1), "Boote", "Durgapur", "14464524"))
         students.Add(New Student(3, dname(2), dcode(2), "Tommy", "Baruipur", "52454525"))
+        students.Add(New Student(4, dname(2), dcode(2), "Irin", "Jadavpur", "52454525"))
+        students.Add(New Student(5, dname(2), dcode(2), "Sadrul", "Burdwan", "52454525"))
+        students.Add(New Student(6, dname(2), dcode(2), "Anindya", "Durgapur", "52454525"))
+        students.Add(New Student(7, dname(2), dcode(2), "Ani", "Durgapur", "52454525"))
+        students.Add(New Student(8, dname(2), dcode(2), "Irin", "Jadavpur", "52454525"))
+        students.Add(New Student(9, dname(2), dcode(2), "Sadrul", "Burdwan", "52454525"))
+        students.Add(New Student(10, dname(2), dcode(2), "Anindya", "Durgapur", "52454525"))
+        students.Add(New Student(11, dname(2), dcode(2), "Ani", "Durgapur", "52454525"))
+        displayStart = 0
+        DisplayButtons()
 
         'Tab1
 
@@ -37,10 +65,6 @@
         Label6.Visible = False
 
         'Tab 2
-        ListView1.View = View.Details
-        ListView1.LabelEdit = False
-        ListView1.FullRowSelect = True
-        ListView1.GridLines = True
         DisplayRefresh()
 
         'Tab 3
@@ -70,8 +94,6 @@
         Next
         Return Nothing
     End Function
-
-
 
     Private Sub Button1_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Button1.Click
         Dim r As Int32
@@ -111,6 +133,14 @@
         Dim saddress As String = TextBox8.Text
         Dim sphone As String = TextBox7.Text
         Dim sroll As Int32 = students.Count + 1
+
+        Dim max As Int32 = -1
+        For i = 0 To students.Count - 1
+            If (students(i).roll > max) Then
+                max = students(i).roll
+            End If
+        Next
+        sroll = max + 1
 
 
         Dim messageString As String = "Add the student with roll:" & sroll.ToString() & "?"
@@ -222,5 +252,17 @@
         Label10.Visible = False
         Button4.Visible = False
         Button5.Visible = False
+    End Sub
+
+    Private Sub Button6_Click(sender As Object, e As EventArgs) Handles Button6.Click
+        displayStart -= 5
+        DisplayButtons()
+        DisplayRefresh()
+    End Sub
+
+    Private Sub Button7_Click(sender As Object, e As EventArgs) Handles Button7.Click
+        displayStart = displayStart + 5
+        DisplayButtons()
+        DisplayRefresh()
     End Sub
 End Class
