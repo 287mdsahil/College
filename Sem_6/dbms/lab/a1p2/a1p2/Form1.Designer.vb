@@ -55,8 +55,9 @@ Partial Class Form1
         Me.TextBox9 = New System.Windows.Forms.TextBox()
         Me.Label11 = New System.Windows.Forms.Label()
         Me.Button2 = New System.Windows.Forms.Button()
-        Me.TabPage4 = New System.Windows.Forms.TabPage()
         Me.TabPage5 = New System.Windows.Forms.TabPage()
+        Me.Button5 = New System.Windows.Forms.Button()
+        Me.Button4 = New System.Windows.Forms.Button()
         Me.Label10 = New System.Windows.Forms.Label()
         Me.TextBox10 = New System.Windows.Forms.TextBox()
         Me.Label12 = New System.Windows.Forms.Label()
@@ -82,7 +83,6 @@ Partial Class Form1
         Me.TabControl1.Controls.Add(Me.TabPage1)
         Me.TabControl1.Controls.Add(Me.TabPage2)
         Me.TabControl1.Controls.Add(Me.TabPage3)
-        Me.TabControl1.Controls.Add(Me.TabPage4)
         Me.TabControl1.Controls.Add(Me.TabPage5)
         Me.TabControl1.Location = New System.Drawing.Point(13, 15)
         Me.TabControl1.Margin = New System.Windows.Forms.Padding(4)
@@ -382,18 +382,10 @@ Partial Class Form1
         Me.Button2.Text = "Add"
         Me.Button2.UseVisualStyleBackColor = True
         '
-        'TabPage4
-        '
-        Me.TabPage4.Location = New System.Drawing.Point(4, 25)
-        Me.TabPage4.Name = "TabPage4"
-        Me.TabPage4.Padding = New System.Windows.Forms.Padding(3)
-        Me.TabPage4.Size = New System.Drawing.Size(464, 274)
-        Me.TabPage4.TabIndex = 3
-        Me.TabPage4.Text = "Edit"
-        Me.TabPage4.UseVisualStyleBackColor = True
-        '
         'TabPage5
         '
+        Me.TabPage5.Controls.Add(Me.Button5)
+        Me.TabPage5.Controls.Add(Me.Button4)
         Me.TabPage5.Controls.Add(Me.Label10)
         Me.TabPage5.Controls.Add(Me.TextBox10)
         Me.TabPage5.Controls.Add(Me.Label12)
@@ -412,8 +404,26 @@ Partial Class Form1
         Me.TabPage5.Padding = New System.Windows.Forms.Padding(3)
         Me.TabPage5.Size = New System.Drawing.Size(464, 274)
         Me.TabPage5.TabIndex = 4
-        Me.TabPage5.Text = "Delete"
+        Me.TabPage5.Text = "Edit and Delete"
         Me.TabPage5.UseVisualStyleBackColor = True
+        '
+        'Button5
+        '
+        Me.Button5.Location = New System.Drawing.Point(16, 188)
+        Me.Button5.Name = "Button5"
+        Me.Button5.Size = New System.Drawing.Size(117, 40)
+        Me.Button5.TabIndex = 40
+        Me.Button5.Text = "Edit"
+        Me.Button5.UseVisualStyleBackColor = True
+        '
+        'Button4
+        '
+        Me.Button4.Location = New System.Drawing.Point(16, 114)
+        Me.Button4.Name = "Button4"
+        Me.Button4.Size = New System.Drawing.Size(117, 49)
+        Me.Button4.TabIndex = 39
+        Me.Button4.Text = "Delete"
+        Me.Button4.UseVisualStyleBackColor = True
         '
         'Label10
         '
@@ -507,10 +517,10 @@ Partial Class Form1
         '
         'Button3
         '
-        Me.Button3.Location = New System.Drawing.Point(58, 46)
+        Me.Button3.Location = New System.Drawing.Point(16, 44)
         Me.Button3.Margin = New System.Windows.Forms.Padding(4)
         Me.Button3.Name = "Button3"
-        Me.Button3.Size = New System.Drawing.Size(117, 23)
+        Me.Button3.Size = New System.Drawing.Size(117, 44)
         Me.Button3.TabIndex = 28
         Me.Button3.Text = "Search"
         Me.Button3.UseVisualStyleBackColor = True
@@ -586,7 +596,6 @@ Partial Class Form1
     Friend WithEvents Button2 As Button
     Friend WithEvents ComboBox1 As ComboBox
     Friend WithEvents Label11 As Label
-    Friend WithEvents TabPage4 As TabPage
     Friend WithEvents TabPage5 As TabPage
     Friend WithEvents Label10 As Label
     Friend WithEvents TextBox10 As TextBox
@@ -601,4 +610,6 @@ Partial Class Form1
     Friend WithEvents Button3 As Button
     Friend WithEvents Label16 As Label
     Friend WithEvents TextBox15 As TextBox
+    Friend WithEvents Button4 As Button
+    Friend WithEvents Button5 As Button
 End Class

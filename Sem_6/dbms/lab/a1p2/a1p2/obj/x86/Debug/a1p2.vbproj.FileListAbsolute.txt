@@ -9,3 +9,4 @@ C:\Users\Hp\Desktop\lab\a1p2\a1p2\obj\x86\Debug\a1p2.vbproj.CoreCompileInputs.ca
 C:\Users\Hp\Desktop\lab\a1p2\a1p2\obj\x86\Debug\a1p2.exe
 C:\Users\Hp\Desktop\lab\a1p2\a1p2\obj\x86\Debug\a1p2.xml
 C:\Users\Hp\Desktop\lab\a1p2\a1p2\obj\x86\Debug\a1p2.pdb
+C:\Users\Hp\Desktop\lab\a1p2\a1p2\obj\x86\Debug\a1p1.Form2.resources

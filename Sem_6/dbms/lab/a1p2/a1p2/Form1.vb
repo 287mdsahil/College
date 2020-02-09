@@ -1,10 +1,11 @@
 ﻿Public Class Form1
 
     Dim students As New List(Of Student)()
-    Dim dcode = New String() {"CSE", "ETCE", "MECH"}
-    Dim dname = New String() {"Computer Science", "Electronics", "Mechanical"}
+    Public dcode = New String() {"CSE", "ETCE", "MECH"}
+    Public dname = New String() {"Computer Science", "Electronics", "Mechanical"}
+    Dim s As Student
 
-    Private Sub DisplayRefresh()
+    Public Sub DisplayRefresh()
         ListView1.Items.Clear()
         For i = 0 To students.Count - 1
             Dim Item1 As New ListViewItem(students(i).roll)
@@ -45,11 +46,25 @@
         'Tab 3
         ComboBox1.Items.AddRange(dcode)
 
+        'Tab 5
+        TextBox14.Visible = False
+        Label15.Visible = False
+        TextBox13.Visible = False
+        Label14.Visible = False
+        TextBox12.Visible = False
+        Label13.Visible = False
+        TextBox11.Visible = False
+        Label12.Visible = False
+        TextBox10.Visible = False
+        Label10.Visible = False
+        Button4.Visible = False
+        Button5.Visible = False
+
     End Sub
 
-    Private Function searchByRoll(ByVal r As Int32)
+    Public Function searchByRoll(ByVal r As Int32)
         For i = 0 To students.Count - 1
-            If students(i).roll Then
+            If students(i).roll = r Then
                 Return students(i)
             End If
         Next
@@ -66,7 +81,7 @@
         End If
         r = TextBox1.Text
 
-        Dim s As Student = searchByRoll(r)
+        s = searchByRoll(r)
         If s Is Nothing Then
             MessageBox.Show("Not found")
         Else
@@ -115,6 +130,97 @@
     End Sub
 
     Private Sub Button3_Click(sender As Object, e As EventArgs) Handles Button3.Click
+        Dim r As Int32
+        If String.IsNullOrEmpty(TextBox15.Text) Then
+            MessageBox.Show("Please insert a value to search")
+            Exit Sub
+        End If
+        r = TextBox15.Text
 
+        s = searchByRoll(r)
+        If s Is Nothing Then
+            MessageBox.Show("Not found")
+        Else
+            TextBox14.Visible = True
+            Label15.Visible = True
+            TextBox14.Text = s.dept
+            TextBox13.Visible = True
+            Label14.Visible = True
+            TextBox13.Text = s.code
+            TextBox12.Visible = True
+            Label13.Visible = True
+            TextBox12.Text = s.name
+            TextBox11.Visible = True
+            Label12.Visible = True
+            TextBox11.Text = s.address
+            TextBox10.Visible = True
+            Label10.Visible = True
+            TextBox10.Text = s.phone
+            Button4.Visible = True
+            Button5.Visible = True
+        End If
+    End Sub
+
+    Private Sub Button4_Click(sender As Object, e As EventArgs) Handles Button4.Click
+        'Delete entry
+        Dim r As Int32
+        If String.IsNullOrEmpty(TextBox15.Text) Then
+            MessageBox.Show("Please insert a value to search")
+            Exit Sub
+        End If
+
+        Dim result As DialogResult = MessageBox.Show("Are You sure", "Confirmation", MessageBoxButtons.OKCancel)
+
+        If result = DialogResult.OK Then
+            students.Remove(s)
+            MessageBox.Show("Student corresponding to roll:" + s.roll.ToString() + " deleted!")
+            DisplayRefresh()
+        Else
+            MessageBox.Show("Operation aborted by user!")
+        End If
+
+        TextBox15.Clear()
+        TextBox14.Clear()
+        TextBox13.Clear()
+        TextBox12.Clear()
+        TextBox11.Clear()
+        TextBox10.Clear()
+        TextBox14.Visible = False
+        Label15.Visible = False
+        TextBox13.Visible = False
+        Label14.Visible = False
+        TextBox12.Visible = False
+        Label13.Visible = False
+        TextBox11.Visible = False
+        Label12.Visible = False
+        TextBox10.Visible = False
+        Label10.Visible = False
+        Button4.Visible = False
+        Button5.Visible = False
+
+    End Sub
+
+    Private Sub Button5_Click(sender As Object, e As EventArgs) Handles Button5.Click
+        Form2.Show()
+        Form2.sendStudent(s)
+        Me.Hide()
+        TextBox15.Clear()
+        TextBox14.Clear()
+        TextBox13.Clear()
+        TextBox12.Clear()
+        TextBox11.Clear()
+        TextBox10.Clear()
+        TextBox14.Visible = False
+        Label15.Visible = False
+        TextBox13.Visible = False
+        Label14.Visible = False
+        TextBox12.Visible = False
+        Label13.Visible = False
+        TextBox11.Visible = False
+        Label12.Visible = False
+        TextBox10.Visible = False
+        Label10.Visible = False
+        Button4.Visible = False
+        Button5.Visible = False
     End Sub
 End Class
