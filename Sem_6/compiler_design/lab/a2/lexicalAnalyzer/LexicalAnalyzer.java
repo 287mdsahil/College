@@ -8,7 +8,8 @@ public class LexicalAnalyzer {
 	private static ArrayList<String> lines = new ArrayList<String>();
 	// An array of strings to hold lines in the input file
 	
-
+	private static List<Token> tokens = new ArrayList<Token>();
+	
 	private static String getDelimitersRegex() {
 		// Function to read the input file
 		File file = new File("lexicalAnalyzer/Dict/delimiters");
@@ -16,7 +17,6 @@ public class LexicalAnalyzer {
 		try {
 			Scanner fin = new Scanner(file);
 			while(fin.hasNext()) {
-				//System.out.println(fin.nextLine());
 				String s = fin.nextLine();
 				delimiters += "|((?<=" + s + ")";
 				delimiters += "|(?=" + s + "))";
@@ -28,18 +28,20 @@ public class LexicalAnalyzer {
 			e.printStackTrace();
 			System.exit(0);
 		}
-
 		return delimiters;
 	}
 
 	private static void tokenize() {
-		for(String line : lines) {
+		// Function to generater tokens
+		for(int r = 0; r < lines.size(); r++) {
+			String line = lines.get(r);
 			String wordarr[] = line.split(getDelimitersRegex());
 			List<String> words = new ArrayList<String>(
 					Arrays.asList(wordarr));
 			words.removeAll(Arrays.asList("",null));
-			for(String word : words) {
-				System.out.println(word);
+			for(int c = 0; c < words.size(); c++) {
+				String word = words.get(c);
+				tokens.add(new Token(word,r,c));
 			}
 		}
 	}
@@ -61,7 +63,6 @@ public class LexicalAnalyzer {
 	}
 
 	public static void run(String filename) {
-		System.out.println("lexical analyzer");
 		readFile(filename);
 		tokenize();	
 	}
