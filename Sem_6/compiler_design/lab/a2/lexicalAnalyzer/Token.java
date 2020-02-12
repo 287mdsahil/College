@@ -9,11 +9,13 @@ public class Token{
 		"arith_op",
 		"rel_op",
 		"assign_op",
-		"special_symbols",
+		"special_sm",
 		"inum",
 		"num",
 		"id"
 	};
+
+	static int count = 0;
 
 	private static List<String> keywords 	= getTokenFromFile("keywords");
 	private static List<String> arith_ops 	= getTokenFromFile("arith_op");
@@ -152,9 +154,7 @@ public class Token{
 		else if(numDfa(lexeme))
 			idcode = codes[6];
 		else if(idDfa(lexeme))
-			idcode = codes[7];
-		
-		System.out.println(lexeme + "\t:\t" + idcode);
+			idcode = codes[7];	
 	}
 
 	public Token(String l, int r, int c) {
@@ -162,5 +162,10 @@ public class Token{
 		row = r;
 		col = c;
 		identify();
+		id = count++;		
+		System.out.println(id 
+				+ "\t" + idcode
+				+ "\t" + lexeme 
+				+ "\t" + "(" + r + "," + c + ")");
 	}
 }
