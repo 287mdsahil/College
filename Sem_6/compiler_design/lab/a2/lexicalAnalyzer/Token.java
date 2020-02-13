@@ -12,7 +12,8 @@ public class Token{
 		"special_sm",
 		"inum",
 		"num",
-		"id"
+		"id",
+		"invalid"
 	};
 
 	static int count = 0;
@@ -154,7 +155,14 @@ public class Token{
 		else if(numDfa(lexeme))
 			idcode = codes[6];
 		else if(idDfa(lexeme))
-			idcode = codes[7];	
+			idcode = codes[7];
+		else {
+			System.out.println("Invalid token:" + lexeme
+					+ " at:"
+					+ "(" +row + "," + col + ") "
+					);
+			idcode = codes[8];
+		}	
 	}
 
 	public Token(String l, int r, int c) {
