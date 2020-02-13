@@ -62,8 +62,27 @@ public class LexicalAnalyzer {
 		}	
 	}
 
+	private static void printSymTab() {
+		System.out.println("_____________________________________________________________");
+		System.out.println("Id"
+				+ "\t" + "Position"
+				+ "\t" + "Lexeme" 
+				+ "\t\t" + "Token-type"
+				);
+		System.out.println("_____________________________________________________________");
+		for(Token token : tokens) {
+			System.out.println(token.id 
+				+ "\t" + "(" + token.row + "," + token.col + ")"
+				+ "\t\t" + token.lexeme 
+				+ "\t\t" + token.idcode
+				);
+		}		
+		System.out.println("_____________________________________________________________");
+	}
+
 	public static void run(String filename) {
 		readFile(filename);
-		tokenize();	
+		tokenize();
+		printSymTab();	
 	}
 }

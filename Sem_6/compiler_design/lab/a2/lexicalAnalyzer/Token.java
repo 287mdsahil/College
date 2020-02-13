@@ -163,9 +163,5 @@ public class Token{
 		col = c;
 		identify();
 		id = count++;		
-		System.out.println(id 
-				+ "\t" + idcode
-				+ "\t" + lexeme 
-				+ "\t" + "(" + r + "," + c + ")");
 	}
 }
