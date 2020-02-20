@@ -5,7 +5,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.*;
 
-/*Frame format:
+/**Frame format:
  * 1 byte premble
  * 1 bytes destination address
  * 1 bytes source address
@@ -48,9 +48,12 @@ public class Server {
 		}
 
 		public void dataTranser(String msg) {
+			/**Function for data tranfer between clients 
+			 * void dataTranser(String message_to_be_send)
+			 * */
 			String destination = msg.substring(8,16);
 			dns.get(destination).out.println(msg);
-			System.out.println("Message passed from: "
+			System.out.println("Message passed from:"
 						+ msg.substring(16,24)
 						+ " to:"
 						+ destination
@@ -58,19 +61,27 @@ public class Server {
 		}
 
 		public void dhcpLite(String msg) {
+			/**Function mac address registration on server
+			 * void dhcpLite(String dhcp_message_received_from_server)
+			 * */
 			try {
-				String addr = msg.substring(8,16);
-				if(dns.containsKey(addr)) {
+				String mac_addr = msg.substring(8,16);
+				if(dns.containsKey(mac_addr)) {
 					out.println(DHCPLITE_REJECTED);
 					soc.close();
 				} else {
-					dns.put(addr,this);
+					dns.put(mac_addr,this);
 					out.println(DHCPLITE_GRANTED);
 					System.out.println("Connection established with:" 
-							+ addr 
+							+ mac_addr 
 							+ " at socket:" 	
 							+ soc.getRemoteSocketAddress().toString());
 				}
+			} catch (StringIndexOutOfBoundsException e) {
+				System.out.println("Socket:"
+						+ soc.getRemoteSocketAddress()
+						+ " Requested an invalid mac_address registration");
+				out.println(DHCPLITE_REJECTED);
 			} catch (Exception e) {
 				e.printStackTrace();
 				System.exit(0);
@@ -81,16 +92,18 @@ public class Server {
 			System.out.println("Attempting to connect:" 	
 					+ soc.getRemoteSocketAddress().toString());
 
-			/* starts listeining to client indefinitely */ 
+			/** starts listeining to client indefinitely */ 
 			try {
 				while(!soc.isClosed()) {
 					if(in.ready()) {
 						String msg = in.readLine();
-						System.out.println("Received:" + msg);
+						//System.out.println("Received:" + msg);
 						if(msg.substring(0,8).equals(DHCPLITE_REQUEST))
 							dhcpLite(msg);
-						else if(msg.substring(0,8).equals(DATA_TRANSFER))
+						else if(msg.substring(0,8).equals(DATA_TRANSFER)) {
+							System.out.println("Data:" + msg);
 							dataTranser(msg);
+						}
 						else
 							System.out.println(msg.substring(0,8));
 					}
@@ -106,7 +119,7 @@ public class Server {
 	public static void run() {
 		try {
 			ServerSocket serversocket = new ServerSocket(PORT);
-			System.out.println("Starting server");	
+			System.out.println("Server Started!");	
 			while(true) {
 				Socket soc = serversocket.accept();
 				new Thread(new ClientHandler(soc)).start();

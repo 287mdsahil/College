@@ -15,63 +15,35 @@ public class Client {
 	
 	protected static PrintWriter out;
 	protected static BufferedReader in;
-	protected static String addr;
+	protected static String mac_addr;
 	protected static Socket soc;
 
-	private static class Sender implements Runnable {
-		public Sender() {
-			super();
-		}
-		public void run() {
-			/* start listening to server */
-			try{
-				while(!soc.isClosed()) {
-					Scanner s = new Scanner(System.in);
-					System.out.print("Enter message:");
-					String m = s.nextLine();
-					System.out.print("Enter destination address:");
-					String da = s.nextLine();
-					s.close();
-					out.println(DATA_TRANSFER
-							+ da
-							+ addr
-							+ m
-						);
-					
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
-				System.exit(0);
-			}
-		}
-	}
-
-	private static class Listener implements Runnable {
-		public Listener() {
-			super();
-		}
-		public void run() {
-			/* start listening to server */
-			try{
-				while(!soc.isClosed()) {
-					if(in.ready()) {
-						String msg = in.readLine();
-						System.out.println(msg);
-					}
-				}
-			} catch (IOException e) {
-				e.printStackTrace();
-				System.exit(0);
-			}
-		}
-	}
-
-	private static boolean dhcpLite() {
+	private static boolean dhcpLite(String mac) {
+		/**Function to establish dhcpLite connection
+		 * It registers the mac accress of the client on the server dns
+		 * boolean dhcpLite(String mac_address)
+		 * If the mac address arguement is null
+		 * the client asks the user to enter a mac_address
+		 * */
 		try {
-			Scanner sc = new Scanner(System.in);
-			System.out.print("Enter the addr: ");
-			addr = sc.nextLine();
-			out.println(DHCPLITE_REQUEST + addr);
+			if(mac == null || mac.isEmpty()) {
+				Scanner sc = new Scanner(System.in);
+				System.out.print("Enter the mac address: ");
+				mac_addr = sc.nextLine();
+				while(mac_addr.length() != 8) {
+					System.out.print("Please enter a valid mac address: ");
+					mac_addr = sc.nextLine();
+				}
+				sc.close();
+			} else {
+				mac_addr = mac;
+				if(mac_addr.length() != 8) {
+					System.out.println("Invalid mac address for client");
+					System.exit(0);
+				}
+			}
+
+			out.println(DHCPLITE_REQUEST + mac_addr);
 			String msg = in.readLine();
 			if(msg.substring(0,8).equals(DHCPLITE_GRANTED)) {
 				System.out.println("Connected Established");
@@ -91,7 +63,13 @@ public class Client {
 		return false;
 	}
 
-	public static void run() {
+	// Function for sending messages to other clients
+	protected static void sendMsg(String msg, String destination_mac) {
+		String message = DATA_TRANSFER + destination_mac + mac_addr + msg;
+		out.println(message);
+	}
+
+	public static void run(String mac) {
 		try {
 			soc = new Socket("localhost",8888);
 			System.out.println("Client started with local address:" +
@@ -104,10 +82,8 @@ public class Client {
 					)
 				);
 
-			if(!dhcpLite())
-				return;
-			new Thread(new Listener()).start();
-			new Thread(new Sender()).start();
+			if(!dhcpLite(mac))
+				return;			
 
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
@@ -119,6 +95,6 @@ public class Client {
 	}
 
 	public static void main(String[] args) {
-		run();
+		run(null);
 	}
 }
