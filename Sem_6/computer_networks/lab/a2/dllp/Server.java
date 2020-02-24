@@ -52,9 +52,10 @@ public class Server {
 			 * void dataTranser(String message_to_be_send)
 			 * */
 			String destination = msg.substring(8,16);
+			String source = msg.substring(16,24);
 			dns.get(destination).out.println(msg);
 			System.out.println("Message passed from:"
-						+ msg.substring(16,24)
+						+ source
 						+ " to:"
 						+ destination
 					);
@@ -101,11 +102,11 @@ public class Server {
 						if(msg.substring(0,8).equals(DHCPLITE_REQUEST))
 							dhcpLite(msg);
 						else if(msg.substring(0,8).equals(DATA_TRANSFER)) {
-							System.out.println("Data:" + msg);
+							//System.out.println("Data:" + msg);
 							dataTranser(msg);
 						}
 						else
-							System.out.println(msg.substring(0,8));
+							System.out.println("Unknown premble:" + msg.substring(0,8));
 					}
 				}
 			} catch (IOException e) {
