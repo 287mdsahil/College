@@ -74,6 +74,7 @@ public abstract class ClientClass {
 							String msg = in.readLine();
 							String premble = msg.substring(0,8);
 							if(premble.equals(DATA_TRANSFER)) {
+								//System.out.println("M:" + Integer.parseInt(msg.substring(8).substring(24,32),2));
 								receiveMsg(msg.substring(8));
 							}
 						}

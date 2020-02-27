@@ -24,6 +24,7 @@ public class Server {
 	public static final String DHCPLITE_GRANTED 	= "00000001";
 	public static final String DHCPLITE_REJECTED 	= "00000010";
 	public static final String DATA_TRANSFER 	= "10000000";
+	public static final double ERROR_P 		= 0.0;
 
 	private static Map<String, ClientHandler> dns = new HashMap<String, ClientHandler>();
 
@@ -53,12 +54,19 @@ public class Server {
 			 * */
 			String destination = msg.substring(8,16);
 			String source = msg.substring(16,24);
-			dns.get(destination).out.println(msg);
-			System.out.println("Message passed from:"
+			double p = Math.random();
+			if(p>ERROR_P) {
+				dns.get(destination).out.println(msg);
+				System.out.println("Message passed from:"
 						+ source
 						+ " to:"
-						+ destination
-					);
+						+ destination);
+			} else {
+				System.out.println("Error while passing message from:"
+						+ source
+						+ " to:"
+						+ destination);
+			}
 		}
 
 		public void dhcpLite(String msg) {

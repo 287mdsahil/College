@@ -1,13 +1,14 @@
 package dllp;
 /**Data format:
  * 1 byte: Info
+ * 1 byte: seq no
  * 1 - 8 bytes: data
  *
  * Info byte structrue:
  * 00000000: message
  * 10000000: ack 
  * */
-class SAWSenderClientClass extends ClientClass {
+class SRSenderClientClass extends ClientClass {
 	/**Send and Wait data link layer protocol implementation */
 	
 	protected static final String SENDER_MAC_ADDR 		= "10101010";
@@ -18,14 +19,14 @@ class SAWSenderClientClass extends ClientClass {
 	protected Boolean canSend;
 	protected String MSG;
 
-	public SAWSenderClientClass() {
+	public SRSenderClientClass() {
 		super();
 		canSend = true;
 		MSG = "000111";
 	}
 	
 
-	public synchronized void run() {
+	public void run() {
 		super.run(SENDER_MAC_ADDR);
 		int iter = 10;
 		while((iter)!=0) {
@@ -38,8 +39,7 @@ class SAWSenderClientClass extends ClientClass {
 					sendMsg(MESSAGE_HEADER + MSG, RECEIVER_MAC_ADDR);
 					canSend = false;
 					iter--;
-					wait();
-				} catch (InterruptedException e) {
+				} catch (Exception e) {
 					e.printStackTrace();
 					System.out.println();
 				}
@@ -48,14 +48,13 @@ class SAWSenderClientClass extends ClientClass {
 	}
 
 	@Override
-	protected synchronized void receiveMsg(String msg) {
+	protected void receiveMsg(String msg) {
 		String dest_mac = msg.substring(0,8);
 		String source_mac = msg.substring(8,16);
 		String info = msg.substring(16,24);
 		if(info.equals(AWK_HEADER)) {
 			System.out.println("Ack received from:" + source_mac);
 			canSend = true;
-			notify();
 		}
 	}
 }
