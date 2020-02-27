@@ -35,7 +35,7 @@ class SRSenderClientClass extends ClientClass {
 
 	public class Timer extends Thread{
 		private boolean running;
-		private final static int TIME = 100000;
+		private final static int TIME = 1000;
 		private int time;
 		int frame;
 		
@@ -76,6 +76,7 @@ class SRSenderClientClass extends ClientClass {
 					timeout();
 				}
 			} catch (Exception e) {
+				System.out.println(this.frame);
 				e.printStackTrace();
 				System.exit(0);
 			}
@@ -144,14 +145,15 @@ class SRSenderClientClass extends ClientClass {
 	public void run() {
 		super.run(SENDER_MAC_ADDR);
 
-		sw = 3;
+		sw = 4;
 		sf = 0;
 		sn = 0;
 
-		frames = new String[sw + 1];
-		timers = new Timer[sw +  1];
-		for(int i=0;i<sw + 1;i++) {
+		frames = new String[sw * 2];
+		timers = new Timer[sw * 2];
+		for(int i=0;i<sw * 2;i++) {
 			frames[i] = MSG;	
+			timers[i] = new Timer(i);
 			timers[i].start();
 		}
 
@@ -161,12 +163,12 @@ class SRSenderClientClass extends ClientClass {
 			try {
 				if(EVENT_REQ_TO_SEND!=0) {
 					int nf = sn - sf;
-					if(nf<0) nf = nf + sw + 1;
-					if(nf >= sw){}
+					if(nf<0) nf = nf + 2*sw;
+					if(nf > sw){}
 					else {
 						sendFrame(sn);
-						sn = (sn + 1)%(sw + 1);
-						Thread.sleep(3000);
+						sn = (sn + 1)%(sw * 2);
+						//Thread.sleep(3000);
 						timers[sn].startTimer();
 					}
 				}
@@ -183,28 +185,15 @@ class SRSenderClientClass extends ClientClass {
 	}
 
 	protected boolean checkValidAck(int ackNo) {
-		int f=-1,n=-1,w=-1,shift=-1;
-		if(sf<sn)
-			if(ackNo>sf && ackNo<=sn)
+		int a = sf;
+		//System.out.println(sf + " " + sn + " " + ackNo);
+		int f = sf;
+		int n = sn+1;
+		while(f!=n) {	
+			if(ackNo==f)
 				return true;
-		if(sf==sn)
-			return true;
-		if(sf>sn) {
-			f = sf;
-			n = sn;
-			w = sw * 2;
-			shift = w - f;
-			f = (f+shift)%w;
-			n = (n+shift)%w;
-			ackNo = (ackNo + shift)%w;
-			if(ackNo>f && ackNo<=n)
-				return true;
+			f=(f+1)%(sw*2);
 		}
-		printN(ackNo);
-		System.out.print(f + " " + n + " " + ackNo + " ");
-		System.out.print(ackNo>sf);
-		System.out.println(ackNo<=sn);
-
 		return false;
 	}
 
@@ -215,7 +204,6 @@ class SRSenderClientClass extends ClientClass {
 		String info = msg.substring(16,24);
 		if(info.equals(AWK_HEADER)) {
 			int ackNO = Integer.parseInt(msg.substring(24,32),2);
-			//printN(ackNO);
 			if(checkValidAck(ackNO)) { //problem here
 				while(sf != ackNO){
 					System.out.println("Ack-" 
@@ -223,25 +211,22 @@ class SRSenderClientClass extends ClientClass {
 						+ " received from:" 
 						+ source_mac);
 					//printN(ackNO);
-					//frame[sf] = INVALID_FRAME;
 					timers[sf].stopTimer();
+					System.out.println(sf+" timer stopped");
 					sf = (sf + 1) % (sw * 2);
 				} 
 				//printN(null);
-				timer.stopTimer();
 			}	
 		} else if(info.equals(NAK_HEADER)) {
 			int nakNO = Integer.parseInt(msg.substring(24,32),2);
 			if(checkValidAck(nakNO)) {
-				while(sf != nakNO) {
-					System.out.println("Ack-" 
-						+ nakNO 
-						+ " received from:" 
-						+ source_mac);
-					System.out.println("Resending-" + sf);
-					sendFrame(sf);
-					timers[sf].startTimer();
-				}
+				System.out.println("Nak-" 
+					+ nakNO 
+					+ " received from:" 
+					+ source_mac);
+					System.out.println("Resending-" + nakNO);
+					sendFrame(nakNO);
+					timers[nakNO].startTimer();
 			}
 		}
 	}

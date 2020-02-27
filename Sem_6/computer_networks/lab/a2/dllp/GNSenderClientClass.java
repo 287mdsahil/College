@@ -32,7 +32,7 @@ class GNSenderClientClass extends ClientClass {
 
 	public class Timer extends Thread{
 		private boolean running;
-		private final static int TIME = 100000;
+		private final static int TIME = 1000;
 		private int time;
 		
 		public Timer() {
@@ -160,7 +160,7 @@ class GNSenderClientClass extends ClientClass {
 					else {
 						sendFrame(sn);
 						sn = (sn + 1)%(sw + 1);
-						Thread.sleep(3000);
+						//Thread.sleep(3000);
 						timer.startTimer();
 					}
 				}

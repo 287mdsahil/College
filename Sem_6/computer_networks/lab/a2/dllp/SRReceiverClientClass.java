@@ -89,13 +89,24 @@ public class SRReceiverClientClass extends ClientClass {
 		} else {
 
 			int seqNO = Integer.parseInt(msg.substring(24,32),2);
-			if(seqNO != rn && !nakSent) {
+			if(seqNO == rn) {
+				rn = (rn + 1)%(sw * 2);
+				sendAck(rn,dest_mac);
+			}
+			else if(seqNO != rn && !nakSent) {
 				sendNak(rn,source_mac);
 				nakSent = true;
 				if(checkInWindow(seqNO) && !marked[seqNO]) {
 					//storeframe[seqNO];
 					marked[seqNO] = true;
 					while(marked[rn]) {
+						marked[rn] = false;
+						System.out.println("Message-"
+								+ rn
+								+ " received: " 
+								+ msg.substring(32) 
+								+ " from client: " 
+								+ source_mac);
 						rn = (rn+1)%(sw*2);
 						ackNeeded = true;
 					}
@@ -108,6 +119,7 @@ public class SRReceiverClientClass extends ClientClass {
 				}
 			}	
 		}
+	}
 		/*
 		if(info.equals(MESSAGE_HEADER)) {
 			if(seqNO == rn) {
@@ -115,7 +127,7 @@ public class SRReceiverClientClass extends ClientClass {
 						+ rn
 						+ " received: " 
 						+ msg.substring(24) 
-						+ " From client: " 
+						+ " from client: " 
 						+ source_mac);
 				rn = (rn + 1)%(sw * 2);
 				System.out.println("Sending Awk-" 
