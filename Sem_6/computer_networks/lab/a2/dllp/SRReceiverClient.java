@@ -2,7 +2,7 @@ package dllp;
 
 public class SRReceiverClient {
 	public static void main(String args[]) {
-		SAWReceiverClientClass client = new SAWReceiverClientClass();
+		GNReceiverClientClass client = new GNReceiverClientClass();
 		client.run();
 	}
 }

@@ -2,7 +2,7 @@ package dllp;
 
 public class SRSenderClient {
 	public static void main(String args[]) {
-		SAWSenderClientClass client = new SAWSenderClientClass();
+		SRSenderClientClass client = new SRSenderClientClass();
 		client.run();
 	}
 }
