@@ -1,0 +1,33 @@
+int			keyword
+main			ID
+ (			punctuation
+void			keyword
+)			punctuation
+{			punctuation
+int			keyword
+x			ID
+ =			assign-op
+ 0 			INUM
+;			punctuation
+cout			ID
+ <			rel-op
+<			rel-op
+x			ID
+ ;			punctuation
+if			keyword
+(			punctuation
+x			ID
+ =			assign-op
+=			assign-op
+ 0 			INUM
+)			punctuation
+return			keyword
+x			ID
+ ;			punctuation
+else			keyword
+return			keyword
+x			ID
+ +			arith-op
+1 			INUM
+;			punctuation
+}			punctuation

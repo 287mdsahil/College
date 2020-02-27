@@ -1,0 +1,7 @@
+int main ( void ) {
+    int x = 0 ;
+    // Sample code for tokenizing
+    cout << x ;     // same line comment
+    if ( x == 0 ) return x ;
+    else return x+1 ;
+}
