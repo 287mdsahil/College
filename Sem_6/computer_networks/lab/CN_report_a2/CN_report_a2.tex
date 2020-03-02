@@ -1,6 +1,8 @@
 \documentclass[14pt,titlepage, a4paper]{extarticle}
 \usepackage{tikz}
 \usetikzlibrary{shapes.geometric, arrows, positioning}
+\usepackage{multicol}
+\usepackage{minted}
 
 % tikz styling
 \tikzstyle{block} = [rectangle, 
@@ -109,8 +111,112 @@ If the preamble is set to 00000000 then it is for dhcpLite request\\
 If the preamble is set to 00000001 then it is for dhcpLite granted\\
 If the preamble is set to 00000010 then it is for dhcpLite rejected\\
 If the preamble is set to 10000000 then it is for data transfer
-\subsection{Code snippets}
+\\
+\\
+For noisy channel, the Data bytes are further divided as follows:
+\\
+\\
+\begin{tikzpicture}
+	\node [rect] (ftype) {Frame Type};
+	\node [rect, right=0em of ftype] (seq) {Sequence};
+	\node [rect, right=0em of seq, text width = 6em] (message) {Message};
+	\node [rect, above=of seq, text width=8em] (data) {Data};
+	\path [line] (data) -- (ftype);
+	\path [line] (data) -- (seq);
+	\path [line] (data) -- (message);
+	\node [nrect, below=0em of ftype] (ftype-size) {1 byte};
+	\node [nrect, below=0em of seq] (seq-size) {1 byte};
+	\node [nrect, below=0em of message] (message-size) {1 to 8 bytes};
+\end{tikzpicture}
+\\
+Frame type specifies the type of frame:\\
+00000000 signifies Message frame\\
+10000000 signifies Awk frame\\
+11000000 signifies Nak frame\\
 
-\section{Test cases and Results}
+
+\section{Code snippets}
+\subsection{Server}
+\input{Server.tex}
+\subsection{Generic Client}
+(It is an abstract class)
+\input{clientClass.tex}
+\subsection{Stop and wait Sender client}
+\input{SAWReceiverClientClass.tex}
+\subsection{Stop and wait Receiver client}
+\input{SAWReceiverClientClass.tex}
+
+\section{Results}
+
+\subsection{Go back N}
+No of messages passed: 100\\
+Error probability: 0.3\\
+Total time elapsed: 9550ms\\
+Thoughput: (100)/(9550/1000) = 10.471
+
+\subsection{Selective Repeat}
+No of messages passed: 50\\
+Error probability: 0.3\\
+Total time elapsed: 30070ms\\
+Thoughput: (50)/(30070/1000) = 1.662
+
+
+\section{Output logs}
+Here are the logs of the two noisy channel algorithm.
+100 messages were sent in the trial run for Go back N protocol,
+and 50 messages for Selective Repeat protocol.
+
+\subsection{Go Back N}
+\subsubsection{Server log}
+\begin{multicols}{2}
+\tiny{\obeylines{\input{GNServer.log}}}
+\end{multicols}
+\subsubsection{Sender client log}
+\begin{multicols}{2}
+\tiny{\obeylines{\input{GNSender.log}}}
+\end{multicols}
+\subsubsection{Receiver client log}
+\begin{multicols}{1}
+\tiny{\obeylines{\input{GNReceiver.log}}}
+\end{multicols}
+
+\subsection{Selective Repeat}
+\subsubsection{Server log}
+\begin{multicols}{2}
+\tiny{\obeylines{\input{SRServer.log}}}
+\end{multicols}
+\subsubsection{Sender client log}
+\begin{multicols}{2}
+\tiny{\obeylines{\input{SRSender.log}}}
+\end{multicols}
+\subsubsection{Receiver client log}
+\begin{multicols}{1}
+\tiny{\obeylines{\input{SRReceiver.log}}}
+\end{multicols}
+
+\pagebreak
+\section{Comments}
+\begin{itemize}
+	\item I faced a lot of problems with synchronizing threads.
+		Especially in the Selective Repeat protocol. In that protocol
+		each timer runs in a different thread, Receiver client listens
+		in a separate thread. Sender client sends and receives in two
+		different threads.
+
+	\item I implemented the assignment in java. But I felt that it would have
+		been a lot easier if implemented in Python. Implementing in java
+		took me total of 1266 lines and a lot of sleepless nights. 1 week
+		was certainly not enough time to complete the assignment.
+	
+	\item Java is not a event driven language. But the protocols are event driven.
+		Thus I felt, implementing the protocols this way took a lot of effort,
+		and shifted the focus of the assignment from learning 
+		the use of the protocols to thread synchronization in java. I felt
+		that if we had an event driven environment available the assignment
+		would have been a lot easier.
+	
+	\item Regardless of all the difficulties faces, I learnt a lot about sockets
+		and threads and the flow control protocols. 
+\end{itemize}
 
 \end{document}
