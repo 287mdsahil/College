@@ -32,7 +32,7 @@ class GNSenderClientClass extends ClientClass {
 
 	public class Timer extends Thread{
 		private boolean running;
-		private final static int TIME = 1000;
+		private final static int TIME = 300;
 		private int time;
 		
 		public Timer() {
@@ -67,7 +67,6 @@ class GNSenderClientClass extends ClientClass {
 						sleep(1);
 					}
 					EVENT_TIMEOUT = true;
-					System.out.println("Timer timeout");
 					timeout();
 				}
 			} catch (Exception e) {
@@ -137,7 +136,19 @@ class GNSenderClientClass extends ClientClass {
 		EVENT_REQ_TO_SEND--;
 	}
 
-	public void run() {
+	protected void resendFrame(int sn) {
+		System.out.println("Reseending Message-"
+				+ sn
+				+ ": " 
+				+ MSG 
+				+ " to:"
+				+ RECEIVER_MAC_ADDR);
+		frames[sn] = MESSAGE_HEADER + makeSequenceString(sn) + MSG;
+		sendMsg(frames[sn], RECEIVER_MAC_ADDR);
+		//EVENT_REQ_TO_SEND--;
+	}
+
+	public synchronized void run() {
 		super.run(SENDER_MAC_ADDR);
 
 		sw = 3;
@@ -149,19 +160,22 @@ class GNSenderClientClass extends ClientClass {
 			frames[i] = MSG;
 
 		timer.start();
-		new Thread(new FrameSendingRequester()).start();
+		//new Thread(new FrameSendingRequester()).start();
+
+		EVENT_REQ_TO_SEND = 100;
 
 		while(true) {
 			try {
 				if(EVENT_REQ_TO_SEND!=0) {
 					int nf = sn - sf;
 					if(nf<0) nf = nf + sw + 1;
-					if(nf >= sw){}
-					else {
+					if(nf < sw){
 						sendFrame(sn);
 						sn = (sn + 1)%(sw + 1);
-						//Thread.sleep(3000);
+						//Thread.sleep(30);
 						timer.startTimer();
+					} else {
+						wait();
 					}
 				}
 
@@ -178,6 +192,7 @@ class GNSenderClientClass extends ClientClass {
 
 	protected boolean checkValidAck(int ackNo) {
 		int f=-1,n=-1,w=-1,shift=-1;
+		int sack = ackNo;
 		if(sf<sn)
 			if(ackNo>sf && ackNo<=sn)
 				return true;
@@ -194,16 +209,16 @@ class GNSenderClientClass extends ClientClass {
 			if(ackNo>f && ackNo<=n)
 				return true;
 		}
-		printN(ackNo);
-		System.out.print(f + " " + n + " " + ackNo + " ");
-		System.out.print(ackNo>sf);
-		System.out.println(ackNo<=sn);
+		//printN(ackNo);
+		//System.out.print(sf + " " + sn + " " + sack + " ");
+		//System.out.print(ackNo>f);
+		//System.out.println(ackNo<=n);
 
 		return false;
 	}
 
 	@Override
-	protected void receiveMsg(String msg) {
+	protected synchronized void receiveMsg(String msg) {
 		String dest_mac = msg.substring(0,8);
 		String source_mac = msg.substring(8,16);
 		String info = msg.substring(16,24);
@@ -211,36 +226,38 @@ class GNSenderClientClass extends ClientClass {
 			int ackNO = Integer.parseInt(msg.substring(24,32),2);
 			//printN(ackNO);
 			if(checkValidAck(ackNO)) { //problem here
+				notifyAll();
 				while(sf != ackNO){
 					System.out.println("Ack-" 
 						+ ackNO 
 						+ " received from:" 
-						+ source_mac);
+						+ source_mac + " sf:" + sf + " sn:" + sn);
 					//printN(ackNO);
 					//frame[sf] = INVALID_FRAME;
 					sf = (sf + 1) % (sw + 1);
+					//System.out.println("sf:" + sf + " sn:" + sn);
 				} 
 				//printN(null);
 				timer.stopTimer();
+			} else {
+				System.out.println("Invalid Ack received with Ack no:"
+						+ ackNO);
 			}	
 		}
 	}
 	
-	public void timeout() {
+	public synchronized void timeout() {
+		System.out.println("Timeout sf:" + sf + " sn:" + sn);
 		timer.startTimer();
-		System.out.println("Trying to resend");
-		System.out.println("sn:" + sn
-			+ " sf:" + sf
-			+ " sw:" + sw
-			);
-		int temp = sf - sn; //problem here
-		if(temp <0) temp = sw + 1 + temp;
-		int i = 0;
-		while(i < temp) {
-			System.out.println("Resending-" + temp);
-			sendFrame((sn + temp)%(sw + 1));
-			i++;
+		//System.out.println("sn:" + sn
+		//	+ " sf:" + sf
+		//	+ " sw:" + sw
+		//	);
+		int temp = sf;
+		while(temp != sn) {
+			resendFrame(temp);
+			temp = (temp + 1) % (sw + 1);
 		}
-		//notifyAll();
+		notifyAll();
 	}
 }

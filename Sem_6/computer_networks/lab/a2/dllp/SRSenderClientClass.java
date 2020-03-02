@@ -66,14 +66,17 @@ class SRSenderClientClass extends ClientClass {
 		}
 
 		public void run() {
+			suspend();
 			try {
+				int timechunk = 100;
 				while(true) {
-					while((time--)!=0) {
-						sleep(1);
+					while((time)!=0) {
+						sleep(timechunk);
+						time = time - timechunk;
 					}
 					EVENT_TIMEOUT = true;
-					System.out.println("Timer timeout");
-					timeout();
+					System.out.println("Timer timeout - " + frame );
+					timeout(frame);
 				}
 			} catch (Exception e) {
 				System.out.println(this.frame);
@@ -142,7 +145,18 @@ class SRSenderClientClass extends ClientClass {
 		EVENT_REQ_TO_SEND--;
 	}
 
-	public void run() {
+	protected void resendFrame(int sn) {
+		System.out.println("Resending Message-"
+				+ sn
+				+ ": " 
+				+ MSG 
+				+ " to:"
+				+ RECEIVER_MAC_ADDR);
+		frames[sn] = MESSAGE_HEADER + makeSequenceString(sn) + MSG;
+		sendMsg(frames[sn], RECEIVER_MAC_ADDR);
+		//EVENT_REQ_TO_SEND--;
+	}
+	public synchronized void run() {
 		super.run(SENDER_MAC_ADDR);
 
 		sw = 4;
@@ -157,26 +171,25 @@ class SRSenderClientClass extends ClientClass {
 			timers[i].start();
 		}
 
-		new Thread(new FrameSendingRequester()).start();
+		//new Thread(new FrameSendingRequester()).start();
+		EVENT_REQ_TO_SEND = 50;
 
 		while(true) {
 			try {
 				if(EVENT_REQ_TO_SEND!=0) {
 					int nf = sn - sf;
-					if(nf<0) nf = nf + 2*sw;
-					if(nf > sw){}
-					else {
+					//if(nf==0) System.out.println("nf=0 " + (nf<sw));
+					if(nf<0) nf = nf + sw*2;
+					if(nf < sw){
+						//System.out.println("Window size:" + nf + " Messages Left:" + EVENT_REQ_TO_SEND);
 						sendFrame(sn);
-						sn = (sn + 1)%(sw * 2);
-						//Thread.sleep(3000);
 						timers[sn].startTimer();
+						sn = (sn + 1)%(sw * 2);
+						//Thread.sleep(1000);
+					} else {
+						wait();
 					}
 				}
-
-				/*if(EVENT_TIMEOUT) {
-					wait();
-				}*/
-
 			} catch (Exception e) {
 				e.printStackTrace();
 				System.exit(0);
@@ -198,54 +211,50 @@ class SRSenderClientClass extends ClientClass {
 	}
 
 	@Override
-	protected void receiveMsg(String msg) {
+	protected synchronized void receiveMsg(String msg) {
 		String dest_mac = msg.substring(0,8);
 		String source_mac = msg.substring(8,16);
 		String info = msg.substring(16,24);
 		if(info.equals(AWK_HEADER)) {
 			int ackNO = Integer.parseInt(msg.substring(24,32),2);
 			if(checkValidAck(ackNO)) { //problem here
+				//notifyAll();
 				while(sf != ackNO){
-					System.out.println("Ack-" 
+					System.out.print("Ack-" 
 						+ ackNO 
 						+ " received from:" 
-						+ source_mac);
-					//printN(ackNO);
+						+ source_mac
+						+  " ");
 					timers[sf].stopTimer();
-					System.out.println(sf+" timer stopped");
+					//System.out.println(sf+" timer stopped");
 					sf = (sf + 1) % (sw * 2);
+					printN(null);
 				} 
 				//printN(null);
 			}	
 		} else if(info.equals(NAK_HEADER)) {
 			int nakNO = Integer.parseInt(msg.substring(24,32),2);
 			if(checkValidAck(nakNO)) {
-				System.out.println("Nak-" 
+				System.out.print("Nak-" 
 					+ nakNO 
 					+ " received from:" 
-					+ source_mac);
-					System.out.println("Resending-" + nakNO);
-					sendFrame(nakNO);
+					+ source_mac 
+					+ " ");
+					printN(null);
+					//System.out.println("Resending-" + nakNO);
+					resendFrame(nakNO);
 					timers[nakNO].startTimer();
 			}
 		}
+		notifyAll();
 	}
 	
-	public void timeout() {
-		timer.startTimer();
-		System.out.println("Trying to resend");
-		System.out.println("sn:" + sn
-			+ " sf:" + sf
-			+ " sw:" + sw
-			);
-		int temp = sf - sn; //problem here
-		if(temp <0) temp = sw + 1 + temp;
-		int i = 0;
-		while(i < temp) {
-			System.out.println("Resending-" + temp);
-			sendFrame((sn + temp)%(sw * 2));
-			i++;
-		}
+	public void timeout(int n) {
 		//notifyAll();
+		timers[n].startTimer();
+		//System.out.println("Resending-" + n);
+		//System.out.println("Messages left: " + EVENT_REQ_TO_SEND);
+		resendFrame(n);
+		timers[n].startTimer();
 	}
 }

@@ -24,7 +24,7 @@ public class Server {
 	public static final String DHCPLITE_GRANTED 	= "00000001";
 	public static final String DHCPLITE_REJECTED 	= "00000010";
 	public static final String DATA_TRANSFER 	= "10000000";
-	public static final double ERROR_P 		= 0.0;
+	public static final double ERROR_P 		= 0.3;
 
 	private static Map<String, ClientHandler> dns = new HashMap<String, ClientHandler>();
 

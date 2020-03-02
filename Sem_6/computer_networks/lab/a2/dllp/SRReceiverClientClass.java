@@ -1,4 +1,6 @@
 package dllp;
+import java.time.Instant;
+import java.time.Duration;
 
 /**Data format:
  * 1 byte: Info
@@ -27,6 +29,9 @@ public class SRReceiverClientClass extends ClientClass {
 	protected Boolean marked[];
 	protected boolean nakSent = false;
 	protected boolean ackNeeded = false;
+	protected int count = 0;
+	protected Instant start;
+	protected Instant finish;
 
 	public SRReceiverClientClass() {
 		super();
@@ -78,6 +83,9 @@ public class SRReceiverClientClass extends ClientClass {
 
 	@Override
 	protected void receiveMsg(String msg) {
+		if(count == 0) 
+			start = Instant.now();
+
 		String dest_mac = msg.substring(0,8);
 		String source_mac = msg.substring(8,16);
 		String info = msg.substring(16,24);
@@ -90,8 +98,17 @@ public class SRReceiverClientClass extends ClientClass {
 
 			int seqNO = Integer.parseInt(msg.substring(24,32),2);
 			if(seqNO == rn) {
+				System.out.println("Message-"
+						+ rn
+						+ " received: " 
+						+ msg.substring(32) 
+						+ " from client: " 
+						+ source_mac
+						+ " count:"
+						+ count);
+				count++;
 				rn = (rn + 1)%(sw * 2);
-				sendAck(rn,dest_mac);
+				sendAck(rn,SENDER_MAC_ADDR);
 			}
 			else if(seqNO != rn && !nakSent) {
 				sendNak(rn,source_mac);
@@ -106,7 +123,10 @@ public class SRReceiverClientClass extends ClientClass {
 								+ " received: " 
 								+ msg.substring(32) 
 								+ " from client: " 
-								+ source_mac);
+								+ source_mac
+								+ " count:"
+								+ count);
+						count++;
 						rn = (rn+1)%(sw*2);
 						ackNeeded = true;
 					}
@@ -116,25 +136,16 @@ public class SRReceiverClientClass extends ClientClass {
 						ackNeeded = false;
 						nakSent = false;
 					}
+				}  else {
+					System.out.println("Incorrect seqNO received, expected:" + rn + " got:" + seqNO);
 				}
 			}	
-		}
-	}
-		/*
-		if(info.equals(MESSAGE_HEADER)) {
-			if(seqNO == rn) {
-				System.out.println("Message-" 
-						+ rn
-						+ " received: " 
-						+ msg.substring(24) 
-						+ " from client: " 
-						+ source_mac);
-				rn = (rn + 1)%(sw * 2);
-				System.out.println("Sending Awk-" 
-						+ Integer.parseInt(makeSequenceString(rn),2)
-						+ " to:" + source_mac);
-				super.sendMsg(AWK_HEADER + makeSequenceString(rn) ,SENDER_MAC_ADDR);
+
+			if(count == 50) {
+				finish = Instant.now();
+				long timeElapsed = Duration.between(start, finish).toMillis();
+				System.out.println("Time elapsed(in ms): " + timeElapsed);
 			}
 		}
-		*/
+	}
 }
