@@ -10,6 +10,7 @@
 %%
 
 A {strcpy(yylval.c,yytext); return a;}
+B {strcpy(yylval.c,yytext); return b;}
 . {;}
 
 %%
