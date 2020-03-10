@@ -6,13 +6,14 @@ import java.lang.Runnable;
 
 public abstract class ClientClass {
 
-	public static final String DHCPLITE_REQUEST 	= "00000000";
-	public static final String DHCPLITE_GRANTED 	= "00000001";
-	public static final String DHCPLITE_REJECTED 	= "00000010";
-	public static final String DATA_TRANSFER 	= "10000000";
+	public static final String DHCPLITE_REQUEST 		= "00000000";
+	public static final String DHCPLITE_GRANTED 		= "00000001";
+	public static final String DHCPLITE_REJECTED 		= "00000010";
+	public static final String DATA_TRANSFER 			= "10000000";
 	public static final String BUFFER_STATUS_MESSAGE 	= "11100000";
-	public static final String BROADCAST_ADDRESS 	= "11111111";
+	public static final String BROADCAST_ADDRESS 		= "11111111";
 	
+	protected int bufferStatus = 0;
 	protected PrintWriter out;
 	protected BufferedReader in;
 	protected String mac_addr;
@@ -76,6 +77,9 @@ public abstract class ClientClass {
 							if(premble.equals(DATA_TRANSFER)) {
 								//System.out.println("M:" + Integer.parseInt(msg.substring(8).substring(24,32),2));
 								receiveMsg(msg.substring(8));
+							} else if(premble.equals(BUFFER_STATUS_MESSAGE)) {
+								//System.out.println("Buffer status received");
+								bufferUpdate(msg.substring(8,16));
 							}
 						}
 					}
@@ -86,6 +90,8 @@ public abstract class ClientClass {
 		}
 	}
 
+	protected abstract void bufferUpdate(String bufferStatus);
+
 	protected void sendMsg(String msg, String destination_mac) {
 		/** Function for sending messages to other clients */
 		String message = DATA_TRANSFER + destination_mac + mac_addr + msg;
@@ -93,7 +99,7 @@ public abstract class ClientClass {
 	}
 
 	protected abstract void receiveMsg(String msg);
-
+	
 	public void run(String mac) {
 		try {
 			soc = new Socket("localhost",8888);

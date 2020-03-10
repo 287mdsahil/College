@@ -24,7 +24,7 @@ public class Server {
 	public static final String DATA_TRANSFER 			= "10000000";
 	public static final String BUFFER_STATUS_MESSAGE 	= "11100000";
 	public static final String BROADCAST_ADDRESS 		= "11111111";
-	public static final double ERROR_P 		= 0.3;
+	public static final double ERROR_P 					= 0.3;
 
 	private static Map<String, ClientHandler> dns = new HashMap<String, ClientHandler>();
 	protected static String buffer;
@@ -45,11 +45,30 @@ public class Server {
 		public void run() {
 			while(true) {
 				String msg = BUFFER_STATUS_MESSAGE;
-				for(ClientHandler client : dns.values()) {
-					msg += makeSequenceString(buffer.length());
-					client.out.println(msg);
+				int size = dns.size();
+				System.out.print("");
+				if(size!=0) {
+					int s = buffer.length();
+					for(ClientHandler client : dns.values()) {
+						msg += makeSequenceString(s);
+						client.out.println(msg);
+					}
 				}
-			}	
+			}
+		}
+	}
+	
+	private static class ChannelTransmissionDelay extends Thread {
+		public void run() {
+			System.out.println("Transmitting...");
+			try {
+				sleep(1000);
+				buffer = "";
+				System.out.println("Buffer reset");
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+				System.exit(0);
+			}
 		}
 	}
 
@@ -80,9 +99,17 @@ public class Server {
 			String destination = msg.substring(8,16);
 			String source = msg.substring(16,24);
 			if(destination.equals(BROADCAST_ADDRESS)) {
-				System.out.println("Broadcast message received");
-				//Broadcast()
-				
+				System.out.println("Broadcast message received from " + source);
+				//Broadcast()	
+				//new ChannelTransmissionDelay().start();
+				try {
+				Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+					System.exit(0);
+				}
+				buffer = new String("");
+				System.out.println("Buffer reset");
 			} else {
 			double p = Math.random();
 				if(p>ERROR_P) {
@@ -142,8 +169,8 @@ public class Server {
 							dhcpLite(msg);
 						else if(msg.substring(0,8).equals(DATA_TRANSFER)) {
 							//System.out.println("Data:" + msg);
-							//dataTranser(msg);
 							buffer = msg;
+							dataTranser(msg);
 						}
 						else
 							System.out.println("Unknown premble:" + msg.substring(0,8));
