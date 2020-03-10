@@ -63,6 +63,7 @@ public class Client {
 						sendMsg(msg,BROADCAST_ADDRESS);
 						count++;
 						bufferStatus = 100;
+						Thread.sleep(1000);
 					} else if(bufferStatus>0) {
 						System.out.print("");
 						int n = rand.nextInt(2000) + 500;
@@ -90,6 +91,7 @@ public class Client {
 						sendMsg(msg,BROADCAST_ADDRESS);
 						count++;
 						bufferStatus = 100;
+						Thread.sleep(1000);
 					} else if(bufferStatus>0) {
 						System.out.print("");
 						int n = 1000;
@@ -107,9 +109,9 @@ public class Client {
 
 		public void run(String mac_addr) {
 			super.run(mac_addr);
-			onePersitent();
+			//onePersitent();
 			//nonPersitent();
-			//pPersitent();
+			pPersitent();
 		}
 
 
