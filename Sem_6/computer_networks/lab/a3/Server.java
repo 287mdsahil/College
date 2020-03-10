@@ -28,6 +28,7 @@ public class Server {
 
 	private static Map<String, ClientHandler> dns = new HashMap<String, ClientHandler>();
 	protected static String buffer;
+	protected static Timer timer;
 	
 	private static class ChannelBroadcaster implements Runnable {
 
@@ -44,33 +45,75 @@ public class Server {
 
 		public void run() {
 			while(true) {
-				String msg = BUFFER_STATUS_MESSAGE;
-				int size = dns.size();
 				System.out.print("");
+				int size = dns.size();
 				if(size!=0) {
-					int s = buffer.length();
 					for(ClientHandler client : dns.values()) {
-						msg += makeSequenceString(s);
+						String msg = BUFFER_STATUS_MESSAGE;
+						msg += makeSequenceString(buffer.length());
 						client.out.println(msg);
 					}
 				}
 			}
 		}
 	}
-	
-	private static class ChannelTransmissionDelay extends Thread {
-		public void run() {
-			System.out.println("Transmitting...");
+
+	//--------------------------------------
+
+	public static class Timer extends Thread{
+		private boolean running;
+		private final static int TIME = 1000;
+		private int time;
+
+		public Timer() {
+			running = false;
+			time = TIME;
+		}
+
+		public boolean isRunning() {return running;}
+
+		public  void startTimer() {
+			if(running == false) {
+				running = true;
+				time = TIME;
+				resume();
+			} else {
+				time = TIME;
+			}
+		}
+
+		public  void stopTimer() {
 			try {
-				sleep(1000);
-				buffer = "";
-				System.out.println("Buffer reset");
-			} catch (InterruptedException e) {
+				time = TIME;
+				running = false;
+				suspend();
+			} catch (Exception e) {
 				e.printStackTrace();
 				System.exit(0);
 			}
 		}
+
+		public void run() {
+			try {
+				suspend();
+				while(true) {
+					while((time--)!=0) {
+						sleep(1);
+					}
+					timeout();
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				System.exit(0);
+			}
+		}
+
+		public void timeout() {
+			buffer = new String("");
+		}
 	}
+	//--------------------------------------
+
 
 	private static class ClientHandler implements Runnable {
 		private Socket soc;
@@ -99,17 +142,29 @@ public class Server {
 			String destination = msg.substring(8,16);
 			String source = msg.substring(16,24);
 			if(destination.equals(BROADCAST_ADDRESS)) {
-				System.out.println("Broadcast message received from " + source);
-				//Broadcast()	
-				//new ChannelTransmissionDelay().start();
+				int count = Integer.parseInt(msg.substring(24,32),2);
+				if(!buffer.equals("")) {
+					System.out.println("Broadcast message received from " 
+							+ source 
+							+ " count:" 
+							+ count 
+							+ " Collision occurred!");
+				} else {
+					System.out.println("Broadcast message received from " 
+							+ source 
+							+ " count:" 
+							+ count);
+					//System.out.println("Buffer:"+buffer);
+				}
+				buffer = msg;
+				
 				try {
-				Thread.sleep(1000);
-				} catch (InterruptedException e) {
+					timer.startTimer();
+				} catch (Exception e) {
 					e.printStackTrace();
 					System.exit(0);
 				}
-				buffer = new String("");
-				System.out.println("Buffer reset");
+
 			} else {
 			double p = Math.random();
 				if(p>ERROR_P) {
@@ -169,7 +224,6 @@ public class Server {
 							dhcpLite(msg);
 						else if(msg.substring(0,8).equals(DATA_TRANSFER)) {
 							//System.out.println("Data:" + msg);
-							buffer = msg;
 							dataTranser(msg);
 						}
 						else
@@ -190,6 +244,8 @@ public class Server {
 		ChannelBroadcaster cb = new ChannelBroadcaster();
 		Thread cdThread = new Thread(cb);
 		cdThread.start();
+		timer = new Timer();
+		timer.start();
 
 		try {
 			ServerSocket serversocket = new ServerSocket(PORT);
