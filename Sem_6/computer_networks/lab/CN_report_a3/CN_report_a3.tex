@@ -1,5 +1,6 @@
 \documentclass[14pt,titlepage, a4paper]{extarticle}
 \usepackage{tikz}
+\usepackage{pgfplots}
 \usetikzlibrary{shapes.geometric, arrows, positioning}
 \usepackage{multicol}
 \usepackage{minted}
@@ -92,6 +93,69 @@ Each function implements its corresponding CSMA technique.
 \input{./Client.tex}
 
 \section{Results}
+
+\subsection{One-persisent}
+\begin{tikzpicture}
+\begin{axis}[name=oneeff,
+	xlabel = {no of stations},
+	ylabel = {Efficiency},
+	xtick = {2,3,4}] 
+	\addplot[color=red, nodes near coords, mark=x] 
+	table{./data/1_efficiency};
+\end{axis}	
+\end{tikzpicture}
+\null
+\begin{tikzpicture}
+\begin{axis}[name=oneput,
+	xlabel = {no of stations},
+	ylabel = {Throughput}, 
+	xtick = {2,3,4}] 
+	\addplot[color=red, nodes near coords, mark=x] 
+	table{./data/1_throughput};
+\end{axis}	
+\end{tikzpicture}
+
+\subsection{Non-persisent}
+\begin{tikzpicture}
+\begin{axis}[name=oneeff,
+	xlabel = {no of stations},
+	ylabel = {Efficiency},
+	xtick = {2,3,4}] 
+	\addplot[color=red, nodes near coords, mark=x] 
+	table{./data/1_efficiency};
+\end{axis}	
+\end{tikzpicture}
+\null
+\begin{tikzpicture}
+\begin{axis}[name=oneput,
+	xlabel = {no of stations},
+	ylabel = {Throughput}, 
+	xtick = {2,3,4}] 
+	\addplot[color=red, nodes near coords, mark=x] 
+	table{./data/1_throughput};
+\end{axis}	
+\end{tikzpicture}
+
+\subsection{p-persisent}
+\begin{tikzpicture}
+\begin{axis}[name=oneeff,
+	xlabel = {no of stations},
+	ylabel = {Efficiency},
+	xtick = {2,3,4}] 
+	\addplot[color=red, nodes near coords, mark=x] 
+	table{./data/1_efficiency};
+\end{axis}	
+\end{tikzpicture}
+\null
+\begin{tikzpicture}
+\begin{axis}[name=oneput,
+	xlabel = {no of stations},
+	ylabel = {Throughput}, 
+	xtick = {2,3,4}] 
+	\addplot[color=red, nodes near coords, mark=x] 
+	table{./data/1_throughput};
+\end{axis}	
+\end{tikzpicture}
 
 \pagebreak
 \section{Comments}
