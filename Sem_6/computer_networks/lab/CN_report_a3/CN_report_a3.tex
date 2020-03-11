@@ -1,0 +1,99 @@
+\documentclass[14pt,titlepage, a4paper]{extarticle}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows, positioning}
+\usepackage{multicol}
+\usepackage{minted}
+\usepackage[a4paper, margin=0.5in]{geometry}
+% tikz styling
+\tikzstyle{block} = [rectangle, 
+			draw, 
+			rounded corners, 
+			text centered, 
+			minimum height = 2em]
+\tikzstyle{rect} = [rectangle, 
+			draw, 
+			text centered, 
+			minimum height = 2em]
+\tikzstyle{nrect} = [rectangle, 
+			text centered, 
+			minimum height = 2em]
+\tikzstyle{line} = [draw, -latex']
+\tikzstyle{cloud} = [draw, ellipse, minimum height=2em]
+
+\title{Networks Lab Report\\Assignment 3}
+\author{Md Sahil\\BCSE III\\Roll-001710501029}
+\date{}
+
+\begin{document}
+
+{\maketitle}
+
+\section{Objective}
+To implement 1-persistent, non-persistent and p-persistent CSMA techniques.
+
+\section{Design and Implementation}
+
+\subsection{Program structure}
+The implementation is done using sockets.
+The clients and server communicate with each other using sockets.
+Listening on the channel is done through a separate 
+thread (for both client and server).
+There can be multiple client instances. All the clients are connected to the
+central server. The cental server holds the channel(a buffer).
+
+
+\subsubsection{The Server class}
+The server class instance acts as a medium to connect two clients. 
+Whenever the server is starts listening and accepting client socket
+connections. Each time a client connection is made, its control is
+passed on to the client handler thread. The client handler thread then 
+listens for incoming frames from the assigned client socket.
+The server also maintains a list of mappings of clients with port 
+numbers and client addresses. When ever a client tries to connect to a server. 
+The server maps the port number with the client address.
+When a client tries to sent messages to another client, the server checks the
+destination address of the message, finds the port mapped to the address
+and forwards the message to the destination client.
+The server holds the incomming messages in a buffer, which acts as the channel here.
+When ever a new packet arrives and the buffer is non empty, a collision is registered.
+\par\null\par
+\begin{tikzpicture}[node distance = 1em, auto]
+	\node [block] (server) {Server(buffer/channel)};
+	\node [block, below=2em of server] (client1) {Client 1};
+	\node [block, right=of client1] (client2) {Client 2};
+	\node [block, right=of client2] (client3) {Client 3};
+	\draw [double,<->] (server) -- (client1);
+	\draw [double,<->] (server) -- (client2);
+	\draw [double,<->] (server) -- (client3);
+\end{tikzpicture}
+
+\subsubsection{The Client class}
+The instances of Client class acts as stations. It has 3 functions 
+\emph{onePersistent()}, \emph{nonPersistent()} and \emph{pPersistent()}.
+Each function implements its corresponding CSMA technique.
+
+\par\null\par
+\begin{tikzpicture}[node distance = 3em, auto]
+	\node [block] (clientClass) {Client};
+	\node [cloud, below=of clientClass] (one) {one-persistent};
+	\path [line] (clientClass) -- (one);
+	\node [cloud, right=of one] (non) {non-persistent};
+	\path [line] (clientClass) -- (non);
+	\node [cloud, right=of non] (p) {p-persistent};
+	\path [line] (clientClass) -- (p);
+\end{tikzpicture}
+
+
+
+\section{Code snippets}
+\subsection{Server}
+\input{./Server.tex}
+\subsection{Client}
+\input{./Client.tex}
+
+\section{Results}
+
+\pagebreak
+\section{Comments}
+
+\end{document}
