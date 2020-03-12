@@ -40,7 +40,7 @@ The clients and server communicate with each other using sockets.
 Listening on the channel is done through a separate 
 thread (for both client and server).
 There can be multiple client instances. All the clients are connected to the
-central server. The cental server holds the channel(a buffer).
+central server. The central server holds the channel(a buffer).
 
 
 \subsubsection{The Server class}
@@ -55,7 +55,7 @@ The server maps the port number with the client address.
 When a client tries to sent messages to another client, the server checks the
 destination address of the message, finds the port mapped to the address
 and forwards the message to the destination client.
-The server holds the incomming messages in a buffer, which acts as the channel here.
+The server holds the incoming messages in a buffer, which acts as the channel here.
 When ever a new packet arrives and the buffer is non empty, a collision is registered.
 \par\null\par
 \begin{tikzpicture}[node distance = 1em, auto]
@@ -94,6 +94,9 @@ Each function implements its corresponding CSMA technique.
 
 \section{Results}
 Observations have been taken by sending 100 packets from each station.
+Here \emph{throughput} is defined as the no of packets transmitted by the sender
+in unit time. And \emph{efficiency} is the no of packets received correctly
+(without collision) divided by the total number of messages sent by the sender station.
 
 \begin{table}[!ht]
 	\caption{With 2 stations}
@@ -101,9 +104,9 @@ Observations have been taken by sending 100 packets from each station.
 	\begin{tabular}{|l|l|l|l|l|l|l|}
 		\hline
 		&
-		\multicolumn{2}{|l|}{one-persisent} & 
-		\multicolumn{2}{|l|}{non-persisent} & 
-		\multicolumn{2}{|l|}{p-persisent}\\
+		\multicolumn{2}{|l|}{one-persistent} & 
+		\multicolumn{2}{|l|}{non-persistent} & 
+		\multicolumn{2}{|l|}{p-persistent}\\
 		\hline
 		Sender &
 		Throughput & Efficiency & 
@@ -129,9 +132,9 @@ Observations have been taken by sending 100 packets from each station.
 	\begin{tabular}{|l|l|l|l|l|l|l|}
 		\hline
 		&
-		\multicolumn{2}{|l|}{one-persisent} & 
-		\multicolumn{2}{|l|}{non-persisent} & 
-		\multicolumn{2}{|l|}{p-persisent}\\
+		\multicolumn{2}{|l|}{one-persistent} & 
+		\multicolumn{2}{|l|}{non-persistent} & 
+		\multicolumn{2}{|l|}{p-persistent}\\
 		\hline
 		Sender &
 		Throughput & Efficiency & 
@@ -162,9 +165,9 @@ Observations have been taken by sending 100 packets from each station.
 	\begin{tabular}{|l|l|l|l|l|l|l|}
 		\hline
 		&
-		\multicolumn{2}{|l|}{one-persisent} & 
-		\multicolumn{2}{|l|}{non-persisent} & 
-		\multicolumn{2}{|l|}{p-persisent}\\
+		\multicolumn{2}{|l|}{one-persistent} & 
+		\multicolumn{2}{|l|}{non-persistent} & 
+		\multicolumn{2}{|l|}{p-persistent}\\
 		\hline
 		Sender &
 		Throughput & Efficiency & 
@@ -194,7 +197,8 @@ Observations have been taken by sending 100 packets from each station.
 	\end{tabular}
 \end{table}
 
-\subsection{One-persisent}
+\pagebreak
+\subsection{One-persistent}
 \begin{tikzpicture}
 \begin{axis}[name=oneeff,
 	xlabel = {no of stations},
@@ -217,7 +221,13 @@ Observations have been taken by sending 100 packets from each station.
 \end{axis}	
 \end{tikzpicture}
 
-\subsection{Non-persisent}
+One persistent has the highest throughput among the three schemes.
+But takes a hit on efficiency, because the sender transmit the package as soon as
+it senses the channel idle. More than one channel may sense the channel idle
+at the same time and thus collision occurs. As evident from the efficiency
+graph, the collision frequency increase with the number of stations.
+
+\subsection{Non-persistent}
 \begin{tikzpicture}
 \begin{axis}[name=oneeff,
 	xlabel = {no of stations},
@@ -239,11 +249,17 @@ Observations have been taken by sending 100 packets from each station.
 \end{axis}	
 \end{tikzpicture}
 
-\subsection{p-persisent}
+Non persistent scheme provides very good efficiency. The collision frequency
+is very low. But the throughput is worse than one persistent scheme, because
+when ever the sender senses the channel as busy it waits of a random amount of time.
+The chances of collision reduces drastically. The throughput also decreases with
+increase in number of sender stations.
+
+\subsection{p-persistent}
 For The following graphs we keep the value of \emph{p} at 0.5 and
 vary the number of stations.
 \\
-
+\nopagebreak
 \noindent
 \begin{tikzpicture}
 \begin{axis}[name=oneeff,
@@ -266,7 +282,11 @@ vary the number of stations.
 \end{axis}	
 \end{tikzpicture}
 
-\noindent
+P-persistent scheme also provides very good efficiency but suffers in throughput.
+If the sender senses the channel as busy it executes its back-off scheme.
+If the sender senses the channel as idle, it transmits the message with a
+probability of \emph{1-p}, else it waits for a timeslot and senses the channel again.
+\par
 For the following graphs we keep the number of stations fixed at 3 and
 vary the value of \emph{p}.
 \\
@@ -290,6 +310,11 @@ vary the value of \emph{p}.
 	table{./data/pp_throughput};
 \end{axis}	
 \end{tikzpicture}
+
+The efficiency doesn't vary much with the change in the value of p.
+The throughput decreases drastically as the value of p is increased.
+With the increase in the value of p, the probability of transmitting 
+(when the channel is idle) decreases. Thus the throughput decreases.
 
 \pagebreak
 \section{Comments}
