@@ -50,7 +50,7 @@ public class Driver{
 			System.out.println("\nInflicting error");
 			System.out.print("Errors at:");
 			int n = rand.nextInt(message.length()/2)+1;
-			n = 2;
+			//n = 2;
 			for(int i=0;i<n;i++) {
 				int ind = rand.nextInt(message.length());
 				System.out.print(ind + ",");
