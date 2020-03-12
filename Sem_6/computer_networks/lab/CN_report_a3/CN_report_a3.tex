@@ -93,12 +93,114 @@ Each function implements its corresponding CSMA technique.
 \input{./Client.tex}
 
 \section{Results}
+Observations have been taken by sending 100 packets from each station.
+
+\begin{table}[!ht]
+	\caption{With 2 stations}
+	\bigskip
+	\begin{tabular}{|l|l|l|l|l|l|l|}
+		\hline
+		&
+		\multicolumn{2}{|l|}{one-persisent} & 
+		\multicolumn{2}{|l|}{non-persisent} & 
+		\multicolumn{2}{|l|}{p-persisent}\\
+		\hline
+		Sender &
+		Throughput & Efficiency & 
+		Throughput & Efficiency & 
+		Throughput & Efficiency \\ 
+		\hline
+		1 & 
+		0.9459 & 0.72 &
+		0.2996 & 1.00 & 
+		0.2504 & 1.00\\
+		\hline
+		2 &
+		0.9458 & 0.62 & 
+		0.2710 & 0.99 
+		& 0.2465 & 0.99\\
+		\hline
+	\end{tabular}
+\end{table}
+
+\begin{table}[!ht]
+	\caption{With 3 stations}
+	\bigskip
+	\begin{tabular}{|l|l|l|l|l|l|l|}
+		\hline
+		&
+		\multicolumn{2}{|l|}{one-persisent} & 
+		\multicolumn{2}{|l|}{non-persisent} & 
+		\multicolumn{2}{|l|}{p-persisent}\\
+		\hline
+		Sender &
+		Throughput & Efficiency & 
+		Throughput & Efficiency & 
+		Throughput & Efficiency \\ 
+		\hline
+		1 &
+		0.8748 & 0.46 &
+		0.2658 & 0.99 &
+		0.1804 & 1.00\\
+		\hline
+		2 &
+		0.8663 & 0.49 & 
+		0.2490 & 1.00 &
+		0.1711 & 0.99\\
+		\hline
+		3 &
+		0.8505 & 0.52 &
+		0.2342 & 0.99 &
+		0.1697 & 0.99\\
+		\hline
+	\end{tabular}
+\end{table}
+
+\begin{table}[!ht]
+	\caption{With 4 stations}
+	\bigskip
+	\begin{tabular}{|l|l|l|l|l|l|l|}
+		\hline
+		&
+		\multicolumn{2}{|l|}{one-persisent} & 
+		\multicolumn{2}{|l|}{non-persisent} & 
+		\multicolumn{2}{|l|}{p-persisent}\\
+		\hline
+		Sender &
+		Throughput & Efficiency & 
+		Throughput & Efficiency & 
+		Throughput & Efficiency \\ 
+		\hline
+		1 &
+		0.6447 & 0.35 &
+		0.1980 & 0.93 & 
+		0.1841 & 0.98\\
+		\hline
+		2 & 
+		0.6196 & 0.34 &
+		0.1962 & 0.97 & 
+		0.1712 & 0.99\\
+		\hline
+		3 &
+		0.6197 & 0.47 &
+		0.1891 & 0.95 & 
+		0.1816 & 0.99\\
+		\hline
+		4 &
+		0.6157 & 0.37 & 
+		0.1852 & 0.95 & 
+		0.1555 & 0.97\\
+		\hline
+	\end{tabular}
+\end{table}
 
 \subsection{One-persisent}
 \begin{tikzpicture}
 \begin{axis}[name=oneeff,
 	xlabel = {no of stations},
 	ylabel = {Efficiency},
+	ymin = 0,
+	ymax = 1,
 	xtick = {2,3,4}] 
 	\addplot[color=red, nodes near coords, mark=x] 
 	table{./data/1_efficiency};
@@ -120,9 +222,10 @@ Each function implements its corresponding CSMA technique.
 \begin{axis}[name=oneeff,
 	xlabel = {no of stations},
 	ylabel = {Efficiency},
+	ymin = 0,
 	xtick = {2,3,4}] 
 	\addplot[color=red, nodes near coords, mark=x] 
-	table{./data/1_efficiency};
+	table{./data/n_efficiency};
 \end{axis}	
 \end{tikzpicture}
 \null
@@ -132,18 +235,24 @@ Each function implements its corresponding CSMA technique.
 	ylabel = {Throughput}, 
 	xtick = {2,3,4}] 
 	\addplot[color=red, nodes near coords, mark=x] 
-	table{./data/1_throughput};
+	table{./data/n_throughput};
 \end{axis}	
 \end{tikzpicture}
 
 \subsection{p-persisent}
+For The following graphs we keep the value of \emph{p} at 0.5 and
+vary the number of stations.
+\\
+
+\noindent
 \begin{tikzpicture}
 \begin{axis}[name=oneeff,
 	xlabel = {no of stations},
 	ylabel = {Efficiency},
+	ymin = 0,
 	xtick = {2,3,4}] 
 	\addplot[color=red, nodes near coords, mark=x] 
-	table{./data/1_efficiency};
+	table{./data/p_efficiency};
 \end{axis}	
 \end{tikzpicture}
 \null
@@ -153,11 +262,43 @@ Each function implements its corresponding CSMA technique.
 	ylabel = {Throughput}, 
 	xtick = {2,3,4}] 
 	\addplot[color=red, nodes near coords, mark=x] 
-	table{./data/1_throughput};
+	table{./data/p_throughput};
+\end{axis}	
+\end{tikzpicture}
+
+\noindent
+For the following graphs we keep the number of stations fixed at 3 and
+vary the value of \emph{p}.
+\\
+\begin{tikzpicture}
+\begin{axis}[name=oneeff,
+	xlabel = {p},
+	ylabel = {Efficiency},
+	ymin = 0,
+	xtick = {0.2,0.5,0.8}] 
+	\addplot[color=red, nodes near coords, mark=x] 
+	table{./data/pp_efficiency};
+\end{axis}	
+\end{tikzpicture}
+\null
+\begin{tikzpicture}
+\begin{axis}[name=oneput,
+	xlabel = {p},
+	ylabel = {Throughput}, 
+	xtick = {0.2,0.5,0.8}] 
+	\addplot[color=red, nodes near coords, mark=x] 
+	table{./data/pp_throughput};
 \end{axis}	
 \end{tikzpicture}
 
 \pagebreak
 \section{Comments}
+\begin{itemize}
+		\item The architecture of the code here is identical 
+			to the previous assignment. 
+		\item I faced some thread scheduling problems.
+			For example in certain infinite while loops, adding a blank print statement
+			changed the execution.
+\end{itemize}
 
 \end{document}
