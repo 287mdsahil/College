@@ -57,6 +57,7 @@ public class Client {
 			int count = 0;
 			while(true) {
 				try {
+					System.out.print("");
 					if(bufferStatus == 0) {
 						String msg = makeSequenceString(count);
 						System.out.println("Sending broadcast message:" + count);
@@ -64,9 +65,9 @@ public class Client {
 						count++;
 						bufferStatus = 100;
 						Thread.sleep(1000);
-					} else if(bufferStatus>0) {
+					} else {
 						System.out.print("");
-						int n = rand.nextInt(2000) + 500;
+						int n = rand.nextInt(2000);
 						Thread.sleep(n);
 					}
 				} catch (Exception e) {
@@ -85,17 +86,35 @@ public class Client {
 			int count = 0;
 			while(true) {
 				try {
-					if(bufferStatus == 0) {
-						String msg = makeSequenceString(count);
-						System.out.println("Sending broadcast message:" + count);
-						sendMsg(msg,BROADCAST_ADDRESS);
-						count++;
-						bufferStatus = 100;
-						Thread.sleep(1000);
-					} else if(bufferStatus>0) {
-						System.out.print("");
-						int n = 1000;
-						Thread.sleep(n);
+					String msg = makeSequenceString(count);
+					System.out.println("Sending broadcast message:" + count);
+					int k = 0;
+					double p = 0.8;
+					int slottime = 1200;
+					while(k<15) {
+						if(bufferStatus == 0) {
+							if(p<Math.random()) {
+								sendMsg(msg,BROADCAST_ADDRESS);
+								count++;
+								//bufferStatus = 100;
+								Thread.sleep(1000);
+								break;
+							} else {
+								Thread.sleep(slottime);
+							}
+						} else if(bufferStatus>0) {
+							System.out.print("");
+							k++;
+							int n = rand.nextInt((int)Math.pow(2.0,k+1));
+							System.out.println("Backoff:" + n);
+							Thread.sleep(n);
+						}
+
+						if(k>15) {
+							System.out.println("Backing off limit reached, dumping packed");
+							count++;
+							break;
+						}
 					}
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -107,17 +126,24 @@ public class Client {
 			}
 		}
 
-		public void run(String mac_addr) {
+		public void run(String mac_addr, String algo) {
 			super.run(mac_addr);
-			//onePersitent();
-			//nonPersitent();
-			pPersitent();
+			if(algo.equals("1"))
+				onePersitent();
+			else if(algo.equals("n"))
+				nonPersitent();
+			else if(algo.equals("p"))
+				pPersitent();
+			else {
+				System.out.println("Invalid arguement!");
+				System.exit(0);
+			}
 		}
 
 
 	}
 
 	public static void main(String args[]) {
-		new ClientWrapper().run(args[0]);
+		new ClientWrapper().run(args[0], args[1]);
 	}
 }

@@ -2,6 +2,8 @@ import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.*;
+import java.time.Duration;
+import java.time.Instant;
 
 /**Frame format:
  * 1 byte premble
@@ -119,9 +121,13 @@ public class Server {
 		private Socket soc;
 		public PrintWriter out;
 		public BufferedReader in;
+		public Instant start,finish;
+		public int rcvd;
+		public String mac_addr;
 
 		public ClientHandler(Socket s) {
 			soc = s;
+			rcvd = 0;
 			try {
 				out = new PrintWriter(soc.getOutputStream(), true);
 				in = new BufferedReader(
@@ -154,10 +160,22 @@ public class Server {
 							+ source 
 							+ " count:" 
 							+ count);
+					rcvd++;
 					//System.out.println("Buffer:"+buffer);
 				}
+
 				buffer = msg;
-				
+
+				if(count == 0)
+					start = Instant.now();
+				else if(count == 99) {
+					finish = Instant.now();
+					long timeElapsed = Duration.between(start, finish).toMillis();
+					System.out.println("Time elapsed(in ms) of:" + mac_addr + " = " + timeElapsed);
+					System.out.println("Throughput of:" + mac_addr + " = " + (100000/(float)timeElapsed));
+					System.out.println("Efficienty of:" + mac_addr + " = " + (rcvd) + "%");
+				}
+
 				try {
 					timer.startTimer();
 				} catch (Exception e) {
@@ -193,6 +211,7 @@ public class Server {
 					soc.close();
 				} else {
 					dns.put(mac_addr,this);
+					this.mac_addr = mac_addr;
 					out.println(DHCPLITE_GRANTED);
 					System.out.println("Connection established with:" 
 							+ mac_addr 
