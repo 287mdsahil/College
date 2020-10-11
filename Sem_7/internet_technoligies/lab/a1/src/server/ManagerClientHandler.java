@@ -3,19 +3,17 @@ package server;
 import java.net.Socket;
 import java.util.HashMap;
 
-class GuestClientHandler extends ClientHandler {
+class ManagerClientHandler extends ClientHandler {
   private static final String c_PUT = "put";
   private static final String c_GET = "get";
   private static final String c_EXIT = "exit";
-  private static final String c_UPGRADE = "upgrade";
   private static final String EXIT_CMD = "EXIT";
+  private HashMap<Integer, ClientHandler> users;
 
-  public GuestClientHandler(Socket soc) {
-    super(soc);
-  }
-
-  public GuestClientHandler(Socket soc, HashMap<String, String> data) {
+  public ManagerClientHandler(
+      Socket soc, HashMap<String, String> data, HashMap<Integer, ClientHandler> users) {
     super(soc, data);
+    this.users = users;
   }
 
   public void processReceivedMessage(String msg) {
