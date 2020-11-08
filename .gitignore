@@ -2,3 +2,8 @@
 **/*.class
 **/*.*~
 **./.vscode/
+
+**/*.aux
+**/*.auxlock
+**/*.log
+**/*_minted**
