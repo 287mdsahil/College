@@ -12,8 +12,12 @@ public class Server {
   private static final String c_DOWNGRADE = "downgrade";
   private static final String c_LIST = "list";
   private ServerSocket m_serverSocket;
-  private static final int PORT = 8888;
+  private int PORT = 8888;
   private HashMap<Integer, ClientHandler> users;
+
+  public Server(int port) {
+      PORT = 8888;
+  }
 
   protected void listUsers() {
     for (int userPort : users.keySet()) {
