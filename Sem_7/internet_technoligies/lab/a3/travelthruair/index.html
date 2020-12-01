@@ -9,8 +9,28 @@
 <script src="./js/app.js"></script>
 
 <body>
-    Hello customer!
+    <h2>Hello customer!</h2>
+    <hr />
+    <h3>Search</h3>
+    <form onsubmit="submitSearch(event)" id="searchForm">
+
+        <label for="arrivalCity">Arrival city:</label>
+        <input type="text" id="arrivalCity"><br>
+
+        <label for="departureCity">Departure city:</label>
+        <input type="text" id="departureCity"><br>
+
+        <label for="departureDate">Departure Date:</label>
+        <input type="date" id="departureDate"><br>
+
+        <label for="arrivalDate">Arrival Date:</label>
+        <input type="date" id="arrivalDate"><br>
+
+        <input type="submit" value="search">
+    </form>
     <button onclick=getDeals()>Get deals</button>
+    <hr />
+    <div id="error" style="color:red"></div>
     <div id="deal_listing"></div>
 </body>
 
