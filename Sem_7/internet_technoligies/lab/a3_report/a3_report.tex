@@ -1,0 +1,125 @@
+\documentclass[titlepage]{article}
+\usepackage{minted}
+\usepackage[margin=0.5in]{geometry}
+\usepackage{graphicx}
+
+\title{Internet Technologies Lab Report\\Assignment 3}
+\author{Md Sahil\\BCSE IV\\Roll-001710501029}
+\date{}
+
+\begin{document}
+    {\maketitle}
+
+    \section{Problem Statement}
+
+    Implement a web application for “Travel Thru Air” using servlets
+    to support the following two use cases
+
+    \begin{itemize}
+        \item A list of current special deals must appear on the home page.
+            Each special deal must display the departure
+            city, the arrival city, and the cost. These special deals are
+            set up by the marketing department and change
+            during the day, so it can’t be static. Special deals are only
+            good for a limited amount of time.
+        \item A user may search for flights, given a departure city,
+            time and an arrival city. The results must display
+            the departure city, the arrival city, the total cost,
+            and how many legs the flight will have.
+            State and explain why and where you have used design patterns.
+    \end{itemize}
+
+    \section{Design \& Implementation}
+
+    \subsection{Directory structure}
+    \begin{minted}{bash}
+    travelthruair/
+    |-- WEB-INF
+    |   |-- classes
+    |   |   |-- Makefile
+    |   |   |-- api
+    |   |   |   |-- ApiServlet.class
+    |   |   |   `-- ApiServlet.java
+    |   |   `-- model
+    |   |       |-- Deal.class
+    |   |       |-- Deal.java
+    |   |       |-- Deals.class
+    |   |       `-- Deals.java
+    |   |-- lib
+    |   |   |-- gson-2.8.6.jar
+    |   |   `-- servlet-api.jar
+    |   `-- web.xml
+    |-- index.html
+    `-- js
+        `-- app.js
+
+    6 directories, 12 files
+    \end{minted}
+
+    \subsection{Compilation}
+    Compilation is done using the \emph{Makefile}.
+    In order to compile the java classses, run the following command while in the \textbf{travelthruair/WEB-INF/classes} directory
+    \begin{minted}{bash}
+    $ make
+    \end{minted}
+    
+    \pagebreak
+    \subsection{Design}
+    The application is build as a RESTfull service. The client side makes API calls to the server
+    and the server responds accordingly.
+    
+
+    \noindent
+    The api calls can be made with the url \textbf{<hostname>/travelthruair/api/deals}.\\
+    Filtering of flights can be done using query params.
+    The availabe query params are \emph{arrivalCity}, \emph{departureCity}, \emph{arrivalDate}, \emph{departureDate}.
+    
+    
+    \noindent
+    Example api call with query params:
+    \begin{minted}{text}
+        <hostname>/travelthruair/api/deals?arrivalCity=Kolkata&departureDate=2021-02-07&
+    \end{minted}
+    Returned json data:
+    \begin{minted}{json}
+    [
+      {
+        "departureCity": "Kolkata",
+        "arrivalCity": "Delhi",
+        "cost": 3000,
+        "arrivalDate": {
+          "year": 2021,
+          "month": 2,
+          "day": 8
+        },
+        "departureDate": {
+          "year": 2021,
+          "month": 2,
+          "day": 7
+        }
+      }
+    ]
+    \end{minted}
+
+    The following error checks have been implemented:
+    \begin{itemize}
+        \item Arrival and departure city can’t be the same
+        \item Departure date and arrival date cannot be before the current date
+        \item Arrival Date cannot be before departure date
+    \end{itemize}
+
+    The frontend consist of a simple form that makes calls to this api in order to fetch the
+    available flights. The \emph{get deals} button returns all the upcomming available flights
+
+    \subsection{MVC}
+    The backend consists of 2 packages the \textbf{api} package and the \textbf{model} package
+    The \textbf{api} package consists of the servlet classes and acts as the \textit{\textbf{Controller}}.
+    The model package consists of two classes. The \textbf{Deal} class is a simple DTO (Data Transfer Object) class.
+    Each object of the \textbf{Deal} class corresponds to a flight deal. 
+    The \textbf{Deals} class acts as the DAO (Data Access Object) class and encapsulated the methods
+    that returns the set of \textbf{Deal} objects accorting to the search params and also performs error checking.
+    The \textbf{model} package acts as the \textit{\textbf{Model}} in the \textbf{MVC} pattern.
+    Finally the HTML frontend that displays the contents fetched by the Javascript functions acts as the \textit{\textbf{View}}
+
+
+\end{document}
