@@ -1,0 +1,3 @@
+createTable:
+
+aws dynamodb create-table --attribute-definitions AttributeName=UID,AttributeType=S --table-name products --key-schema AttributeName=UID,KeyType=HASH --provisioned-throughput ReadCapacityUnits=1,WriteCapacityUnits=1 --output json --endpoint-url http://localhost:8000
