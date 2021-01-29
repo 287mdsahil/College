@@ -20,17 +20,21 @@ public class AuthFilter implements Filter {
         HttpServletRequest httpReq = (HttpServletRequest) req;
         HttpServletResponse httpRes = (HttpServletResponse) res;
 
-        String base64auth = httpReq.getHeader("Authorization").split(" ")[1];
-        String[] userpass = (new String(Base64.getDecoder().decode(base64auth))).split(":");
-        String id = userpass[0];
-        String password = userpass[1];
-
-        Users users = new Users();
-        if (users.auth(id, password)) {
-            req.setAttribute("user", users.getUser(id));
-            chain.doFilter(req, res);
-        } else {
+        if (httpReq.getHeader("Authorization") == null) {
             httpRes.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+        } else {
+            String base64auth = httpReq.getHeader("Authorization").split(" ")[1];
+            String[] userpass = (new String(Base64.getDecoder().decode(base64auth))).split(":");
+            String id = userpass[0];
+            String password = userpass[1];
+
+            Users users = new Users();
+            if (id != null && password != null & users.auth(id, password)) {
+                req.setAttribute("user", users.getUser(id));
+                chain.doFilter(req, res);
+            } else {
+                httpRes.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+            }
         }
     }
 }

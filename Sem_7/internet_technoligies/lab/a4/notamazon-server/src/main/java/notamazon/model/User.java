@@ -4,6 +4,7 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBAttribute;
 import java.util.*;
+import java.util.Collections;
 
 @DynamoDBTable(tableName = "users")
 public class User {
@@ -11,14 +12,14 @@ public class User {
     private String password;
     private char sex;
     private float pref;
-    private List<CartItem> cart;
+    private Map<String, Integer> cart;
 
     public User(String id, String password, char sex, float pref) {
         this.id = id;
         this.password = password;
         this.sex = sex;
         this.pref = pref;
-        this.cart = new ArrayList<CartItem>();
+        this.cart = new HashMap<String, Integer>();
     }
 
     public User() {
@@ -61,16 +62,19 @@ public class User {
     }
 
     @DynamoDBAttribute(attributeName = "cart")
-    public List<CartItem> getCart() {
+    public Map<String, Integer> getCart() {
         return this.cart;
     }
 
-    public void setCart(List<CartItem> cart) {
+    public void setCart(Map<String, Integer> cart) {
         this.cart = cart;
     }
 
-    public void addToCart(CartItem cartItem) {
-        this.cart.add(cartItem);
+    public void addToCart(String productId, int quantity) {
+        if (this.cart.containsKey(productId))
+            this.cart.replace(productId, this.cart.get(productId) + quantity);
+        else
+            this.cart.put(productId, quantity);
     }
 
 }

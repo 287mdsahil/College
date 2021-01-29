@@ -19,6 +19,7 @@ public class UserServlet extends HttpServlet {
     static final long serialVersionUID = 3l;
 
     public void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+        System.out.println("Logging in");
         String base64auth = req.getHeader("Authorization").split(" ")[1];
         String[] userpass = (new String(Base64.getDecoder().decode(base64auth))).split(":");
         String id = userpass[0];
@@ -34,6 +35,7 @@ public class UserServlet extends HttpServlet {
     }
 
     public void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+        System.out.println("Signup");
         StringBuffer requestBuffer = new StringBuffer();
         String line = null;
         try {

@@ -26,14 +26,16 @@ public class CartServlet extends HttpServlet {
         }
 
         Gson gson = new Gson();
+        System.out.print("cart req: ");
+        System.out.println((String)requestBuffer.toString());
         Map<String, Object> requestMap = (Map<String, Object>) gson.fromJson(requestBuffer.toString(), Map.class);
 
         String productId = (String) requestMap.get("id");
-        int quantity = (int) requestMap.get("quantity");
+        Double quantity = (Double) requestMap.get("quantity");
 
         User user = (User) req.getAttribute("user");
         Users users = new Users();
-        User updatedUser = users.addToCart(user, new Products().getProduct(productId), quantity);
+        User updatedUser = users.addToCart(user, new Products().getProduct(productId), quantity.intValue());
 
         res.getWriter().println(gson.toJson(updatedUser));
     }

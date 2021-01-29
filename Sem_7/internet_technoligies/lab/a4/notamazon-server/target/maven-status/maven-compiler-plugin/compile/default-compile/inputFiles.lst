@@ -2,7 +2,6 @@
 /home/arch/College/Sem_7/internet_technoligies/lab/a4/notamazon-server/src/main/java/notamazon/api/UserServlet.java
 /home/arch/College/Sem_7/internet_technoligies/lab/a4/notamazon-server/src/main/java/notamazon/api/ProductServlet.java
 /home/arch/College/Sem_7/internet_technoligies/lab/a4/notamazon-server/src/main/java/notamazon/model/Product.java
-/home/arch/College/Sem_7/internet_technoligies/lab/a4/notamazon-server/src/main/java/notamazon/model/CartItem.java
 /home/arch/College/Sem_7/internet_technoligies/lab/a4/notamazon-server/src/main/java/notamazon/model/Users.java
 /home/arch/College/Sem_7/internet_technoligies/lab/a4/notamazon-server/src/main/java/notamazon/api/AuthFilter.java
 /home/arch/College/Sem_7/internet_technoligies/lab/a4/notamazon-server/src/main/java/notamazon/api/CartServlet.java

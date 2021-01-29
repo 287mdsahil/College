@@ -9,23 +9,33 @@ import com.google.gson.Gson;
 import notamazon.model.Products;
 import notamazon.model.Product;
 import javax.servlet.ServletException;
-import java.util.UUID;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.lang.StringBuffer;
 import java.io.BufferedReader;
 import com.google.gson.Gson;
+import java.util.stream.Collectors;
+import notamazon.model.*;
 
 @WebServlet("/api/products")
 public class ProductServlet extends HttpServlet {
     static final long serialVersionUID = 4l;
 
     public void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
-        Gson gson = new Gson();
+        User user = (User) req.getAttribute("user");
+        int productLimit = 10;
+        float pref = user.getPref();
+
         Products products = new Products();
         List<Product> productList = products.getProducts();
-        String str = gson.toJson(productList);
-        res.getWriter().println(str);
+        List<Product> newArrivalList = productList.stream().filter(e -> e.getNewArrival())
+                .limit((int) (productLimit * pref)).collect(Collectors.toList());
+        List<Product> oldArrivalList = productList.stream().filter(e -> !e.getNewArrival())
+                .limit((int) (productLimit * (1 - pref))).collect(Collectors.toList());
+
+        List<Product> userProductList = new ArrayList<Product>();
+        userProductList.addAll(newArrivalList);
+        userProductList.addAll(oldArrivalList);
+        res.getWriter().println(new Gson().toJson(userProductList));
     }
 
     public void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
@@ -44,12 +54,13 @@ public class ProductServlet extends HttpServlet {
 
         String name = (String) requestMap.get("name");
         Double price = (Double) requestMap.get("price");
-        int discount = (int) requestMap.get("discount");
+        Double discount = (Double) requestMap.get("discount");
         boolean newArrival = (boolean) requestMap.get("newArrival");
         String id = UUID.randomUUID().toString();
 
         Products products = new Products();
-        Product product = products.addProduct(new Product(id, name, price.floatValue(), discount, newArrival));
+        Product product = products
+                .addProduct(new Product(id, name, price.floatValue(), discount.intValue(), newArrival));
         res.getWriter().println(gson.toJson(product));
     }
 }

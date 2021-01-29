@@ -34,18 +34,17 @@ public class Users {
     }
 
     public User addToCart(User user, Product product, int quantity) {
-        user.addToCart(new CartItem(product, quantity));
+        user.addToCart(product.getId(), quantity);
         float newPref = user.getPref();
-        if (product.getNewArrival()) {
+        if (product.getNewArrival())
             newPref += 0.1f;
-        } else if (product.getDiscount() > 0) {
+        else if (product.getDiscount() > 0)
             newPref -= 0.1f;
-        }
 
-        if (newPref > 1.0f)
-            newPref = 1.0f;
-        if (newPref < 0.0f)
-            newPref = 0.0f;
+        if (newPref > 0.9f)
+            newPref = 0.9f;
+        if (newPref < 0.1f)
+            newPref = 0.1f;
 
         user.setPref(newPref);
 
