@@ -1,0 +1,3 @@
+vhdl isim_temp "mux4x1.vhd"
+vhdl isim_temp "Multiplexer.vhd"
+vhdl isim_temp "mux4x1_test_bench.vhd"

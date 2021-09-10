@@ -1,0 +1,1 @@
+xst -intstyle ise -ifn "/home/sahil/College/Sem_8/vsli/lab/a3/a3_ax1.xst" -ofn "/home/sahil/College/Sem_8/vsli/lab/a3/a3_ax1.syr" 

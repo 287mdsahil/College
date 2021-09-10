@@ -1,0 +1,2 @@
+vhdl isim_temp "srff.vhd"
+vhdl isim_temp "srff_test_bench.vhd"

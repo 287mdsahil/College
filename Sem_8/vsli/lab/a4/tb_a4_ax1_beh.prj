@@ -1,0 +1,4 @@
+vhdl work "adder_package.vhd"
+vhdl work "a4_b.vhd"
+vhdl work "a4_ax1.vhd"
+vhdl work "tb_a4_ax1.vhd"

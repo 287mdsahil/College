@@ -1,0 +1,3 @@
+vhdl work "comparator_package.vhd"
+vhdl work "a4_4a.vhd"
+vhdl work "tb_a4_4a.vhd"

@@ -1,0 +1,4 @@
+vhdl work "mux4x1.vhd"
+vhdl work "mux16x1b.vhd"
+vhdl work "Multiplexer.vhd"
+vhdl work "mux16x1b_test_bench.vhd"

@@ -1,0 +1,2 @@
+vhdtdtfi -lib work counter3bitdown_tff.vhd -prj ass7 -o counter3bitdown_tff.spl -module counter3bitdown_tff -template /home/lp2917/14.7/ISE_DS/ISE//data/splfile.tft -deleteonerror 
+spl2sym -intstyle ise -family artix7 counter3bitdown_tff.spl /home/lp2917/14.7/ISE_DS/ass7/counter3bitdown_tff.sym 

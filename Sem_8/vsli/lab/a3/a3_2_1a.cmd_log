@@ -1,0 +1,2 @@
+vhdtdtfi -lib work a3_2_1a.vhd -prj a3 -o a3_2_1a.spl -module a3_2_1a -template /home/sahil/.Xilinx/14.7/ISE_DS/ISE//data/splfile.tft -deleteonerror 
+spl2sym -intstyle ise -family artix7 a3_2_1a.spl /home/sahil/College/Sem_8/vsli/lab/a3/a3_2_1a.sym 

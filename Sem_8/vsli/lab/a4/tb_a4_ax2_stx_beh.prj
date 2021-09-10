@@ -1,0 +1,5 @@
+vhdl isim_temp "adder_package.vhd"
+vhdl isim_temp "a4_b.vhd"
+vhdl isim_temp "a4_ax1.vhd"
+vhdl isim_temp "a4_ax2.vhd"
+vhdl isim_temp "tb_a4_ax2.vhd"

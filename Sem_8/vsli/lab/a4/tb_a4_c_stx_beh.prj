@@ -1,0 +1,3 @@
+vhdl isim_temp "adder_package.vhd"
+vhdl isim_temp "a4_c.vhd"
+vhdl isim_temp "tb_a4_c.vhd"

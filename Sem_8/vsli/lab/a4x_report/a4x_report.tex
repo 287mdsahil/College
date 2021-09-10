@@ -1,0 +1,82 @@
+\documentclass[titlepage]{article}
+\usepackage[margin=0.5in]{geometry}
+\usepackage{graphicx}
+\usepackage{minted}
+
+\title{VLSI \\Assignment 4 Annexure}
+\author{Priyank Lohariwal\\BCSE IV\\Roll-001710501055}
+\date{}
+
+\begin{document}
+    {\maketitle}
+
+    \section{Describtion}
+    \begin{itemize}
+        \item Implement 4-bit ripple carry adder using structural modelling.
+        \item Implement adder/subtractor using structural modelling.
+        \item Implement BCD adder using structural modelling.
+    \end{itemize}
+
+    \section{Block Diagram} 
+    \begin{figure}[!ht]
+        \centering
+        \includegraphics[width=15cm]{./figures/ripple_carry_bd.jpeg}
+        \caption{Ripple carry adder block diagram}
+    \end{figure}
+    \begin{figure}[!ht]
+        \centering
+        \includegraphics[width=15cm]{./figures/4bit_adder_sub.jpeg}
+        \caption{Adder/subtractor block diagram}
+    \end{figure}
+    \begin{figure}[!ht]
+        \centering
+        \includegraphics[width=15cm]{./figures/bcd_bd.jpeg}
+        \caption{BCD adder block diagram}
+    \end{figure}
+
+    
+    \subsection{BCD adder}
+
+
+    \section{Circuit Diagram}
+    \begin{figure}[!ht]
+        \centering
+        \includegraphics[width=12cm]{./figures/ripple_carry_cd.jpeg}
+        \caption{Ripple carry adder circuit diagram}
+    \end{figure}
+    \begin{figure}[!ht]
+        \centering
+        \includegraphics[width=12cm]{./figures/adder_sub_cd.jpeg}
+        \caption{Adder subtractor circuit diagram}
+    \end{figure}
+    \begin{figure}[!ht]
+        \centering
+        \includegraphics[width=12cm]{./figures/bcd_cd.jpeg}
+        \caption{BCD adder circuit diagram}
+    \end{figure}
+    
+    \section{Package}
+    \inputminted{vhdl}{./codes/adder_package.vhd}
+    \section{4 bit ripple carry adder}
+    \subsection{Code}
+    \inputminted{vhdl}{./codes/a4_ax1.vhd}
+    \subsection{Test Bench}
+    \inputminted{vhdl}{./codes/tb_a4_ax1.vhd}
+    \subsection{Timing diagram}
+    \includegraphics[width=19cm]{./figures/ripple_carry_td.jpeg}
+    \section{Adder/subtractor}
+    \subsection{Code}
+    \inputminted{vhdl}{./codes/a4_ax2.vhd}
+    \subsection{Test Bench}
+    \inputminted{vhdl}{./codes/tb_a4_ax2.vhd}
+    \subsection{Timing diagram}
+    \includegraphics[width=19cm]{./figures/adder_sub_td.jpeg}
+    \section{BCD adder}
+    \subsection{Code}
+    \inputminted{vhdl}{./codes/a4_ax3.vhd}
+    \subsection{Test Bench}
+    \inputminted{vhdl}{./codes/tb_a4_ax3.vhd}
+    \subsection{Timing diagram}
+    \includegraphics[width=19cm]{./figures/bcd_td.jpeg}
+
+\end{document}

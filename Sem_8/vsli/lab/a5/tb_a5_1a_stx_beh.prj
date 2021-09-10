@@ -1,0 +1,3 @@
+vhdl isim_temp "comparator_package.vhd"
+vhdl isim_temp "a5_1a.vhd"
+vhdl isim_temp "tb_a5_1a.vhd"

@@ -1,0 +1,3 @@
+vhdl isim_temp "jkff.vhd"
+vhdl isim_temp "counter3bitupjkff.vhd"
+vhdl isim_temp "counter3bitupjkff_test_bench.vhd"

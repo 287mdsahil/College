@@ -1,0 +1,1 @@
+-intstyle "ise" -incremental -lib "secureip" -o "/home/sahil/College/Sem_8/vsli/lab/ass7/counter3bituptff_test_bench_isim_beh.exe" -prj "/home/sahil/College/Sem_8/vsli/lab/ass7/counter3bituptff_test_bench_beh.prj" "work.counter3bituptff_test_bench" 

@@ -1,0 +1,7 @@
+[Inputs]
+rst
+clk
+[Outputs]
+[BiDir]
+=q[2:0]=
+=notq[2:0]=

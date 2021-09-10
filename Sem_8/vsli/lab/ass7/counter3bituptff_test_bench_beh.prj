@@ -1,0 +1,3 @@
+vhdl work "tff.vhd"
+vhdl work "counter3bitup_tff.vhd"
+vhdl work "counter3bituptff_test_bench.vhd"
